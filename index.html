@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>岁时历 · 观天晴雨录</title>
+  <!-- 农历与二十四节气计算库（无第三方依赖） -->
+  <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.7.8/lunar.min.js"></script>
+  <style>
+    :root {
+      --paper-bg: #f6f0e2;
+      --card-bg: #fbf7ed;
+      --card-inner: #f3ead7;
+      --ink-main: #2a2420;
+      --ink-sub: #6b5d4d;
+      --ink-light: #968775;
+      --cinnabar: #9e2a2b;      /* 朱砂红 */
+      --cinnabar-soft: #f5e6e4;
+      --jade: #2b6a58;          /* 石青绿 */
+      --jade-soft: #e3efe9;
+      --gold-border: #cbb692;
+      --dark-border: #8b7355;
+      --shadow: 0 6px 24px rgba(66, 48, 28, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", Georgia, serif;
+      background-color: var(--paper-bg);
+      background-image:
+        radial-gradient(rgba(158, 42, 43, 0.03) 1px, transparent 0),
+        radial-gradient(rgba(107, 93, 77, 0.04) 1px, transparent 0);
+      background-size: 32px 32px;
+      background-position: 0 0, 16px 16px;
+      color: var(--ink-main);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 20px 16px 40px;
+    }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    /* 传统外框装饰 */
+    .scroll-frame {
+      background: var(--card-bg);
+      border: 2px solid var(--cinnabar);
+      padding: 6px;
+      box-shadow: var(--shadow);
+      border-radius: 4px;
+    }
+
+    .scroll-inner {
+      border: 1px solid var(--gold-border);
+      padding: 22px 24px;
+      background: var(--card-bg);
+    }
+
+    /* 顶部栏 */
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding-bottom: 18px;
+      border-bottom: 2px double var(--gold-border);
+      margin-bottom: 22px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .seal {
+      width: 46px;
+      height: 46px;
+      background: var(--cinnabar);
+      color: #fbf7ed;
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      line-height: 1.1;
+      padding: 4px;
+      box-shadow: inset 0 0 0 2px rgba(251, 247, 237, 0.35);
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .brand-title h1 {
+      font-size: 24px;
+      color: var(--cinnabar);
+      letter-spacing: 3px;
+      font-weight: 700;
+    }
+
+    .brand-title p {
+      font-size: 13px;
+      color: var(--ink-sub);
+      letter-spacing: 1px;
+    }
+
+    .header-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .live-clock {
+      font-size: 14px;
+      color: var(--ink-sub);
+      letter-spacing: 1px;
+    }
+
+    .live-clock strong {
+      color: var(--cinnabar);
+      font-size: 16px;
+      margin-left: 6px;
+    }
+
+    /* 城市搜索与书签条 */
+    .city-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      background: var(--card-inner);
+      padding: 12px 16px;
+      border: 1px solid var(--gold-border);
+      border-radius: 4px;
+    }
+
+    .city-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .city-tabs-label {
+      font-size: 13px;
+      color: var(--ink-sub);
+      margin-right: 4px;
+    }
+
+    .city-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      font-size: 14px;
+      border: 1px solid var(--gold-border);
+      background: var(--card-bg);
+      color: var(--ink-main);
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .city-tab:hover {
+      border-color: var(--cinnabar);
+      color: var(--cinnabar);
+    }
+
+    .city-tab.active {
+      background: var(--cinnabar);
+      color: #fbf7ed;
+      border-color: var(--cinnabar);
+    }
+
+    .city-tab .remove-city {
+      font-size: 14px;
+      opacity: 0.65;
+      line-height: 1;
+      padding: 0 2px;
+    }
+
+    .city-tab .remove-city:hover {
+      opacity: 1;
+    }
+
+    .city-search-wrap {
+      position: relative;
+      display: flex;
+      gap: 6px;
+      width: 280px;
+      max-width: 100%;
+    }
+
+    .city-search-wrap input {
+      flex: 1;
+      padding: 6px 10px;
+      font-size: 14px;
+      font-family: inherit;
+      border: 1px solid var(--dark-border);
+      background: var(--card-bg);
+      color: var(--ink-main);
+      border-radius: 3px;
+      outline: none;
+    }
+
+    .city-search-wrap input:focus {
+      border-color: var(--cinnabar);
+    }
+
+    .btn-traditional {
+      padding: 6px 14px;
+      font-size: 14px;
+      font-family: inherit;
+      background: var(--ink-main);
+      color: #fbf7ed;
+      border: 1px solid var(--ink-main);
+      border-radius: 3px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+
+    .btn-traditional:hover {
+      background: var(--cinnabar);
+      border-color: var(--cinnabar);
+    }
+
+    .search-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      border: 1px solid var(--cinnabar);
+      box-shadow: var(--shadow);
+      z-index: 100;
+      max-height: 240px;
+      overflow-y: auto;
+      display: none;
+      border-radius: 3px;
+    }
+
+    .search-dropdown.show {
+      display: block;
+    }
+
+    .search-item {
+      padding: 9px 12px;
+      cursor: pointer;
+      border-bottom: 1px dashed var(--gold-border);
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .search-item:last-child {
+      border-bottom: none;
+    }
+
+    .search-item:hover {
+      background: var(--cinnabar-soft);
+      color: var(--cinnabar);
+    }
+
+    .search-item small {
+      color: var(--ink-light);
+      font-size: 12px;
+    }
+
+    /* 主网格布局 */
+    .mai
