@@ -94,7 +94,16 @@
     .brand {
       display: flex;
       align-items: center;
+      gap: 10px;
       flex-shrink: 0;
+    }
+
+    .roman-clock {
+      width: 48px;
+      height: 48px;
+      display: block;
+      flex-shrink: 0;
+      filter: drop-shadow(0 1px 2px rgba(38, 111, 136, 0.12));
     }
 
     .brand-title h1 {
@@ -951,18 +960,25 @@
         margin-bottom: 10px;
         gap: 6px;
       }
+      .brand {
+        gap: 6px;
+      }
+      .roman-clock {
+        width: 34px;
+        height: 34px;
+      }
       .brand-title h1 {
-        font-size: 19px;
-        letter-spacing: 2px;
+        font-size: 18px;
+        letter-spacing: 1.5px;
       }
       .live-clock {
-        font-size: 11.5px;
+        font-size: 11px;
         letter-spacing: 0.2px;
-        padding: 4px 8px;
+        padding: 3px 7px;
       }
       .live-clock strong {
-        font-size: 12.5px;
-        margin-left: 5px;
+        font-size: 12px;
+        margin-left: 4px;
       }
       .city-bar {
         padding: 8px 10px;
@@ -1093,18 +1109,25 @@
     }
 
     @media (max-width: 375px) {
+      .brand {
+        gap: 5px;
+      }
+      .roman-clock {
+        width: 30px;
+        height: 30px;
+      }
       .brand-title h1 {
-        font-size: 17px;
+        font-size: 16px;
         letter-spacing: 1px;
       }
       .live-clock {
-        font-size: 10.5px;
+        font-size: 10px;
         letter-spacing: 0;
-        padding: 3px 6px;
+        padding: 3px 5px;
       }
       .live-clock strong {
-        font-size: 11.5px;
-        margin-left: 4px;
+        font-size: 11px;
+        margin-left: 3px;
       }
     }
   </style>
@@ -1120,6 +1143,19 @@
 
         <header class="header">
           <div class="brand">
+            <svg class="roman-clock" viewBox="0 0 100 100" aria-label="罗马数字实时时钟">
+              <circle cx="50" cy="50" r="47" fill="#fcfbf7" stroke="#266f88" stroke-width="2" />
+              <circle cx="50" cy="50" r="44.2" fill="none" stroke="#d9a441" stroke-width="0.7" />
+              <g id="clockTicks"></g>
+              <g id="clockNumerals"></g>
+              <path id="clockHour" d="M 50 57 L 48.8 50 L 49.1 33 L 47.4 29 L 50 22 L 52.6 29 L 50.9 33 L 51.2 50 Z" fill="#24343d" />
+              <path id="clockMinute" d="M 50 58 L 49.1 50 L 49.3 23 L 48.0 19.5 L 50 13.5 L 52.0 19.5 L 50.7 23 L 50.9 50 Z" fill="#24343d" />
+              <g id="clockSecond">
+  <line x1="50" y1="61" x2="50" y2="11" stroke="#24343d" stroke-width="1.4" stroke-linecap="round" />
+  <circle cx="50" cy="63" r="2.2" fill="none" stroke="#24343d" stroke-width="1.2" />
+              </g>
+              <circle cx="50" cy="50" r="2.9" fill="#fcfbf7" stroke="#24343d" stroke-width="1.6" />
+            </svg>
             <div class="brand-title">
               <h1>时历</h1>
             </div>
@@ -1256,13 +1292,71 @@
         return String(cities[0].id);
       }
 
+      function initRomanClockDial() {
+        const svgNS = 'http://www.w3.org/2000/svg';
+        const ticksGroup = document.getElementById('clockTicks');
+        const numsGroup = document.getElementById('clockNumerals');
+        if (!ticksGroup || !numsGroup) return;
+
+        for (let i = 0; i < 60; i++) {
+          const isHour = i % 5 === 0;
+          const line = document.createElementNS(svgNS, 'line');
+          line.setAttribute('x1', '50');
+          line.setAttribute('x2', '50');
+          line.setAttribute('y1', isHour ? '4.5' : '5.2');
+          line.setAttribute('y2', isHour ? '10' : '8');
+          line.setAttribute('stroke', isHour ? '#24343d' : '#536973');
+          line.setAttribute('stroke-width', isHour ? '1.8' : '0.9');
+          line.setAttribute('transform', `rotate(${i * 6} 50 50)`);
+          ticksGroup.appendChild(line);
+        }
+
+        const romans = ['XII', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI'];
+        const radius = 33.5;
+        romans.forEach((label, idx) => {
+          const deg = idx * 30;
+          const rad = ((deg - 90) * Math.PI) / 180;
+          const x = 50 + radius * Math.cos(rad);
+          const y = 50 + radius * Math.sin(rad);
+          const rot = idx >= 4 && idx <= 8 ? deg - 180 : deg;
+
+          const text = document.createElementNS(svgNS, 'text');
+          text.setAttribute('x', x.toFixed(2));
+          text.setAttribute('y', y.toFixed(2));
+          text.setAttribute('text-anchor', 'middle');
+          text.setAttribute('dominant-baseline', 'central');
+          text.setAttribute('fill', '#24343d');
+          text.setAttribute('font-size', '9.2');
+          text.setAttribute('font-family', 'Georgia, "Times New Roman", serif');
+          text.setAttribute('transform', `rotate(${rot} ${x.toFixed(2)} ${y.toFixed(2)})`);
+          text.textContent = label;
+          numsGroup.appendChild(text);
+        });
+      }
+
       function updateClock() {
         const d = new Date();
         const pad = n => String(n).padStart(2, '0');
         const dateStr = `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日 ${WEEKDAYS[d.getDay()]}`;
         const timeStr = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
         document.getElementById('liveClock').innerHTML = `${dateStr} <strong>${timeStr}</strong>`;
+
+        const h = d.getHours();
+        const m = d.getMinutes();
+        const s = d.getSeconds();
+        const hourDeg = ((h % 12) + m / 60 + s / 3600) * 30;
+        const minDeg = (m + s / 60) * 6;
+        const secDeg = s * 6;
+
+        const hEl = document.getElementById('clockHour');
+        const mEl = document.getElementById('clockMinute');
+        const sEl = document.getElementById('clockSecond');
+        if (hEl) hEl.setAttribute('transform', `rotate(${hourDeg.toFixed(2)} 50 50)`);
+        if (mEl) mEl.setAttribute('transform', `rotate(${minDeg.toFixed(2)} 50 50)`);
+        if (sEl) sEl.setAttribute('transform', `rotate(${secDeg} 50 50)`);
       }
+
+      initRomanClockDial();
       updateClock();
       setInterval(updateClock, 1000);
 
