@@ -1946,3 +1946,308 @@
           77: { text: '霰雪', icon: '❄️' },
           80: { text: '阵雨', icon: '🌦️' },
           81: { text: '强阵雨', icon: '🌧️' },
+          82: { text: '暴雨', icon: '⛈️' },
+          85: { text: '阵雪', icon: '🌨️' },
+          86: { text: '强阵雪', icon: '❄️' },
+          95: { text: '雷阵雨', icon: '⛈️' },
+          96: { text: '雷雨夹雹', icon: '⛈️' },
+          99: { text: '强雷暴冰雹', icon: '⛈️' }
+        };
+        return map[code] || { text: '气象未知', icon: '🌡️' };
+      }
+
+      function renderCityTabs() {
+        const container = document.getElementById('cityTabs');
+        container.innerHTML = '<span class="city-tabs-label">观象城市：</span>';
+
+        savedCities.forEach(city => {
+          const isActive = String(city.id) === String(activeCityId);
+          const btn = document.createElement('button');
+          btn.className = 'city-tab' + (isActive ? ' active' : '');
+          btn.innerHTML = `<span>${escapeHtml(city.name)}</span>`;
+
+          if (savedCities.length > 1) {
+            const del = document.createElement('span');
+            del.className = 'remove-city';
+            del.title = '移除此城市';
+            del.textContent = '×';
+            del.addEventListener('click', e => {
+              e.stopPropagation();
+              savedCities = savedCities.filter(c => String(c.id) !== String(city.id));
+              if (String(activeCityId) === String(city.id)) {
+                activeCityId = String(savedCities[0].id);
+                fetchWeatherForActiveCity();
+              }
+              saveCities();
+              renderCityTabs();
+            });
+            btn.appendChild(del);
+          }
+
+          btn.addEventListener('click', () => {
+            activeCityId = String(city.id);
+            saveCities();
+            renderCityTabs();
+            fetchWeatherForActiveCity();
+          });
+
+          container.appendChild(btn);
+        });
+      }
+
+      async function fetchWeatherForActiveCity() {
+        const city = savedCities.find(c => String(c.id) === String(activeCityId)) || savedCities[0];
+        if (!city) return;
+
+        const todayBox = document.getElementById('todayWeatherBox');
+        const forecastBox = document.getElementById('forecastBox');
+        const refreshBtn = document.getElementById('refreshWeatherBtn');
+
+        if (refreshBtn) refreshBtn.textContent = '刷新中...';
+        if (hasWeatherRendered) {
+          todayBox.classList.add('is-refreshing');
+          forecastBox.classList.add('is-refreshing');
+        } else {
+          todayBox.innerHTML = `<div class="weather-now is-loading"><div class="status-msg">正在获取气象数据（${escapeHtml(city.name)}）...</div></div>`;
+          forecastBox.innerHTML = `<div class="status-msg">正在获取七日预报...</div>`;
+        }
+
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(city.latitude)}&longitude=${encodeURIComponent(city.longitude)}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset&timezone=auto&past_days=1&forecast_days=8`;
+
+        try {
+          const res = await fetch(url);
+          if (!res.ok) throw new Error('网络请求异常');
+          const data = await res.json();
+
+          const curr = data.current;
+          const daily = data.daily;
+          const wInfo = parseWeatherCode(curr.weather_code);
+
+          const todayStr = curr.time ? curr.time.slice(0, 10) : '';
+          let todayIdx = todayStr ? daily.time.indexOf(todayStr) : -1;
+          if (todayIdx === -1) {
+            todayIdx = daily.time.length >= 9 ? 1 : 0;
+          }
+
+          const sunriseTime = daily.sunrise && daily.sunrise[todayIdx] ? daily.sunrise[todayIdx].slice(11, 16) : '--:--';
+          const sunsetTime = daily.sunset && daily.sunset[todayIdx] ? daily.sunset[todayIdx].slice(11, 16) : '--:--';
+          const regionSub = [city.admin1, city.country].filter(Boolean).join(' · ');
+
+          const fourDaysSpec = [
+            { offset: -1, label: '昨日', isToday: false },
+            { offset: 0,  label: '今日', isToday: true },
+            { offset: 1,  label: '明日', isToday: false },
+            { offset: 2,  label: '后日', isToday: false }
+          ];
+
+          let fourDaysHtml = '<div class="weather-four-days">';
+          fourDaysSpec.forEach(item => {
+            const idx = todayIdx + item.offset;
+            const cls = item.isToday ? 'day-mini-card is-today' : 'day-mini-card is-muted';
+            if (idx >= 0 && idx < daily.time.length) {
+              const dInfo = parseWeatherCode(daily.weather_code[idx]);
+              const dMin = Math.round(daily.temperature_2m_min[idx]);
+              const dMax = Math.round(daily.temperature_2m_max[idx]);
+              const tempHtml = item.isToday
+                ? `<span class="temp-low">${dMin}°</span>~<span class="temp-high">${dMax}°</span>`
+                : `${dMin}°~${dMax}°`;
+
+              fourDaysHtml += `
+                <div class="${cls}">
+                  <div class="day-mini-label">${item.label}</div>
+                  <div class="day-mini-cond">
+                    <span>${dInfo.icon}</span>
+                    <span class="day-mini-text">${dInfo.text}</span>
+                  </div>
+                  <div class="day-mini-temp">${tempHtml}</div>
+                </div>
+              `;
+            } else {
+              fourDaysHtml += `
+                <div class="${cls}">
+                  <div class="day-mini-label">${item.label}</div>
+                  <div class="day-mini-cond"><span class="day-mini-text">暂无</span></div>
+                  <div class="day-mini-temp">--</div>
+                </div>
+              `;
+            }
+          });
+          fourDaysHtml += '</div>';
+
+          todayBox.innerHTML = `
+            <div class="weather-now">
+              <div class="weather-now-top">
+                <div class="weather-city-block">
+                  <div class="weather-city-name">${escapeHtml(city.name)}</div>
+                  <div class="weather-city-sub">${escapeHtml(regionSub)}</div>
+                </div>
+                <div class="weather-mid-metrics">
+                  <div><span>体感</span><strong>${Math.round(curr.apparent_temperature)}°C</strong></div>
+                  <div><span>湿度</span><strong>${curr.relative_humidity_2m}%</strong></div>
+                  <div><span>日出/落</span><strong>${sunriseTime}/${sunsetTime}</strong></div>
+                </div>
+                <div class="weather-temp-wrap">
+                  <div class="weather-temp-main">${Math.round(curr.temperature_2m)}°C</div>
+                  <div class="weather-desc">${wInfo.icon} ${wInfo.text}</div>
+                </div>
+              </div>
+              ${fourDaysHtml}
+            </div>
+          `;
+
+          let rowsHtml = '<div class="forecast-list">';
+          for (let offset = 1; offset <= 7; offset++) {
+            const i = todayIdx + offset;
+            if (i >= daily.time.length) break;
+
+            const dateStr = daily.time[i];
+            const parts = dateStr.split('-');
+            const dObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+            const wdLabel = offset === 1 ? '明日' : offset === 2 ? '后日' : WEEKDAYS[dObj.getDay()];
+            const mdLabel = `${Number(parts[1])}月${Number(parts[2])}日`;
+            const fInfo = parseWeatherCode(daily.weather_code[i]);
+            const rainProb = daily.precipitation_probability_max ? daily.precipitation_probability_max[i] : null;
+            const tMin = Math.round(daily.temperature_2m_min[i]);
+            const tMax = Math.round(daily.temperature_2m_max[i]);
+
+            rowsHtml += `
+              <div class="forecast-row">
+                <div class="forecast-date">
+                  <strong>${wdLabel}</strong>
+                  <span>${mdLabel}</span>
+                </div>
+                <div class="forecast-cond">
+                  <span>${fInfo.icon}</span>
+                  <span>${fInfo.text}</span>
+                </div>
+                <div class="forecast-rain">
+                  ${rainProb !== null && rainProb > 0 ? `💧${rainProb}%` : ''}
+                </div>
+                <div class="forecast-temp">
+                  <span class="temp-low">${tMin}°</span> ~ <span class="temp-high">${tMax}°</span>
+                </div>
+              </div>
+            `;
+          }
+          rowsHtml += '</div>';
+          forecastBox.innerHTML = rowsHtml;
+          hasWeatherRendered = true;
+
+        } catch (err) {
+          if (!hasWeatherRendered) {
+            todayBox.innerHTML = `<div class="weather-now is-loading"><div class="status-msg">气象接口暂时无法连接，请稍后点击刷新。</div></div>`;
+            forecastBox.innerHTML = `<div class="status-msg">暂无未来七日数据</div>`;
+          }
+        } finally {
+          todayBox.classList.remove('is-refreshing');
+          forecastBox.classList.remove('is-refreshing');
+          if (refreshBtn) refreshBtn.textContent = '刷新';
+        }
+      }
+
+      document.getElementById('refreshWeatherBtn').addEventListener('click', fetchWeatherForActiveCity);
+
+      const cityInput = document.getElementById('cityInput');
+      const dropdown = document.getElementById('searchDropdown');
+
+      async function searchCity() {
+        const rawQuery = cityInput.value.trim();
+        if (!rawQuery) return;
+
+        dropdown.innerHTML = '<div class="search-item">寻城中，请稍候...</div>';
+        dropdown.classList.add('show');
+
+        async function queryApi(q) {
+          const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=zh&format=json`;
+          const res = await fetch(url);
+          if (!res.ok) throw new Error('搜索失败');
+          const json = await res.json();
+          return json.results || [];
+        }
+
+        try {
+          let results = await queryApi(rawQuery);
+          if (results.length === 0 && /[市省县区]$/.test(rawQuery) && rawQuery.length > 2) {
+            results = await queryApi(rawQuery.slice(0, -1));
+          }
+
+          if (results.length === 0) {
+            dropdown.innerHTML = '<div class="search-item">未寻得此城，请尝试输入完整城市名（如“苏州”或拼音）</div>';
+            return;
+          }
+
+          dropdown.innerHTML = '';
+          results.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'search-item';
+            const sub = [item.admin1, item.country].filter(Boolean).join(' · ');
+            div.innerHTML = `<span><strong>${escapeHtml(item.name)}</strong></span><small>${escapeHtml(sub)}</small>`;
+            div.addEventListener('click', () => {
+              const newCity = {
+                id: String(item.id),
+                name: item.name,
+                admin1: item.admin1 || '',
+                country: item.country || '',
+                latitude: item.latitude,
+                longitude: item.longitude
+              };
+              if (!savedCities.some(c => String(c.id) === newCity.id)) {
+                savedCities.push(newCity);
+              }
+              activeCityId = newCity.id;
+              saveCities();
+              renderCityTabs();
+              fetchWeatherForActiveCity();
+              dropdown.classList.remove('show');
+              cityInput.value = '';
+            });
+            dropdown.appendChild(div);
+          });
+        } catch (e) {
+          dropdown.innerHTML = '<div class="search-item">寻城受阻，请检查网络后重试</div>';
+        }
+      }
+
+      document.getElementById('searchBtn').addEventListener('click', searchCity);
+      cityInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') searchCity();
+      });
+
+      document.addEventListener('click', e => {
+        if (!e.target.closest('.city-search-wrap')) {
+          dropdown.classList.remove('show');
+        }
+      });
+
+      function loadLunarAsync() {
+        if (typeof Solar !== 'undefined') return;
+        const urls = [
+          'https://cdnjs.cloudflare.com/ajax/libs/lunar-javascript/1.7.8/lunar.min.js',
+          'https://cdn.jsdelivr.net/npm/lunar-javascript@1.7.8/lunar.min.js'
+        ];
+        let idx = 0;
+        function tryLoad() {
+          if (idx >= urls.length) return;
+          const s = document.createElement('script');
+          s.src = urls[idx++];
+          s.async = true;
+          s.onload = function () {
+            renderCalendar(viewYear, viewMonth);
+            renderCountdown();
+          };
+          s.onerror = tryLoad;
+          document.body.appendChild(s);
+        }
+        tryLoad();
+      }
+
+      renderDateDetail(selectedDate);
+      renderCalendar(viewYear, viewMonth);
+      renderCityTabs();
+      renderCountdown();
+      fetchWeatherForActiveCity();
+      loadLunarAsync();
+    })();
+  </script>
+</body>
+</html>
