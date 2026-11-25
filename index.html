@@ -337,89 +337,71 @@
       margin-right: 4px;
     }
 
-    .date-hero {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 20px;
-      align-items: center;
-      padding: 16px;
+    /* 月度与年度进度条 */
+    .progress-panel-box {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 15px 16px;
       background: var(--card-inner);
       border: 1px solid var(--gold-border);
+      border-radius: 2px;
       margin-bottom: 14px;
     }
 
-    .date-day-box {
-      text-align: center;
-      padding: 6px 20px 6px 8px;
-      border-right: 1px solid var(--gold-border);
-      min-width: 118px;
-    }
-
-    .date-ym {
-      font-size: 13px;
-      color: var(--gold-dark);
-      letter-spacing: 1px;
-    }
-
-    .date-day-num {
-      font-size: 56px;
-      font-weight: 700;
-      line-height: 1.05;
-      color: var(--royal-navy);
-      margin: 2px 0;
-      font-variant-numeric: lining-nums;
-    }
-
-    .date-weekday {
-      font-size: 14px;
-      font-weight: bold;
-      color: var(--ink-main);
-      letter-spacing: 1px;
-    }
-
-    .date-lunar-info {
+    .progress-item {
       display: flex;
       flex-direction: column;
-      gap: 7px;
-    }
-
-    .lunar-main-date {
-      font-size: 21px;
-      font-weight: bold;
-      color: var(--ink-main);
-      letter-spacing: 1.5px;
-    }
-
-    .lunar-year-stat {
-      font-size: 13px;
-      color: var(--ink-sub);
-    }
-
-    .lunar-badges {
-      display: flex;
-      flex-wrap: wrap;
       gap: 6px;
-      margin-top: 2px;
     }
 
-    .badge-primary {
-      display: inline-block;
-      padding: 2px 9px;
-      font-size: 12px;
-      background: var(--royal-navy);
-      color: #faf7f0;
-      border-radius: 2px;
-      letter-spacing: 0.5px;
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      font-size: 13px;
     }
 
-    .badge-outline {
-      display: inline-block;
-      padding: 2px 9px;
+    .progress-title {
+      font-weight: bold;
+      color: var(--royal-navy);
+      letter-spacing: 0.8px;
+    }
+
+    .progress-meta {
+      color: var(--ink-sub);
       font-size: 12px;
-      border: 1px solid var(--antique-gold);
-      color: var(--gold-dark);
-      background: rgba(166, 131, 66, 0.08);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .progress-meta strong {
+      color: var(--royal-navy);
+      margin-left: 6px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 11px;
+      background: rgba(250, 247, 240, 0.85);
+      border: 1px solid var(--gold-border);
       border-radius: 2px;
+      overflow: hidden;
+      padding: 1px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 1px;
+      transition: width 0.35s ease;
+    }
+
+    .progress-fill.month {
+      background: linear-gradient(90deg, #2b4c7e, var(--royal-navy));
+    }
+
+    .progress-fill.year {
+      background: linear-gradient(90deg, var(--gold-dark), var(--antique-gold));
     }
 
     .jieqi-box {
@@ -641,6 +623,71 @@
       margin-top: 2px;
     }
 
+    /* 昨日天气条 */
+    .weather-yesterday {
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: var(--card-inner);
+      border: 1px solid var(--gold-border);
+      border-radius: 2px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .yesterday-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .yesterday-tag {
+      display: inline-block;
+      padding: 1px 7px;
+      font-size: 11px;
+      background: var(--royal-navy);
+      color: #faf7f0;
+      border-radius: 2px;
+      letter-spacing: 0.5px;
+    }
+
+    .yesterday-date {
+      color: var(--ink-sub);
+      font-size: 12px;
+    }
+
+    .yesterday-cond {
+      color: var(--ink-main);
+      font-weight: bold;
+    }
+
+    .yesterday-precip {
+      font-size: 12px;
+      color: var(--forest-green);
+    }
+
+    .yesterday-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .yesterday-temp {
+      font-weight: bold;
+      color: var(--royal-navy);
+    }
+
+    .yesterday-diff {
+      font-size: 12px;
+      color: var(--gold-dark);
+    }
+
     .forecast-list {
       display: flex;
       flex-direction: column;
@@ -734,17 +781,9 @@
     }
 
     @media (max-width: 520px) {
-      .date-hero {
-        grid-template-columns: 1fr;
-        text-align: center;
-      }
-      .date-day-box {
-        border-right: none;
-        border-bottom: 1px solid var(--gold-border);
-        padding: 4px 0 12px;
-      }
-      .lunar-badges {
-        justify-content: center;
+      .progress-header {
+        flex-direction: column;
+        gap: 2px;
       }
       .jieqi-box {
         grid-template-columns: 1fr;
@@ -932,6 +971,40 @@
       updateClock();
       setInterval(updateClock, 1000);
 
+      function buildProgressHtml(y, m, d) {
+        const daysInMonth = new Date(y, m, 0).getDate();
+        const monthPct = (d / daysInMonth) * 100;
+
+        const isLeap = (y % 4 === 0 && y % 100 !== 0) || (y % 400 === 0);
+        const daysInYear = isLeap ? 366 : 365;
+        const startOfYear = new Date(y, 0, 1);
+        const dayOfYear = Math.floor((new Date(y, m - 1, d) - startOfYear) / 86400000) + 1;
+        const yearPct = (dayOfYear / daysInYear) * 100;
+
+        return `
+          <div class="progress-panel-box">
+            <div class="progress-item">
+              <div class="progress-header">
+                <span class="progress-title">月份进度（${m}月）</span>
+                <span class="progress-meta">第 ${d} / ${daysInMonth} 天 <strong>${monthPct.toFixed(1)}%</strong></span>
+              </div>
+              <div class="progress-track" role="progressbar" aria-valuenow="${monthPct.toFixed(1)}" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-fill month" style="width: ${monthPct.toFixed(2)}%;"></div>
+              </div>
+            </div>
+            <div class="progress-item">
+              <div class="progress-header">
+                <span class="progress-title">年份进度（${y}年）</span>
+                <span class="progress-meta">第 ${dayOfYear} / ${daysInYear} 天 <strong>${yearPct.toFixed(1)}%</strong></span>
+              </div>
+              <div class="progress-track" role="progressbar" aria-valuenow="${yearPct.toFixed(1)}" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-fill year" style="width: ${yearPct.toFixed(2)}%;"></div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
       function renderDateDetail(dateObj) {
         const box = document.getElementById('dateDetailContent');
         const backBtn = document.getElementById('backTodayBtn');
@@ -946,24 +1019,14 @@
         const y = dateObj.getFullYear();
         const m = dateObj.getMonth() + 1;
         const d = dateObj.getDate();
-        const wd = WEEKDAYS[dateObj.getDay()];
 
-        const startOfYear = new Date(y, 0, 1);
-        const dayOfYear = Math.floor((new Date(y, m - 1, d) - startOfYear) / 86400000) + 1;
-        const weekOfYear = Math.ceil((dayOfYear + ((startOfYear.getDay() + 6) % 7)) / 7);
+        const progressHtml = buildProgressHtml(y, m, d);
 
         if (typeof Solar === 'undefined') {
           box.innerHTML = `
-            <div class="date-hero">
-              <div class="date-day-box">
-                <div class="date-ym">${y}年 ${m}月</div>
-                <div class="date-day-num">${d}</div>
-                <div class="date-weekday">${wd}</div>
-              </div>
-              <div class="date-lunar-info">
-                <div class="lunar-main-date">${lunarLoadFailed ? '农历库加载受限（仅显示公历）' : '正在加载农历数据...'}</div>
-                <div class="lunar-year-stat">${y}年第 ${dayOfYear} 天 · 第 ${weekOfYear} 周</div>
-              </div>
+            ${progressHtml}
+            <div class="status-msg" style="padding: 10px 0;">
+              ${lunarLoadFailed ? '农历库加载受限，暂无法推演节气' : '正在加载节气数据...'}
             </div>
           `;
           return;
@@ -971,21 +1034,7 @@
 
         const solar = Solar.fromYmd(y, m, d);
         const lunar = solar.getLunar();
-
-        const lunarYear = lunar.getYearInChinese();
-        const lunarMonth = lunar.getMonthInChinese();
-        const lunarDay = lunar.getDayInChinese();
         const jieQiToday = lunar.getJieQi();
-        const festivals = [...lunar.getFestivals(), ...solar.getFestivals()];
-
-        let badgesHtml = '';
-        if (jieQiToday) badgesHtml += `<span class="badge-primary">今日节气 · ${escapeHtml(jieQiToday)}</span>`;
-        festivals.forEach(f => {
-          badgesHtml += `<span class="badge-outline">${escapeHtml(f)}</span>`;
-        });
-        if (!badgesHtml) {
-          badgesHtml = `<span class="badge-outline">${isToday ? '今日' : '选定日期'}</span>`;
-        }
 
         const prevJQ = lunar.getPrevJieQi(true);
         let nextJQ = lunar.getNextJieQi(true);
@@ -1015,18 +1064,7 @@
         }
 
         box.innerHTML = `
-          <div class="date-hero">
-            <div class="date-day-box">
-              <div class="date-ym">${y}年 ${m}月</div>
-              <div class="date-day-num">${d}</div>
-              <div class="date-weekday">${wd}</div>
-            </div>
-            <div class="date-lunar-info">
-              <div class="lunar-main-date">农历 ${lunarMonth}月${lunarDay}</div>
-              <div class="lunar-year-stat">农历${lunarYear}年 · 公历第 ${dayOfYear} 天 · 第 ${weekOfYear} 周</div>
-              <div class="lunar-badges">${badgesHtml}</div>
-            </div>
-          </div>
+          ${progressHtml}
           <div class="jieqi-box">
             <div class="jieqi-col prev">
               <div class="jieqi-label">${jieQiToday ? '当前节气' : '上一节气'}</div>
@@ -1212,232 +1250,3 @@
             del.addEventListener('click', e => {
               e.stopPropagation();
               savedCities = savedCities.filter(c => String(c.id) !== String(city.id));
-              if (String(activeCityId) === String(city.id)) {
-                activeCityId = String(savedCities[0].id);
-                fetchWeatherForActiveCity();
-              }
-              saveCities();
-              renderCityTabs();
-            });
-            btn.appendChild(del);
-          }
-
-          btn.addEventListener('click', () => {
-            activeCityId = String(city.id);
-            saveCities();
-            renderCityTabs();
-            fetchWeatherForActiveCity();
-          });
-
-          container.appendChild(btn);
-        });
-      }
-
-      async function fetchWeatherForActiveCity() {
-        const city = savedCities.find(c => String(c.id) === String(activeCityId)) || savedCities[0];
-        if (!city) return;
-
-        const todayBox = document.getElementById('todayWeatherBox');
-        const forecastBox = document.getElementById('forecastBox');
-        todayBox.innerHTML = `<div class="status-msg">正在获取气象数据（${escapeHtml(city.name)}）...</div>`;
-        forecastBox.innerHTML = `<div class="status-msg">正在获取七日预报...</div>`;
-
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(city.latitude)}&longitude=${encodeURIComponent(city.longitude)}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset&timezone=auto&forecast_days=8`;
-
-        try {
-          const res = await fetch(url);
-          if (!res.ok) throw new Error('网络请求异常');
-          const data = await res.json();
-
-          const curr = data.current;
-          const daily = data.daily;
-          const wInfo = parseWeatherCode(curr.weather_code);
-
-          const sunriseTime = daily.sunrise && daily.sunrise[0] ? daily.sunrise[0].slice(11, 16) : '--:--';
-          const sunsetTime = daily.sunset && daily.sunset[0] ? daily.sunset[0].slice(11, 16) : '--:--';
-          const regionSub = [city.admin1, city.country].filter(Boolean).join(' · ');
-
-          todayBox.innerHTML = `
-            <div class="weather-now">
-              <div>
-                <div class="weather-city-name">${escapeHtml(city.name)}</div>
-                <div class="weather-city-sub">${escapeHtml(regionSub)}</div>
-                <div style="margin-top: 8px; font-size: 13px; color: var(--ink-sub);">
-                  今日气温 ${Math.round(daily.temperature_2m_min[0])}° ~ ${Math.round(daily.temperature_2m_max[0])}°
-                </div>
-              </div>
-              <div class="weather-temp-wrap">
-                <div class="weather-temp-main">${Math.round(curr.temperature_2m)}°C</div>
-                <div class="weather-desc">${wInfo.icon} ${wInfo.text}</div>
-              </div>
-            </div>
-            <div class="weather-metrics">
-              <div class="metric-item">
-                <div class="metric-label">体感温度</div>
-                <div class="metric-val">${Math.round(curr.apparent_temperature)}°C</div>
-              </div>
-              <div class="metric-item">
-                <div class="metric-label">相对湿度</div>
-                <div class="metric-val">${curr.relative_humidity_2m}%</div>
-              </div>
-              <div class="metric-item">
-                <div class="metric-label">当前风速</div>
-                <div class="metric-val">${curr.wind_speed_10m} km/h</div>
-              </div>
-              <div class="metric-item">
-                <div class="metric-label">日出 / 日落</div>
-                <div class="metric-val" style="font-size: 12px;">${sunriseTime} / ${sunsetTime}</div>
-              </div>
-            </div>
-          `;
-
-          let rowsHtml = '<div class="forecast-list">';
-          const maxIndex = Math.min(7, daily.time.length - 1);
-          for (let i = 1; i <= maxIndex; i++) {
-            const dateStr = daily.time[i];
-            const parts = dateStr.split('-');
-            const dObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-            const wdLabel = i === 1 ? '明日' : i === 2 ? '后日' : WEEKDAYS[dObj.getDay()];
-            const mdLabel = `${Number(parts[1])}月${Number(parts[2])}日`;
-            const fInfo = parseWeatherCode(daily.weather_code[i]);
-            const rainProb = daily.precipitation_probability_max ? daily.precipitation_probability_max[i] : null;
-            const tMin = Math.round(daily.temperature_2m_min[i]);
-            const tMax = Math.round(daily.temperature_2m_max[i]);
-
-            rowsHtml += `
-              <div class="forecast-row">
-                <div class="forecast-date">
-                  <strong>${wdLabel}</strong>
-                  <span>${mdLabel}</span>
-                </div>
-                <div class="forecast-cond">
-                  <span>${fInfo.icon}</span>
-                  <span>${fInfo.text}</span>
-                </div>
-                <div class="forecast-rain">
-                  ${rainProb !== null && rainProb > 0 ? `💧${rainProb}%` : ''}
-                </div>
-                <div class="forecast-temp">
-                  <span class="temp-low">${tMin}°</span> ~ <span class="temp-high">${tMax}°</span>
-                </div>
-              </div>
-            `;
-          }
-          rowsHtml += '</div>';
-          forecastBox.innerHTML = rowsHtml;
-
-        } catch (err) {
-          todayBox.innerHTML = `<div class="status-msg">气象接口暂时无法连接，请稍后点击刷新。</div>`;
-          forecastBox.innerHTML = `<div class="status-msg">暂无未来七日数据</div>`;
-        }
-      }
-
-      document.getElementById('refreshWeatherBtn').addEventListener('click', fetchWeatherForActiveCity);
-
-      const cityInput = document.getElementById('cityInput');
-      const dropdown = document.getElementById('searchDropdown');
-
-      async function searchCity() {
-        const rawQuery = cityInput.value.trim();
-        if (!rawQuery) return;
-
-        dropdown.innerHTML = '<div class="search-item">寻城中，请稍候...</div>';
-        dropdown.classList.add('show');
-
-        async function queryApi(q) {
-          const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=zh&format=json`;
-          const res = await fetch(url);
-          if (!res.ok) throw new Error('搜索失败');
-          const json = await res.json();
-          return json.results || [];
-        }
-
-        try {
-          let results = await queryApi(rawQuery);
-          if (results.length === 0 && /[市省县区]$/.test(rawQuery) && rawQuery.length > 2) {
-            results = await queryApi(rawQuery.slice(0, -1));
-          }
-
-          if (results.length === 0) {
-            dropdown.innerHTML = '<div class="search-item">未寻得此城，请尝试输入完整城市名（如“苏州”或拼音）</div>';
-            return;
-          }
-
-          dropdown.innerHTML = '';
-          results.forEach(item => {
-            const div = document.createElement('div');
-            div.className = 'search-item';
-            const sub = [item.admin1, item.country].filter(Boolean).join(' · ');
-            div.innerHTML = `<span><strong>${escapeHtml(item.name)}</strong></span><small>${escapeHtml(sub)}</small>`;
-            div.addEventListener('click', () => {
-              const newCity = {
-                id: String(item.id),
-                name: item.name,
-                admin1: item.admin1 || '',
-                country: item.country || '',
-                latitude: item.latitude,
-                longitude: item.longitude
-              };
-              if (!savedCities.some(c => String(c.id) === newCity.id)) {
-                savedCities.push(newCity);
-              }
-              activeCityId = newCity.id;
-              saveCities();
-              renderCityTabs();
-              fetchWeatherForActiveCity();
-              dropdown.classList.remove('show');
-              cityInput.value = '';
-            });
-            dropdown.appendChild(div);
-          });
-        } catch (e) {
-          dropdown.innerHTML = '<div class="search-item">寻城受阻，请检查网络后重试</div>';
-        }
-      }
-
-      document.getElementById('searchBtn').addEventListener('click', searchCity);
-      cityInput.addEventListener('keydown', e => {
-        if (e.key === 'Enter') searchCity();
-      });
-
-      document.addEventListener('click', e => {
-        if (!e.target.closest('.city-search-wrap')) {
-          dropdown.classList.remove('show');
-        }
-      });
-
-      function loadLunarAsync() {
-        if (typeof Solar !== 'undefined') return;
-        const urls = [
-          'https://cdnjs.cloudflare.com/ajax/libs/lunar-javascript/1.7.8/lunar.min.js',
-          'https://cdn.jsdelivr.net/npm/lunar-javascript@1.7.8/lunar.min.js'
-        ];
-        let idx = 0;
-        function tryLoad() {
-          if (idx >= urls.length) {
-            lunarLoadFailed = true;
-            renderDateDetail(selectedDate);
-            return;
-          }
-          const s = document.createElement('script');
-          s.src = urls[idx++];
-          s.async = true;
-          s.onload = function () {
-            renderDateDetail(selectedDate);
-            renderCalendar(viewYear, viewMonth);
-          };
-          s.onerror = tryLoad;
-          document.body.appendChild(s);
-        }
-        tryLoad();
-      }
-
-      renderDateDetail(selectedDate);
-      renderCalendar(viewYear, viewMonth);
-      renderCityTabs();
-      fetchWeatherForActiveCity();
-      loadLunarAsync();
-    })();
-  </script>
-</body>
-</html>
