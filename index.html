@@ -608,9 +608,7 @@
     }
 
     .cal-weekdays div.weekend {
-      color: #707880;
-      background: rgba(130, 140, 150, 0.09);
-      border-radius: 3px 3px 0 0;
+      color: #95a0a8;
     }
 
     .cal-cell {
@@ -625,10 +623,6 @@
       justify-content: center;
       align-items: center;
       transition: all 0.15s;
-    }
-
-    .cal-cell.is-weekend:not(.today):not(.selected):not(:hover) {
-      background: rgba(130, 140, 150, 0.09);
     }
 
     .cal-cell:hover {
@@ -665,7 +659,7 @@
     }
 
     .cal-cell.is-weekend:not(.today) .cal-solar {
-      color: #6b737b;
+      color: #95a0a8;
     }
 
     .cal-lunar {
@@ -679,9 +673,8 @@
       max-width: 100%;
     }
 
-    .cal-cell:not(.today) .cal-lunar.is-highlight {
-      color: var(--ocean-teal);
-      font-weight: bold;
+    .cal-cell.is-weekend:not(.today) .cal-lunar:not(.is-statutory):not(.is-western):not(.is-traditional):not(.is-highlight) {
+      color: #a4aeb5;
     }
 
     .cal-cell:not(.today) .cal-lunar.is-statutory {
@@ -689,13 +682,10 @@
       font-weight: bold;
     }
 
-    .cal-cell:not(.today) .cal-lunar.is-western {
-      color: #2166c2;
-      font-weight: bold;
-    }
-
+    .cal-cell:not(.today) .cal-lunar.is-highlight,
+    .cal-cell:not(.today) .cal-lunar.is-western,
     .cal-cell:not(.today) .cal-lunar.is-traditional {
-      color: #6e747c;
+      color: #2166c2;
       font-weight: bold;
     }
 
