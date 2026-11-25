@@ -678,6 +678,21 @@
       font-weight: bold;
     }
 
+    .cal-cell:not(.today) .cal-lunar.is-traditional {
+      color: #c93b2b;
+      font-weight: bold;
+    }
+
+    .cal-cell:not(.today) .cal-lunar.is-western {
+      color: #2166c2;
+      font-weight: bold;
+    }
+
+    .cal-cell:not(.today) .cal-lunar.is-statutory {
+      color: #1f8050;
+      font-weight: bold;
+    }
+
    /* 实况框：无色背景，固定最小高度，加载与刷新不跳动 */
     .weather-now {
       min-height: 138px;
@@ -1402,6 +1417,14 @@
     (function () {
       const WEEKDAYS = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
       const WEEKDAY_CHARS = ['日', '一', '二', '三', '四', '五', '六'];
+      const WESTERN_FESTIVALS = new Set([
+        '情人节', '愚人节', '母亲节', '父亲节',
+        '万圣节前夜', '万圣节', '感恩节', '平安夜', '圣诞节'
+      ]);
+      const STATUTORY_FESTIVALS = new Set([
+        '元旦节', '劳动节', '国庆节',
+        '妇女节', '青年节', '儿童节', '建军节'
+      ]);
       const STORAGE_CITIES_KEY = 'suishi_saved_cities_v1';
       const STORAGE_ACTIVE_KEY = 'suishi_active_city_v1';
       const STORAGE_COUNTDOWN_KEY = 'suishi_countdown_v1';
@@ -1846,23 +1869,33 @@
           const isWeekend = cellDate.getDay() === 0 || cellDate.getDay() === 6;
 
           let lunarText = '';
-          let isHighlight = false;
+          let lunarClass = '';
 
           if (typeof Solar !== 'undefined') {
             const solar = Solar.fromYmd(cellY, cellM, cellD);
             const lunar = solar.getLunar();
             const jq = lunar.getJieQi();
-            const fests = [...lunar.getFestivals(), ...solar.getFestivals()];
+            const lunarFests = lunar.getFestivals();
+            const solarFests = solar.getFestivals();
+            const fests = [...lunarFests, ...solarFests];
 
             if (fests.length > 0) {
               lunarText = fests[0];
-              isHighlight = true;
+              if (lunarFests.includes(lunarText)) {
+                lunarClass = 'is-traditional';
+              } else if (WESTERN_FESTIVALS.has(lunarText)) {
+                lunarClass = 'is-western';
+              } else if (STATUTORY_FESTIVALS.has(lunarText)) {
+                lunarClass = 'is-statutory';
+              } else {
+                lunarClass = 'is-highlight';
+              }
             } else if (jq) {
               lunarText = jq;
-              isHighlight = true;
+              lunarClass = 'is-traditional';
             } else if (lunar.getDay() === 1) {
               lunarText = `${lunar.getMonthInChinese()}月`;
-              isHighlight = true;
+              lunarClass = 'is-highlight';
             } else {
               lunarText = lunar.getDayInChinese();
             }
@@ -1877,7 +1910,7 @@
 
           cell.innerHTML = `
             <span class="cal-solar">${cellD}</span>
-            <span class="cal-lunar ${isHighlight ? 'is-highlight' : ''}">${escapeHtml(lunarText)}</span>
+            <span class="cal-lunar ${lunarClass}">${escapeHtml(lunarText)}</span>
           `;
 
           cell.addEventListener('click', () => {
