@@ -337,7 +337,7 @@
     .progress-panel-box {
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 15px;
       padding: 15px 16px;
       background: var(--card-inner);
       border: 1px solid var(--gold-border);
@@ -376,28 +376,104 @@
       margin-left: 6px;
     }
 
-    .progress-track {
+    /* 月份 4 格进度条（每格一周） */
+    .month-grid-track {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
       width: 100%;
-      height: 11px;
+      height: 14px;
       background: rgba(250, 247, 240, 0.85);
       border: 1px solid var(--gold-border);
       border-radius: 2px;
-      overflow: hidden;
-      padding: 1px;
+      padding: 2px;
     }
 
-    .progress-fill {
+    .month-grid-cell {
       height: 100%;
+      background: rgba(27, 54, 93, 0.12);
       border-radius: 1px;
+      overflow: hidden;
+    }
+
+    .month-grid-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #2b4c7e, var(--royal-navy));
       transition: width 0.35s ease;
     }
 
-    .progress-fill.month {
-      background: linear-gradient(90deg, #2b4c7e, var(--royal-navy));
+    .month-grid-labels {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      padding: 0 2px;
     }
 
-    .progress-fill.year {
+    .month-grid-labels span {
+      text-align: center;
+      font-size: 11px;
+      color: var(--ink-light);
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .month-grid-labels span.is-passed {
+      color: var(--ink-sub);
+    }
+
+    .month-grid-labels span.is-current {
+      color: var(--royal-navy);
+      font-weight: bold;
+    }
+
+    /* 年份 12 格进度条 */
+    .year-grid-track {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 3px;
+      width: 100%;
+      height: 14px;
+      background: rgba(250, 247, 240, 0.85);
+      border: 1px solid var(--gold-border);
+      border-radius: 2px;
+      padding: 2px;
+    }
+
+    .year-grid-cell {
+      height: 100%;
+      background: rgba(166, 131, 66, 0.14);
+      border-radius: 1px;
+      overflow: hidden;
+    }
+
+    .year-grid-fill {
+      height: 100%;
       background: linear-gradient(90deg, var(--gold-dark), var(--antique-gold));
+      transition: width 0.35s ease;
+    }
+
+    .year-grid-labels {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 3px;
+      padding: 0 2px;
+    }
+
+    .year-grid-labels span {
+      text-align: center;
+      font-size: 11px;
+      color: var(--ink-light);
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .year-grid-labels span.is-passed {
+      color: var(--ink-sub);
+    }
+
+    .year-grid-labels span.is-current {
+      color: var(--gold-dark);
+      font-weight: bold;
     }
 
     .jieqi-box {
@@ -780,6 +856,16 @@
         flex-direction: column;
         gap: 2px;
       }
+      .month-grid-labels span {
+        font-size: 10px;
+      }
+      .year-grid-track,
+      .year-grid-labels {
+        gap: 2px;
+      }
+      .year-grid-labels span {
+        font-size: 10px;
+      }
       .jieqi-box {
         grid-template-columns: 1fr;
       }
@@ -968,32 +1054,79 @@
 
       function buildProgressHtml(y, m, d) {
         const daysInMonth = new Date(y, m, 0).getDate();
+        const remainMonthDays = daysInMonth - d;
         const monthPct = (d / daysInMonth) * 100;
 
+        // 月份 4 格（每格一周：1-7, 8-14, 15-21, 22-月末）
+        const weekRanges = [
+          { start: 1, end: 7 },
+          { start: 8, end: 14 },
+          { start: 15, end: 21 },
+          { start: 22, end: daysInMonth }
+        ];
+        let monthCellsHtml = '';
+        let monthLabelsHtml = '';
+        weekRanges.forEach((wk, idx) => {
+          const spanDays = wk.end - wk.start + 1;
+          let wkPct = 0;
+          let labelCls = '';
+          if (d > wk.end) {
+            wkPct = 100;
+            labelCls = 'is-passed';
+          } else if (d >= wk.start) {
+            wkPct = ((d - wk.start + 1) / spanDays) * 100;
+            labelCls = 'is-current';
+          }
+          monthCellsHtml += `<div class="month-grid-cell" title="第${idx + 1}周（${wk.start}日-${wk.end}日）"><div class="month-grid-fill" style="width: ${wkPct.toFixed(2)}%;"></div></div>`;
+          monthLabelsHtml += `<span class="${labelCls}">第${idx + 1}周 (${wk.start}-${wk.end})</span>`;
+        });
+
+        // 年份 12 格（每格一月）
         const isLeap = (y % 4 === 0 && y % 100 !== 0) || (y % 400 === 0);
         const daysInYear = isLeap ? 366 : 365;
         const startOfYear = new Date(y, 0, 1);
         const dayOfYear = Math.floor((new Date(y, m - 1, d) - startOfYear) / 86400000) + 1;
+        const remainYearDays = daysInYear - dayOfYear;
         const yearPct = (dayOfYear / daysInYear) * 100;
+
+        let yearCellsHtml = '';
+        let yearLabelsHtml = '';
+        for (let monthIdx = 1; monthIdx <= 12; monthIdx++) {
+          let cellPct = 0;
+          if (monthIdx < m) {
+            cellPct = 100;
+          } else if (monthIdx === m) {
+            cellPct = (d / daysInMonth) * 100;
+          }
+          const labelClass = monthIdx === m ? 'is-current' : (monthIdx < m ? 'is-passed' : '');
+          yearCellsHtml += `<div class="year-grid-cell" title="${monthIdx}月"><div class="year-grid-fill" style="width: ${cellPct.toFixed(2)}%;"></div></div>`;
+          yearLabelsHtml += `<span class="${labelClass}">${monthIdx}</span>`;
+        }
 
         return `
           <div class="progress-panel-box">
             <div class="progress-item">
               <div class="progress-header">
                 <span class="progress-title">月份进度（${m}月）</span>
-                <span class="progress-meta">第 ${d} / ${daysInMonth} 天 <strong>${monthPct.toFixed(1)}%</strong></span>
+                <span class="progress-meta">第 ${d} / ${daysInMonth} 天 · 剩 ${remainMonthDays} 天 <strong>${monthPct.toFixed(1)}%</strong></span>
               </div>
-              <div class="progress-track" role="progressbar" aria-valuenow="${monthPct.toFixed(1)}" aria-valuemin="0" aria-valuemax="100">
-                <div class="progress-fill month" style="width: ${monthPct.toFixed(2)}%;"></div>
+              <div class="month-grid-track" role="progressbar" aria-valuenow="${monthPct.toFixed(1)}" aria-valuemin="0" aria-valuemax="100">
+                ${monthCellsHtml}
+              </div>
+              <div class="month-grid-labels">
+                ${monthLabelsHtml}
               </div>
             </div>
             <div class="progress-item">
               <div class="progress-header">
                 <span class="progress-title">年份进度（${y}年）</span>
-                <span class="progress-meta">第 ${dayOfYear} / ${daysInYear} 天 <strong>${yearPct.toFixed(1)}%</strong></span>
+                <span class="progress-meta">第 ${dayOfYear} / ${daysInYear} 天 · 剩 ${remainYearDays} 天 <strong>${yearPct.toFixed(1)}%</strong></span>
               </div>
-              <div class="progress-track" role="progressbar" aria-valuenow="${yearPct.toFixed(1)}" aria-valuemin="0" aria-valuemax="100">
-                <div class="progress-fill year" style="width: ${yearPct.toFixed(2)}%;"></div>
+              <div class="year-grid-track" role="progressbar" aria-valuenow="${yearPct.toFixed(1)}" aria-valuemin="0" aria-valuemax="100">
+                ${yearCellsHtml}
+              </div>
+              <div class="year-grid-labels">
+                ${yearLabelsHtml}
               </div>
             </div>
           </div>
