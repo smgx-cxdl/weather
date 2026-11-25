@@ -23,6 +23,7 @@
       --gold-dark: #b97524;
       --gold-border: #d2cbb7;
       --dark-border: #8fa3ad;
+      --cinnabar: #c93b2b;
       --shadow: 0 10px 30px rgba(38, 111, 136, 0.09);
     }
 
@@ -320,15 +321,8 @@
       margin-right: 4px;
     }
 
-    .progress-panel-box {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      padding: 12px 14px;
+    .progress-panel {
       background: var(--card-inner);
-      border: 1px solid var(--gold-border);
-      border-radius: 3px;
-      margin-bottom: 10px;
     }
 
     .progress-item {
@@ -362,33 +356,36 @@
       margin-left: 6px;
     }
 
-    /* 进度条上方：专属周日标识格 */
+    /* 进度条上方：立起来的小四边形周日标识 */
     .month-sunday-row {
       display: grid;
       gap: 2px;
       width: 100%;
       padding: 0 3px;
       margin-top: 2px;
-      margin-bottom: -1px;
+      margin-bottom: 1px;
+      justify-items: center;
+      align-items: end;
     }
 
     .month-sunday-cap {
-      height: 5px;
-      border-radius: 2px;
+      width: 5px;
+      height: 9px;
+      border-radius: 1.5px;
       background: transparent;
     }
 
     .month-sunday-cap.is-sunday {
-      background: linear-gradient(90deg, #f7b64c, #eb8634);
-      box-shadow: 0 1px 2px rgba(235, 134, 52, 0.25);
+      background: linear-gradient(180deg, #f7b64c, #e57e25);
+      box-shadow: 0 1px 2px rgba(229, 126, 37, 0.3);
     }
 
     .month-sunday-cap.is-sunday.is-future {
-      background: linear-gradient(90deg, #fad082, #f2aa66);
-      opacity: 0.85;
+      background: linear-gradient(180deg, #fad082, #f0a45d);
+      opacity: 0.82;
     }
 
-    /* 月份每日格子进度条：晴空天青蓝 + 当前日翠绿 */
+    /* 月份每日格子进度条：晴空天青蓝 + 当前日朱砂红（冷暖高对比） */
     .month-days-track {
       display: grid;
       gap: 2px;
@@ -404,18 +401,21 @@
       height: 100%;
       background: rgba(61, 152, 181, 0.14);
       border-radius: 1.5px;
-      transition: background 0.25s ease;
+      transition: background 0.25s ease, transform 0.25s ease;
     }
 
     .month-day-cell.is-filled {
-      background: linear-gradient(180deg, #64c2d8, #3892b0);
+      background: linear-gradient(180deg, #6bc3d8, #3d98b5);
     }
 
-    /* 到了哪天，那天的实体格就变成翡翠绿 */
+    /* 当前日改用朱砂珊瑚红并微幅凸起，彻底区分于青蓝色已过天数 */
     .month-day-cell.is-current,
     .month-day-cell.is-filled.is-current {
-      background: linear-gradient(180deg, #4cc488, #2a9660);
-      box-shadow: inset 0 0 0 1px rgba(27, 107, 67, 0.3);
+      position: relative;
+      z-index: 2;
+      background: linear-gradient(180deg, #ea6654, #c93b2b);
+      transform: scaleY(1.22);
+      box-shadow: 0 0 0 1.5px #fcfbf7, 0 2px 5px rgba(201, 59, 43, 0.38);
     }
 
     .month-day-nums,
@@ -442,7 +442,7 @@
       color: var(--ink-light);
     }
 
-    /* 下方的字保持周日暖琥珀橘加粗，不随当前日变绿 */
+    /* 周日保持暖琥珀橘加粗；非周日的当前日用朱砂红加粗标注 */
     .month-day-nums span.is-sunday,
     .month-weekdays span.is-sunday {
       color: #d66f19;
@@ -452,6 +452,12 @@
     .month-day-nums span.is-sunday.is-future,
     .month-weekdays span.is-sunday.is-future {
       color: #e29148;
+    }
+
+    .month-day-nums span.is-current:not(.is-sunday),
+    .month-weekdays span.is-current:not(.is-sunday) {
+      color: var(--cinnabar);
+      font-weight: 700;
     }
 
     /* 在“日”与上方序号右侧加竖向虚线 */
@@ -564,48 +570,6 @@
     .year-season-labels span.season-winter.is-current {
       color: var(--sky-cyan);
       border-top-color: var(--sky-cyan);
-    }
-
-    .jieqi-box {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .jieqi-col {
-      padding: 9px 12px;
-      border-radius: 3px;
-      font-size: 13px;
-    }
-
-    .jieqi-col.prev {
-      background: var(--jade-soft);
-      border: 1px solid rgba(43, 142, 94, 0.28);
-    }
-
-    .jieqi-col.next {
-      background: var(--sky-soft);
-      border: 1px solid rgba(61, 152, 181, 0.28);
-    }
-
-    .jieqi-label {
-      font-size: 11px;
-      color: var(--ink-sub);
-      letter-spacing: 0.5px;
-    }
-
-    .jieqi-name {
-      font-size: 16px;
-      font-weight: bold;
-      margin: 1px 0;
-    }
-
-    .jieqi-col.prev .jieqi-name { color: var(--jade-green); }
-    .jieqi-col.next .jieqi-name { color: var(--ocean-teal); }
-
-    .jieqi-meta {
-      font-size: 11px;
-      color: var(--ink-sub);
     }
 
     .cal-controls {
@@ -989,11 +953,6 @@
         margin-bottom: 8px;
         letter-spacing: 1px;
       }
-      .progress-panel-box {
-        padding: 9px 10px;
-        gap: 11px;
-        margin-bottom: 8px;
-      }
       .progress-header {
         flex-wrap: wrap;
         gap: 1px 8px;
@@ -1003,7 +962,8 @@
         padding: 0 2.5px;
       }
       .month-sunday-cap {
-        height: 4px;
+        width: 4px;
+        height: 7px;
       }
       .month-days-track {
         gap: 1px;
@@ -1036,21 +996,6 @@
       .year-grid-labels span,
       .year-season-labels span {
         font-size: 10px;
-      }
-      .jieqi-box {
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-      }
-      .jieqi-col {
-        padding: 7px 10px;
-      }
-      .jieqi-label,
-      .jieqi-meta {
-        font-size: 11px;
-      }
-      .jieqi-name {
-        font-size: 15px;
-        margin: 1px 0;
       }
       .cal-btn {
         padding: 2px 7px;
@@ -1119,10 +1064,12 @@
 
         <main class="main-grid">
           <div>
-            <section class="panel">
-              <div id="dateDetailContent">
-                <div class="status-msg">正在推演历法...</div>
-              </div>
+            <section class="panel progress-panel" id="monthProgressPanel">
+              <div class="status-msg">正在推演月份进度...</div>
+            </section>
+
+            <section class="panel progress-panel" id="yearProgressPanel">
+              <div class="status-msg">正在推演年份进度...</div>
             </section>
 
             <section class="panel">
@@ -1172,7 +1119,7 @@
         </main>
 
         <footer class="footer">
-          ✦ 中国农历与节气本地推演 · 气象数据源自 Open-Meteo 开源接口 · 点击月历任意日期可查当日农历与节气 ✦
+          ✦ 中国农历与节气本地推演 · 气象数据源自 Open-Meteo 开源接口 · 点击月历任意日期可切换当日进度 ✦
         </footer>
       </div>
     </div>
@@ -1195,7 +1142,6 @@
       let viewYear = now.getFullYear();
       let viewMonth = now.getMonth() + 1;
       let selectedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      let lunarLoadFailed = false;
 
       let savedCities = loadCities();
       let activeCityId = loadActiveCityId(savedCities);
@@ -1232,12 +1178,6 @@
         return String(cities[0].id);
       }
 
-      function diffDaysFromSolar(baseDate, targetSolar) {
-        const targetDate = new Date(targetSolar.getYear(), targetSolar.getMonth() - 1, targetSolar.getDay());
-        const curDate = new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate());
-        return Math.round((targetDate - curDate) / 86400000);
-      }
-
       function updateClock() {
         const d = new Date();
         const pad = n => String(n).padStart(2, '0');
@@ -1248,12 +1188,11 @@
       updateClock();
       setInterval(updateClock, 1000);
 
-      function buildProgressHtml(y, m, d) {
+      function buildMonthProgressHtml(y, m, d) {
         const daysInMonth = new Date(y, m, 0).getDate();
         const remainMonthDays = daysInMonth - d;
         const monthPct = (d / daysInMonth) * 100;
 
-        // 上方周日刻度 + 月份进度条 + 每日数字 + 对应星期
         let sundayCapsHtml = '';
         let monthCellsHtml = '';
         let monthNumsHtml = '';
@@ -1281,6 +1220,7 @@
 
           const labelCls = [
             !isFilled ? 'is-future' : '',
+            isCurrent ? 'is-current' : '',
             isSunday ? 'is-sunday' : '',
             isWeekEnd ? 'is-week-end' : ''
           ].filter(Boolean).join(' ');
@@ -1291,7 +1231,30 @@
           monthWeekdaysHtml += `<span class="${labelCls}">${weekdayChar}</span>`;
         }
 
-        // 年份 12 格（每格一月）+ 月份数字 + 季节
+        return `
+          <div class="progress-item">
+            <div class="progress-header">
+              <span class="progress-title">月份进度（${m}月）</span>
+              <span class="progress-meta">第 ${d} / ${daysInMonth} 天 · 剩 ${remainMonthDays} 天 <strong>${monthPct.toFixed(1)}%</strong></span>
+            </div>
+            <div class="month-sunday-row" style="grid-template-columns: repeat(${daysInMonth}, 1fr);" aria-hidden="true">
+              ${sundayCapsHtml}
+            </div>
+            <div class="month-days-track" style="grid-template-columns: repeat(${daysInMonth}, 1fr);" role="progressbar" aria-valuenow="${monthPct.toFixed(1)}" aria-valuemin="0" aria-valuemax="100">
+              ${monthCellsHtml}
+            </div>
+            <div class="month-day-nums" style="grid-template-columns: repeat(${daysInMonth}, 1fr);">
+              ${monthNumsHtml}
+            </div>
+            <div class="month-weekdays" style="grid-template-columns: repeat(${daysInMonth}, 1fr);">
+              ${monthWeekdaysHtml}
+            </div>
+          </div>
+        `;
+      }
+
+      function buildYearProgressHtml(y, m, d) {
+        const daysInMonth = new Date(y, m, 0).getDate();
         const isLeap = (y % 4 === 0 && y % 100 !== 0) || (y % 400 === 0);
         const daysInYear = isLeap ? 366 : 365;
         const startOfYear = new Date(y, 0, 1);
@@ -1322,50 +1285,31 @@
         };
 
         return `
-          <div class="progress-panel-box">
-            <div class="progress-item">
-              <div class="progress-header">
-                <span class="progress-title">月份进度（${m}月）</span>
-                <span class="progress-meta">第 ${d} / ${daysInMonth} 天 · 剩 ${remainMonthDays} 天 <strong>${monthPct.toFixed(1)}%</strong></span>
-              </div>
-              <div class="month-sunday-row" style="grid-template-columns: repeat(${daysInMonth}, 1fr);" aria-hidden="true">
-                ${sundayCapsHtml}
-              </div>
-              <div class="month-days-track" style="grid-template-columns: repeat(${daysInMonth}, 1fr);" role="progressbar" aria-valuenow="${monthPct.toFixed(1)}" aria-valuemin="0" aria-valuemax="100">
-                ${monthCellsHtml}
-              </div>
-              <div class="month-day-nums" style="grid-template-columns: repeat(${daysInMonth}, 1fr);">
-                ${monthNumsHtml}
-              </div>
-              <div class="month-weekdays" style="grid-template-columns: repeat(${daysInMonth}, 1fr);">
-                ${monthWeekdaysHtml}
-              </div>
+          <div class="progress-item">
+            <div class="progress-header">
+              <span class="progress-title">年份进度（${y}年）</span>
+              <span class="progress-meta">第 ${dayOfYear} / ${daysInYear} 天 · 剩 ${remainYearDays} 天 <strong>${yearPct.toFixed(1)}%</strong></span>
             </div>
-            <div class="progress-item">
-              <div class="progress-header">
-                <span class="progress-title">年份进度（${y}年）</span>
-                <span class="progress-meta">第 ${dayOfYear} / ${daysInYear} 天 · 剩 ${remainYearDays} 天 <strong>${yearPct.toFixed(1)}%</strong></span>
-              </div>
-              <div class="year-grid-track" role="progressbar" aria-valuenow="${yearPct.toFixed(1)}" aria-valuemin="0" aria-valuemax="100">
-                ${yearCellsHtml}
-              </div>
-              <div class="year-grid-labels">
-                ${yearLabelsHtml}
-              </div>
-              <div class="year-season-labels">
-                <span class="season-winter ${seasonCls.winEarly}">冬季</span>
-                <span class="season-spring ${seasonCls.spring}">春季</span>
-                <span class="season-summer ${seasonCls.summer}">夏季</span>
-                <span class="season-autumn ${seasonCls.autumn}">秋季</span>
-                <span class="season-winter ${seasonCls.winLate}">冬</span>
-              </div>
+            <div class="year-grid-track" role="progressbar" aria-valuenow="${yearPct.toFixed(1)}" aria-valuemin="0" aria-valuemax="100">
+              ${yearCellsHtml}
+            </div>
+            <div class="year-grid-labels">
+              ${yearLabelsHtml}
+            </div>
+            <div class="year-season-labels">
+              <span class="season-winter ${seasonCls.winEarly}">冬季</span>
+              <span class="season-spring ${seasonCls.spring}">春季</span>
+              <span class="season-summer ${seasonCls.summer}">夏季</span>
+              <span class="season-autumn ${seasonCls.autumn}">秋季</span>
+              <span class="season-winter ${seasonCls.winLate}">冬</span>
             </div>
           </div>
         `;
       }
 
       function renderDateDetail(dateObj) {
-        const box = document.getElementById('dateDetailContent');
+        const monthBox = document.getElementById('monthProgressPanel');
+        const yearBox = document.getElementById('yearProgressPanel');
         const backBtn = document.getElementById('backTodayBtn');
         const today = new Date();
         const isToday =
@@ -1379,62 +1323,8 @@
         const m = dateObj.getMonth() + 1;
         const d = dateObj.getDate();
 
-        const progressHtml = buildProgressHtml(y, m, d);
-
-        if (typeof Solar === 'undefined') {
-          box.innerHTML = `
-            ${progressHtml}
-            <div class="status-msg" style="padding: 10px 0;">
-              ${lunarLoadFailed ? '农历库加载受限，暂无法推演节气' : '正在加载节气数据...'}
-            </div>
-          `;
-          return;
-        }
-
-        const solar = Solar.fromYmd(y, m, d);
-        const lunar = solar.getLunar();
-        const jieQiToday = lunar.getJieQi();
-
-        const prevJQ = lunar.getPrevJieQi(true);
-        let nextJQ = lunar.getNextJieQi(true);
-        if (nextJQ && diffDaysFromSolar(dateObj, nextJQ.getSolar()) <= 0) {
-          nextJQ = solar.next(1).getLunar().getNextJieQi(true);
-        }
-
-        let prevHtml = '<div class="jieqi-name">--</div><div class="jieqi-meta">暂无数据</div>';
-        if (prevJQ) {
-          const ps = prevJQ.getSolar();
-          const diff = Math.abs(diffDaysFromSolar(dateObj, ps));
-          const diffText = diff === 0 ? '正是今日' : `已过 ${diff} 天`;
-          prevHtml = `
-            <div class="jieqi-name">${escapeHtml(prevJQ.getName())}</div>
-            <div class="jieqi-meta">${ps.getMonth()}月${ps.getDay()}日 · ${diffText}</div>
-          `;
-        }
-
-        let nextHtml = '<div class="jieqi-name">--</div><div class="jieqi-meta">暂无数据</div>';
-        if (nextJQ) {
-          const ns = nextJQ.getSolar();
-          const diff = diffDaysFromSolar(dateObj, ns);
-          nextHtml = `
-            <div class="jieqi-name">${escapeHtml(nextJQ.getName())}</div>
-            <div class="jieqi-meta">${ns.getMonth()}月${ns.getDay()}日 · 还有 ${diff} 天</div>
-          `;
-        }
-
-        box.innerHTML = `
-          ${progressHtml}
-          <div class="jieqi-box">
-            <div class="jieqi-col prev">
-              <div class="jieqi-label">${jieQiToday ? '当前节气' : '上一节气'}</div>
-              ${prevHtml}
-            </div>
-            <div class="jieqi-col next">
-              <div class="jieqi-label">下一节气</div>
-              ${nextHtml}
-            </div>
-          </div>
-        `;
+        monthBox.innerHTML = buildMonthProgressHtml(y, m, d);
+        yearBox.innerHTML = buildYearProgressHtml(y, m, d);
       }
 
       function renderCalendar(year, month) {
@@ -1854,16 +1744,11 @@
         ];
         let idx = 0;
         function tryLoad() {
-          if (idx >= urls.length) {
-            lunarLoadFailed = true;
-            renderDateDetail(selectedDate);
-            return;
-          }
+          if (idx >= urls.length) return;
           const s = document.createElement('script');
           s.src = urls[idx++];
           s.async = true;
           s.onload = function () {
-            renderDateDetail(selectedDate);
             renderCalendar(viewYear, viewMonth);
           };
           s.onerror = tryLoad;
