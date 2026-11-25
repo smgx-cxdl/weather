@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>岁时历 · 观天晴雨录</title>
+  <title>嵗時曆</title>
   <style>
     :root {
       --paper-bg: #eef3f1;
@@ -346,11 +346,6 @@
       font-variant-numeric: tabular-nums;
     }
 
-    .progress-meta strong {
-      color: var(--ocean-teal);
-      margin-left: 6px;
-    }
-
     /* 进度条上方：圆形周日标识 */
     .month-sunday-row {
       display: grid;
@@ -477,10 +472,6 @@
     /* 年份 12 格进度条：退后为低饱和浅亚麻沙色，不再抢占月份进度条视觉焦点 */
     #yearProgressPanel .progress-title {
       color: var(--ink-sub);
-    }
-
-    #yearProgressPanel .progress-meta strong {
-      color: var(--ink-main);
     }
 
     .year-grid-track {
@@ -692,11 +683,11 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 16px;
+      padding: 14px 16px;
       background: linear-gradient(135deg, var(--sky-soft), var(--card-inner));
       border: 1px solid rgba(61, 152, 181, 0.3);
       border-radius: 3px;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
       gap: 12px;
     }
 
@@ -704,11 +695,13 @@
       font-size: 20px;
       font-weight: bold;
       color: var(--ocean-teal);
+      line-height: 1.3;
     }
 
     .weather-city-sub {
       font-size: 12px;
       color: var(--ink-sub);
+      margin-top: 2px;
     }
 
     .weather-temp-wrap {
@@ -731,22 +724,24 @@
 
     .weather-metrics {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: 1fr 1fr 1.35fr;
       gap: 8px;
-      margin-bottom: 4px;
+      margin-bottom: 10px;
     }
 
     .metric-item {
       background: var(--card-bg);
       border: 1px solid var(--gold-border);
-      padding: 9px 6px;
+      padding: 8px 6px;
       text-align: center;
       border-radius: 3px;
+      min-width: 0;
     }
 
     .metric-label {
       font-size: 11px;
       color: var(--ink-light);
+      white-space: nowrap;
     }
 
     .metric-val {
@@ -754,70 +749,87 @@
       font-weight: bold;
       color: var(--ink-main);
       margin-top: 2px;
-    }
-
-    .weather-yesterday {
-      margin-top: 12px;
-      padding: 10px 14px;
-      background: var(--amber-soft);
-      border: 1px solid rgba(214, 118, 36, 0.28);
-      border-radius: 3px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-    }
-
-    .yesterday-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .yesterday-tag {
-      display: inline-block;
-      padding: 1px 7px;
-      font-size: 11px;
-      background: var(--warm-amber);
-      color: #fcfbf7;
-      border-radius: 2px;
-      letter-spacing: 0.5px;
-    }
-
-    .yesterday-date {
-      color: var(--ink-sub);
-      font-size: 12px;
-    }
-
-    .yesterday-cond {
-      color: var(--ink-main);
-      font-weight: bold;
-    }
-
-    .yesterday-precip {
-      font-size: 12px;
-      color: var(--jade-green);
-    }
-
-    .yesterday-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
+      white-space: nowrap;
       font-variant-numeric: tabular-nums;
     }
 
-    .yesterday-temp {
-      font-weight: bold;
-      color: var(--ocean-teal);
+    .metric-val.metric-sun {
+      font-size: 13px;
     }
 
-    .yesterday-diff {
+    /* 四日对比：昨日（淡）、今日、明日（淡）、后日（淡） */
+    .weather-four-days {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .day-mini-card {
+      background: var(--card-bg);
+      border: 1px solid var(--gold-border);
+      border-radius: 3px;
+      padding: 8px 6px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .day-mini-card.is-muted {
+      opacity: 0.56;
+      background: rgba(242, 246, 245, 0.45);
+      border-color: rgba(210, 203, 183, 0.7);
+    }
+
+    .day-mini-card.is-today {
+      background: linear-gradient(180deg, var(--sky-soft), var(--card-bg));
+      border-color: rgba(61, 152, 181, 0.5);
+    }
+
+    .day-mini-label {
       font-size: 12px;
-      color: var(--gold-dark);
+      color: var(--ink-sub);
+      line-height: 1.2;
+    }
+
+    .day-mini-card.is-today .day-mini-label {
+      color: var(--ocean-teal);
+      font-weight: bold;
+    }
+
+    .day-mini-icon {
+      font-size: 17px;
+      line-height: 1.25;
+    }
+
+    .day-mini-text {
+      font-size: 12px;
+      color: var(--ink-main);
+      line-height: 1.2;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .day-mini-card.is-muted .day-mini-text {
+      color: var(--ink-sub);
+    }
+
+    .day-mini-temp {
+      font-size: 12px;
+      font-weight: bold;
+      line-height: 1.25;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+      margin-top: 1px;
+    }
+
+    .day-mini-card.is-muted .day-mini-temp {
+      color: var(--ink-sub);
+      font-weight: normal;
     }
 
     .forecast-list {
@@ -1027,7 +1039,32 @@
         margin-top: 1px;
       }
       .weather-metrics {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 1fr 1fr 1.45fr;
+        gap: 6px;
+        margin-bottom: 8px;
+      }
+      .metric-item {
+        padding: 7px 4px;
+      }
+      .metric-val {
+        font-size: 13px;
+      }
+      .metric-val.metric-sun {
+        font-size: 12px;
+      }
+      .weather-four-days {
+        gap: 5px;
+      }
+      .day-mini-card {
+        padding: 7px 3px;
+      }
+      .day-mini-label,
+      .day-mini-text,
+      .day-mini-temp {
+        font-size: 11px;
+      }
+      .day-mini-icon {
+        font-size: 16px;
       }
       .forecast-row {
         grid-template-columns: 78px 1fr 44px 82px;
@@ -1058,7 +1095,7 @@
 
         <section class="city-bar">
           <div class="city-tabs" id="cityTabs">
-            <span class="city-tabs-label">观象城市：</span>
+            <span class="city-tabs-label">城市：</span>
           </div>
           <div class="city-search-wrap">
             <input type="text" id="cityInput" placeholder="输入城市名添加（如：苏州、成都）" autocomplete="off" />
@@ -1488,7 +1525,7 @@
 
       function renderCityTabs() {
         const container = document.getElementById('cityTabs');
-        container.innerHTML = '<span class="city-tabs-label">观象城市：</span>';
+        container.innerHTML = '<span class="city-tabs-label">城市：</span>';
 
         savedCities.forEach(city => {
           const isActive = String(city.id) === String(activeCityId);
@@ -1534,7 +1571,7 @@
         todayBox.innerHTML = `<div class="status-msg">正在获取气象数据（${escapeHtml(city.name)}）...</div>`;
         forecastBox.innerHTML = `<div class="status-msg">正在获取七日预报...</div>`;
 
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(city.latitude)}&longitude=${encodeURIComponent(city.longitude)}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,sunrise,sunset&timezone=auto&past_days=1&forecast_days=8`;
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(city.latitude)}&longitude=${encodeURIComponent(city.longitude)}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset&timezone=auto&past_days=1&forecast_days=8`;
 
         try {
           const res = await fetch(url);
@@ -1550,53 +1587,56 @@
           if (todayIdx === -1) {
             todayIdx = daily.time.length >= 9 ? 1 : 0;
           }
-          const yesterdayIdx = todayIdx - 1;
 
           const sunriseTime = daily.sunrise && daily.sunrise[todayIdx] ? daily.sunrise[todayIdx].slice(11, 16) : '--:--';
           const sunsetTime = daily.sunset && daily.sunset[todayIdx] ? daily.sunset[todayIdx].slice(11, 16) : '--:--';
           const regionSub = [city.admin1, city.country].filter(Boolean).join(' · ');
-          const todayMin = Math.round(daily.temperature_2m_min[todayIdx]);
-          const todayMax = Math.round(daily.temperature_2m_max[todayIdx]);
 
-          let yesterdayHtml = '';
-          if (yesterdayIdx >= 0) {
-            const yParts = daily.time[yesterdayIdx].split('-');
-            const yMdLabel = `${Number(yParts[1])}月${Number(yParts[2])}日`;
-            const yInfo = parseWeatherCode(daily.weather_code[yesterdayIdx]);
-            const yMin = Math.round(daily.temperature_2m_min[yesterdayIdx]);
-            const yMax = Math.round(daily.temperature_2m_max[yesterdayIdx]);
-            const yPrecip = daily.precipitation_sum ? daily.precipitation_sum[yesterdayIdx] : null;
-            const precipText = yPrecip !== null && yPrecip > 0 ? `💧 降水 ${yPrecip.toFixed(1)} mm` : '';
+          const fourDaysSpec = [
+            { offset: -1, label: '昨日', isToday: false },
+            { offset: 0,  label: '今日', isToday: true },
+            { offset: 1,  label: '明日', isToday: false },
+            { offset: 2,  label: '后日', isToday: false }
+          ];
 
-            const maxDiff = todayMax - yMax;
-            let diffText = '今日最高温与昨日持平';
-            if (maxDiff > 0) diffText = `今日最高温较昨日 +${maxDiff}°`;
-            else if (maxDiff < 0) diffText = `今日最高温较昨日 ${maxDiff}°`;
+          let fourDaysHtml = '<div class="weather-four-days">';
+          fourDaysSpec.forEach(item => {
+            const idx = todayIdx + item.offset;
+            const cls = item.isToday ? 'day-mini-card is-today' : 'day-mini-card is-muted';
+            if (idx >= 0 && idx < daily.time.length) {
+              const dInfo = parseWeatherCode(daily.weather_code[idx]);
+              const dMin = Math.round(daily.temperature_2m_min[idx]);
+              const dMax = Math.round(daily.temperature_2m_max[idx]);
+              const tempHtml = item.isToday
+                ? `<span class="temp-low">${dMin}°</span>~<span class="temp-high">${dMax}°</span>`
+                : `${dMin}°~${dMax}°`;
 
-            yesterdayHtml = `
-              <div class="weather-yesterday">
-                <div class="yesterday-left">
-                  <span class="yesterday-tag">昨日天气</span>
-                  <span class="yesterday-date">${yMdLabel}</span>
-                  <span class="yesterday-cond">${yInfo.icon} ${yInfo.text}</span>
-                  ${precipText ? `<span class="yesterday-precip">${precipText}</span>` : ''}
+              fourDaysHtml += `
+                <div class="${cls}">
+                  <div class="day-mini-label">${item.label}</div>
+                  <div class="day-mini-icon">${dInfo.icon}</div>
+                  <div class="day-mini-text">${dInfo.text}</div>
+                  <div class="day-mini-temp">${tempHtml}</div>
                 </div>
-                <div class="yesterday-right">
-                  <span class="yesterday-temp">${yMin}° ~ ${yMax}°</span>
-                  <span class="yesterday-diff">${diffText}</span>
+              `;
+            } else {
+              fourDaysHtml += `
+                <div class="${cls}">
+                  <div class="day-mini-label">${item.label}</div>
+                  <div class="day-mini-icon">--</div>
+                  <div class="day-mini-text">暂无</div>
+                  <div class="day-mini-temp">--</div>
                 </div>
-              </div>
-            `;
-          }
+              `;
+            }
+          });
+          fourDaysHtml += '</div>';
 
           todayBox.innerHTML = `
             <div class="weather-now">
               <div>
                 <div class="weather-city-name">${escapeHtml(city.name)}</div>
                 <div class="weather-city-sub">${escapeHtml(regionSub)}</div>
-                <div style="margin-top: 8px; font-size: 13px; color: var(--ink-sub);">
-                  今日气温 ${todayMin}° ~ ${todayMax}°
-                </div>
               </div>
               <div class="weather-temp-wrap">
                 <div class="weather-temp-main">${Math.round(curr.temperature_2m)}°C</div>
@@ -1605,23 +1645,19 @@
             </div>
             <div class="weather-metrics">
               <div class="metric-item">
-                <div class="metric-label">体感温度</div>
+                <div class="metric-label">体感</div>
                 <div class="metric-val">${Math.round(curr.apparent_temperature)}°C</div>
               </div>
               <div class="metric-item">
-                <div class="metric-label">相对湿度</div>
+                <div class="metric-label">湿度</div>
                 <div class="metric-val">${curr.relative_humidity_2m}%</div>
               </div>
               <div class="metric-item">
-                <div class="metric-label">当前风速</div>
-                <div class="metric-val">${curr.wind_speed_10m} km/h</div>
-              </div>
-              <div class="metric-item">
                 <div class="metric-label">日出 / 日落</div>
-                <div class="metric-val" style="font-size: 12px;">${sunriseTime} / ${sunsetTime}</div>
+                <div class="metric-val metric-sun">${sunriseTime} / ${sunsetTime}</div>
               </div>
             </div>
-            ${yesterdayHtml}
+            ${fourDaysHtml}
           `;
 
           let rowsHtml = '<div class="forecast-list">';
