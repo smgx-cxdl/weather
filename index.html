@@ -357,7 +357,7 @@
       margin-left: 6px;
     }
 
-    /* 月份每日格子进度条（进度条 + 日期号 + 星期几 + 上中下旬） */
+    /* 月份每日格子进度条（进度条 + 日期号 + 星期几） */
     .month-days-track {
       display: grid;
       gap: 2px;
@@ -389,12 +389,13 @@
       background: linear-gradient(180deg, #f0bc5e, #dc9635);
     }
 
-    .month-day-cell.is-current {
-      box-shadow: inset 0 0 0 1px var(--antique-gold);
-    }
-
-    .month-day-cell.is-current.is-sunday {
-      box-shadow: inset 0 0 0 1.5px var(--royal-navy);
+    /* 当前到达/选中的那一天：变成翠玉绿色（优先级高于周日色） */
+    .month-day-cell.is-current,
+    .month-day-cell.is-filled.is-current,
+    .month-day-cell.is-current.is-sunday,
+    .month-day-cell.is-filled.is-current.is-sunday {
+      background: linear-gradient(180deg, #3ea36a, #257548);
+      box-shadow: inset 0 0 0 1px rgba(27, 94, 56, 0.35);
     }
 
     .month-day-nums,
@@ -433,24 +434,19 @@
       color: #df8a3c;
     }
 
+    /* 当前日：序号与星期字变成绿色加粗 */
     .month-day-nums span.is-current,
-    .month-weekdays span.is-current {
-      color: var(--royal-navy);
-      font-weight: bold;
-    }
-
+    .month-weekdays span.is-current,
     .month-day-nums span.is-current.is-sunday,
     .month-weekdays span.is-current.is-sunday {
-      color: #c2590a;
+      color: #216e43;
+      font-weight: 700;
     }
 
-    .month-day-nums span.is-current {
-      background: rgba(27, 54, 93, 0.12);
-      border-radius: 2px;
-    }
-
+    .month-day-nums span.is-current,
     .month-day-nums span.is-current.is-sunday {
-      background: rgba(220, 150, 53, 0.25);
+      background: rgba(45, 138, 86, 0.16);
+      border-radius: 2px;
     }
 
     /* 在“日”与上方序号右侧加竖向虚线 */
@@ -468,36 +464,6 @@
     .month-weekdays span.is-week-end::after {
       top: -2px;
       bottom: 0;
-    }
-
-    .month-xun-labels {
-      display: grid;
-      padding: 0 3px;
-      margin-top: 1px;
-    }
-
-    .month-xun-labels span {
-      text-align: center;
-      font-size: 11px;
-      color: var(--ink-light);
-      line-height: 1.25;
-      border-top: 1px solid rgba(203, 185, 148, 0.65);
-      padding-top: 2px;
-      letter-spacing: 1px;
-    }
-
-    .month-xun-labels span + span {
-      border-left: 1px dashed rgba(203, 185, 148, 0.85);
-    }
-
-    .month-xun-labels span.is-passed {
-      color: var(--ink-sub);
-    }
-
-    .month-xun-labels span.is-current {
-      color: var(--royal-navy);
-      font-weight: bold;
-      border-top-color: var(--royal-navy);
     }
 
     /* 年份 12 格进度条 + 月份 + 季节 */
@@ -1027,9 +993,6 @@
       .month-weekdays span.is-week-end::after {
         right: -1px;
       }
-      .month-xun-labels {
-        padding: 0 2.5px;
-      }
       .year-grid-track,
       .year-grid-labels,
       .year-season-labels {
@@ -1039,7 +1002,6 @@
         height: 12px;
         padding: 1.5px;
       }
-      .month-xun-labels span,
       .year-grid-labels span,
       .year-season-labels span {
         font-size: 10px;
@@ -1260,7 +1222,7 @@
         const remainMonthDays = daysInMonth - d;
         const monthPct = (d / daysInMonth) * 100;
 
-        // 月份进度条 + 每日数字 + 对应星期 + 上中下旬
+        // 月份进度条 + 每日数字 + 对应星期
         let monthCellsHtml = '';
         let monthNumsHtml = '';
         let monthWeekdaysHtml = '';
@@ -1291,13 +1253,6 @@
           monthNumsHtml += `<span class="${labelCls}">${dayIdx}</span>`;
           monthWeekdaysHtml += `<span class="${labelCls}">${weekdayChar}</span>`;
         }
-
-        const lateDays = daysInMonth - 20;
-        const xunStatus = [
-          d <= 10 ? 'is-current' : 'is-passed',
-          d > 10 && d <= 20 ? 'is-current' : (d > 20 ? 'is-passed' : ''),
-          d > 20 ? 'is-current' : ''
-        ];
 
         // 年份 12 格（每格一月）+ 月份数字 + 季节
         const isLeap = (y % 4 === 0 && y % 100 !== 0) || (y % 400 === 0);
@@ -1344,11 +1299,6 @@
               </div>
               <div class="month-weekdays" style="grid-template-columns: repeat(${daysInMonth}, 1fr);">
                 ${monthWeekdaysHtml}
-              </div>
-              <div class="month-xun-labels" style="grid-template-columns: 10fr 10fr ${lateDays}fr;">
-                <span class="${xunStatus[0]}">上旬</span>
-                <span class="${xunStatus[1]}">中旬</span>
-                <span class="${xunStatus[2]}">下旬</span>
               </div>
             </div>
             <div class="progress-item">
