@@ -474,7 +474,15 @@
       bottom: 0;
     }
 
-    /* 年份 12 格进度条：恢复原粗细（13px）+ 无色底 + 暖阳金黄渐变 */
+    /* 年份 12 格进度条：退后为低饱和浅亚麻沙色，不再抢占月份进度条视觉焦点 */
+    #yearProgressPanel .progress-title {
+      color: var(--ink-sub);
+    }
+
+    #yearProgressPanel .progress-meta strong {
+      color: var(--ink-main);
+    }
+
     .year-grid-track {
       display: grid;
       grid-template-columns: repeat(12, 1fr);
@@ -482,21 +490,21 @@
       width: 100%;
       height: 13px;
       background: transparent;
-      border: 1px solid var(--gold-border);
+      border: 1px solid rgba(210, 203, 183, 0.85);
       border-radius: 3px;
       padding: 2px;
     }
 
     .year-grid-cell {
       height: 100%;
-      background: rgba(180, 175, 160, 0.16);
+      background: rgba(180, 175, 160, 0.12);
       border-radius: 1.5px;
       overflow: hidden;
     }
 
     .year-grid-fill {
       height: 100%;
-      background: linear-gradient(90deg, #f3c45f, #e88b38);
+      background: linear-gradient(90deg, #e5decb, #cfc3a6);
       transition: width 0.35s ease;
     }
 
@@ -520,7 +528,7 @@
     }
 
     .year-grid-labels span.is-current {
-      color: var(--warm-amber);
+      color: #7c6d4f;
       font-weight: bold;
     }
 
@@ -550,23 +558,23 @@
     }
 
     .year-season-labels span.season-spring.is-current {
-      color: var(--jade-green);
-      border-top-color: var(--jade-green);
+      color: #55886c;
+      border-top-color: #74a489;
     }
 
     .year-season-labels span.season-summer.is-current {
-      color: var(--warm-amber);
-      border-top-color: var(--warm-amber);
+      color: #9c724b;
+      border-top-color: #b88f68;
     }
 
     .year-season-labels span.season-autumn.is-current {
-      color: #c88924;
-      border-top-color: #d9a441;
+      color: #85734d;
+      border-top-color: #aa966d;
     }
 
     .year-season-labels span.season-winter.is-current {
-      color: var(--sky-cyan);
-      border-top-color: var(--sky-cyan);
+      color: #5c8190;
+      border-top-color: #7c9fad;
     }
 
     .cal-controls {
