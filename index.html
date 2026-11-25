@@ -662,6 +662,10 @@
       color: #e29148;
     }
 
+    .cal-cell.is-statutory-day:not(.today) .cal-solar {
+      color: #c93b2b;
+    }
+
     .cal-lunar {
       font-size: 10px;
       color: var(--ink-sub);
@@ -678,8 +682,13 @@
     }
 
     .cal-cell:not(.today) .cal-lunar.is-statutory {
-      color: #c93b2b;
+      background: #c93b2b;
+      color: #fcfbf7;
       font-weight: bold;
+      border-radius: 2px;
+      padding: 1px 4px;
+      width: 88%;
+      line-height: 1.25;
     }
 
     .cal-cell:not(.today) .cal-lunar.is-highlight,
@@ -1231,6 +1240,10 @@
       .cal-lunar {
         font-size: 9.5px;
         margin-top: 1px;
+      }
+      .cal-cell:not(.today) .cal-lunar.is-statutory {
+        padding: 1px 2px;
+        width: 94%;
       }
       .weather-now {
         min-height: 120px;
@@ -1903,7 +1916,8 @@
             (isOther ? ' other-month' : '') +
             (isToday ? ' today' : '') +
             (isSelected && !isToday ? ' selected' : '') +
-            (isWeekend ? ' is-weekend' : '');
+            (isWeekend ? ' is-weekend' : '') +
+            (lunarClass === 'is-statutory' ? ' is-statutory-day' : '');
 
           cell.innerHTML = `
             <span class="cal-solar">${cellD}</span>
