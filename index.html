@@ -75,7 +75,7 @@
       padding-top: 2px;
       padding-bottom: 5px;
       border-bottom: 3px double var(--gold-border);
-      margin-bottom: 8px;
+      margin-bottom: 9px;
     }
 
     .brand {
@@ -125,7 +125,7 @@
       justify-content: space-between;
       align-items: center;
       gap: 8px;
-      margin-bottom: 10px;
+      margin-bottom: 11px;
       background: var(--card-inner);
       padding: 8px 12px;
       border: 1px solid var(--gold-border);
@@ -278,17 +278,20 @@
       align-items: start;
     }
 
+    .main-col-left,
+    .main-col-right {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 0;
+    }
+
     .panel {
       border: 1px solid var(--gold-border);
       background: var(--card-bg);
       padding: 11px 14px;
       border-radius: 3px;
-      margin-bottom: 10px;
       box-shadow: 0 2px 10px rgba(38, 111, 136, 0.03);
-    }
-
-    .panel:last-child {
-      margin-bottom: 0;
     }
 
     .panel-title {
@@ -459,9 +462,9 @@
       bottom: 0;
     }
 
-    /* 年份 12 格进度条：年初满格灰色，随时间流逝从左向右缩短 */
+    /* 年份 12 格进度条：年初满格橙色，随时间流逝从左向右缩短 */
     #yearProgressPanel .progress-title {
-      color: var(--ink-sub);
+      color: #c96c1f;
     }
 
     .year-grid-track {
@@ -471,7 +474,7 @@
       width: 100%;
       height: 18px;
       background: transparent;
-      border: 1px solid rgba(210, 203, 183, 0.85);
+      border: 1px solid rgba(210, 203, 183, 0.9);
       border-radius: 3px;
       padding: 2px;
     }
@@ -479,7 +482,7 @@
     .year-grid-cell {
       height: 100%;
       background: transparent;
-      border: 1px solid rgba(155, 168, 174, 0.25);
+      border: 1px solid rgba(214, 118, 36, 0.22);
       border-radius: 1.5px;
       overflow: hidden;
       display: flex;
@@ -488,7 +491,7 @@
 
     .year-grid-fill {
       height: 100%;
-      background: linear-gradient(90deg, #dde2e5, #c3ccd1);
+      background: linear-gradient(90deg, #f6ba6f, #e0822b);
       transition: width 0.35s ease;
     }
 
@@ -512,7 +515,7 @@
     }
 
     .year-grid-labels span.is-current {
-      color: var(--ink-main);
+      color: #c96c1f;
       font-weight: bold;
     }
 
@@ -552,8 +555,8 @@
     }
 
     .year-season-labels span.season-autumn.is-current {
-      color: #85734d;
-      border-top-color: #aa966d;
+      color: #c96c1f;
+      border-top-color: #e0822b;
     }
 
     .year-season-labels span.season-winter.is-current {
@@ -841,7 +844,7 @@
       grid-template-columns: 92px 1fr 56px 96px;
       align-items: center;
       gap: 8px;
-      padding: 10px 6px;
+      padding: 7px 6px;
       border-bottom: 1px solid rgba(210, 203, 183, 0.65);
       font-size: 14px;
     }
@@ -916,6 +919,15 @@
         grid-template-columns: 1fr;
         gap: 9px;
       }
+      .main-col-left,
+      .main-col-right {
+        display: contents;
+      }
+      .panel-today-weather { order: 1; }
+      .panel-calendar      { order: 2; }
+      .panel-month-prog    { order: 3; }
+      .panel-year-prog     { order: 4; }
+      .panel-forecast      { order: 5; }
       .scroll-inner {
         padding: 4px 10px 12px;
       }
@@ -960,7 +972,6 @@
       }
       .panel {
         padding: 8px 7px;
-        margin-bottom: 7px;
       }
       .panel-title {
         font-size: 15px;
@@ -1078,7 +1089,7 @@
       .forecast-row {
         grid-template-columns: 78px 1fr 44px 82px;
         font-size: 13px;
-        padding: 8px 4px;
+        padding: 6px 4px;
       }
       .footer {
         margin-top: 10px;
@@ -1130,16 +1141,8 @@
         </section>
 
         <main class="main-grid">
-          <div>
-            <section class="panel" id="yearProgressPanel">
-              <div class="status-msg">正在推演年份进度...</div>
-            </section>
-
-            <section class="panel" id="monthProgressPanel">
-              <div class="status-msg">正在推演月份进度...</div>
-            </section>
-
-            <section class="panel">
+          <div class="main-col-left">
+            <section class="panel panel-calendar">
               <div class="panel-title">
                 <span class="panel-title-deco" id="calMonthTitle">月历</span>
                 <div class="cal-controls">
@@ -1160,10 +1163,18 @@
               </div>
               <div class="cal-days" id="calDays"></div>
             </section>
+
+            <section class="panel panel-month-prog" id="monthProgressPanel">
+              <div class="status-msg">正在推演月份进度...</div>
+            </section>
+
+            <section class="panel panel-year-prog" id="yearProgressPanel">
+              <div class="status-msg">正在推演年份进度...</div>
+            </section>
           </div>
 
-          <div>
-            <section class="panel">
+          <div class="main-col-right">
+            <section class="panel panel-today-weather">
               <div class="panel-title">
                 <span class="panel-title-deco">气象 · 今日实况</span>
                 <button class="cal-btn" id="refreshWeatherBtn">刷新</button>
@@ -1173,7 +1184,7 @@
               </div>
             </section>
 
-            <section class="panel">
+            <section class="panel panel-forecast">
               <div class="panel-title">
                 <span class="panel-title-deco">未来七日晴雨</span>
                 <span style="font-size: 12px; font-weight: normal; color: var(--ink-light); letter-spacing: 0;">明日至第七日</span>
