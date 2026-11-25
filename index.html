@@ -678,11 +678,11 @@
       font-weight: bold;
     }
 
-    /* 蓝色实况框：固定最小高度，加载与刷新不跳动 */
+   /* 实况框：无色背景，固定最小高度，加载与刷新不跳动 */
     .weather-now {
       min-height: 138px;
       padding: 10px 12px;
-      background: linear-gradient(135deg, var(--sky-soft), var(--card-inner));
+      background: transparent;
       border: 1px solid rgba(61, 152, 181, 0.3);
       border-radius: 3px;
       display: flex;
@@ -793,16 +793,15 @@
       min-width: 0;
     }
 
-    .day-mini-card.is-muted {
+.day-mini-card.is-muted {
       opacity: 0.52;
-      background: rgba(252, 251, 247, 0.42);
+      background: transparent;
       border: 1px solid rgba(61, 152, 181, 0.14);
     }
 
     .day-mini-card.is-today {
-      background: rgba(252, 251, 247, 0.88);
-      border: 1px solid rgba(38, 111, 136, 0.35);
-      box-shadow: 0 1px 3px rgba(38, 111, 136, 0.06);
+      background: transparent;
+      border: 1px solid #000;
     }
 
     .day-mini-label {
