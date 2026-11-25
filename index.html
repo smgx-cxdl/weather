@@ -380,8 +380,21 @@
       background: linear-gradient(180deg, #2b4c7e, var(--royal-navy));
     }
 
+    /* 周日上方格子：已过去为浅暖金橙色，未到为极浅暖橙色 */
+    .month-day-cell.is-sunday {
+      background: rgba(220, 150, 53, 0.24);
+    }
+
+    .month-day-cell.is-filled.is-sunday {
+      background: linear-gradient(180deg, #f0bc5e, #dc9635);
+    }
+
     .month-day-cell.is-current {
       box-shadow: inset 0 0 0 1px var(--antique-gold);
+    }
+
+    .month-day-cell.is-current.is-sunday {
+      box-shadow: inset 0 0 0 1.5px var(--royal-navy);
     }
 
     .month-day-nums,
@@ -408,9 +421,16 @@
       color: var(--ink-light);
     }
 
-    .month-day-nums span.is-weekend:not(.is-current),
-    .month-weekdays span.is-weekend:not(.is-current) {
-      color: var(--gold-dark);
+    /* 周日：序号与“日”字加粗并改为亮琥珀橙色 */
+    .month-day-nums span.is-sunday,
+    .month-weekdays span.is-sunday {
+      color: #d06814;
+      font-weight: 700;
+    }
+
+    .month-day-nums span.is-sunday.is-future,
+    .month-weekdays span.is-sunday.is-future {
+      color: #df8a3c;
     }
 
     .month-day-nums span.is-current,
@@ -419,20 +439,35 @@
       font-weight: bold;
     }
 
+    .month-day-nums span.is-current.is-sunday,
+    .month-weekdays span.is-current.is-sunday {
+      color: #c2590a;
+    }
+
     .month-day-nums span.is-current {
       background: rgba(27, 54, 93, 0.12);
       border-radius: 2px;
     }
 
-    .month-day-nums span.is-week-start::before,
-    .month-weekdays span.is-week-start::before {
+    .month-day-nums span.is-current.is-sunday {
+      background: rgba(220, 150, 53, 0.25);
+    }
+
+    /* 在“日”与上方序号右侧加竖向虚线 */
+    .month-day-nums span.is-week-end::after,
+    .month-weekdays span.is-week-end::after {
       content: "";
       position: absolute;
-      left: -1.5px;
-      top: 1px;
-      bottom: 1px;
-      border-left: 1px dashed rgba(27, 54, 93, 0.28);
+      right: -1.5px;
+      top: 0;
+      bottom: -3px;
+      border-right: 1px dashed rgba(208, 104, 20, 0.45);
       pointer-events: none;
+    }
+
+    .month-weekdays span.is-week-end::after {
+      top: -2px;
+      bottom: 0;
     }
 
     .month-xun-labels {
@@ -988,9 +1023,9 @@
         font-size: 8px;
         letter-spacing: -0.5px;
       }
-      .month-day-nums span.is-week-start::before,
-      .month-weekdays span.is-week-start::before {
-        left: -1px;
+      .month-day-nums span.is-week-end::after,
+      .month-weekdays span.is-week-end::after {
+        right: -1px;
       }
       .month-xun-labels {
         padding: 0 2.5px;
@@ -1235,20 +1270,21 @@
           const weekdayChar = WEEKDAY_CHARS[dayOfWeek];
           const isFilled = dayIdx <= d;
           const isCurrent = dayIdx === d;
-          const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-          const isWeekStart = dayOfWeek === 0 && dayIdx > 1;
+          const isSunday = dayOfWeek === 0;
+          const isWeekEnd = isSunday && dayIdx < daysInMonth;
 
           const cellCls = [
             'month-day-cell',
             isFilled ? 'is-filled' : '',
-            isCurrent ? 'is-current' : ''
+            isCurrent ? 'is-current' : '',
+            isSunday ? 'is-sunday' : ''
           ].filter(Boolean).join(' ');
 
           const labelCls = [
             !isFilled ? 'is-future' : '',
             isCurrent ? 'is-current' : '',
-            isWeekend ? 'is-weekend' : '',
-            isWeekStart ? 'is-week-start' : ''
+            isSunday ? 'is-sunday' : '',
+            isWeekEnd ? 'is-week-end' : ''
           ].filter(Boolean).join(' ');
 
           monthCellsHtml += `<div class="${cellCls}" title="${m}月${dayIdx}日 星期${weekdayChar}"></div>`;
