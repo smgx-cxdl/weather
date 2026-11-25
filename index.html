@@ -322,7 +322,7 @@
 
     .progress-header {
       display: flex;
-      justify-content: flex-start;
+      justify-content: space-between;
       align-items: baseline;
       gap: 8px;
       font-size: 14px;
@@ -332,6 +332,12 @@
       font-weight: bold;
       color: var(--ocean-teal);
       letter-spacing: 0.8px;
+    }
+
+    .progress-meta {
+      color: var(--ink-sub);
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
     }
 
     /* 进度条上方：圆形周日标识 */
@@ -358,12 +364,12 @@
       box-shadow: 0 1px 2px rgba(230, 130, 40, 0.32);
     }
 
-    .month-sunday-cap.is-sunday.is-passed {
+    .month-sunday-cap.is-sunday.is-future {
       background: radial-gradient(circle at 35% 35%, #fbe0a3, #f0ac6b);
       opacity: 0.72;
     }
 
-    /* 月份每日格子进度条：已过无色透明 + 今日翠绿 + 剩余满格青色 */
+    /* 月份每日格子进度条：已过青色 + 今日翠绿 + 未过透明空白 */
     .month-days-track {
       display: grid;
       gap: 2px;
@@ -383,12 +389,13 @@
       transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
     }
 
-    .month-day-cell.is-remaining {
+    .month-day-cell.is-filled {
       background: linear-gradient(180deg, #8fd4e4, #4ca7c0);
       border-color: rgba(38, 111, 136, 0.45);
     }
 
-    .month-day-cell.is-current {
+    .month-day-cell.is-current,
+    .month-day-cell.is-filled.is-current {
       position: relative;
       z-index: 2;
       background: linear-gradient(180deg, #43c47e, #239055);
@@ -416,8 +423,8 @@
       user-select: none;
     }
 
-    .month-day-nums span.is-passed,
-    .month-weekdays span.is-passed {
+    .month-day-nums span.is-future,
+    .month-weekdays span.is-future {
       color: var(--ink-light);
     }
 
@@ -428,8 +435,8 @@
       font-weight: 700;
     }
 
-    .month-day-nums span.is-sunday.is-passed,
-    .month-weekdays span.is-sunday.is-passed {
+    .month-day-nums span.is-sunday.is-future,
+    .month-weekdays span.is-sunday.is-future {
       color: #e29148;
     }
 
@@ -456,7 +463,7 @@
       bottom: 0;
     }
 
-    /* 年份 12 格进度条：年初满格橙色，随时间流逝从左向右缩短 */
+    /* 年份 12 格进度条：已过从左向右填充橙色，未过留空 */
     #yearProgressPanel .progress-title {
       color: #c96c1f;
     }
@@ -480,7 +487,7 @@
       border-radius: 1.5px;
       overflow: hidden;
       display: flex;
-      justify-content: flex-end;
+      justify-content: flex-start;
     }
 
     .year-grid-fill {
@@ -499,13 +506,13 @@
     .year-grid-labels span {
       text-align: center;
       font-size: 11px;
-      color: var(--ink-sub);
+      color: var(--ink-light);
       line-height: 1.1;
       font-variant-numeric: tabular-nums;
     }
 
     .year-grid-labels span.is-passed {
-      color: var(--ink-light);
+      color: var(--ink-sub);
     }
 
     .year-grid-labels span.is-current {
@@ -1442,7 +1449,7 @@
       function buildMonthProgressHtml(y, m, d) {
         const daysInMonth = new Date(y, m, 0).getDate();
         const remainMonthDays = daysInMonth - d;
-        const remainPct = (remainMonthDays / daysInMonth) * 100;
+        const monthPct = (d / daysInMonth) * 100;
 
         let sundayCapsHtml = '';
         let monthCellsHtml = '';
@@ -1452,26 +1459,26 @@
         for (let dayIdx = 1; dayIdx <= daysInMonth; dayIdx++) {
           const dayOfWeek = new Date(y, m - 1, dayIdx).getDay();
           const weekdayChar = WEEKDAY_CHARS[dayOfWeek];
-          const isPassed = dayIdx < d;
+          const isFilled = dayIdx < d;
           const isCurrent = dayIdx === d;
-          const isRemaining = dayIdx > d;
+          const isFuture = dayIdx > d;
           const isSunday = dayOfWeek === 0;
           const isWeekEnd = isSunday && dayIdx < daysInMonth;
 
           const capCls = [
             'month-sunday-cap',
             isSunday ? 'is-sunday' : '',
-            isPassed ? 'is-passed' : ''
+            isFuture ? 'is-future' : ''
           ].filter(Boolean).join(' ');
 
           const cellCls = [
             'month-day-cell',
-            isRemaining ? 'is-remaining' : '',
+            isFilled ? 'is-filled' : '',
             isCurrent ? 'is-current' : ''
           ].filter(Boolean).join(' ');
 
           const labelCls = [
-            isPassed ? 'is-passed' : '',
+            isFuture ? 'is-future' : '',
             isCurrent ? 'is-current' : '',
             isSunday ? 'is-sunday' : '',
             isWeekEnd ? 'is-week-end' : ''
@@ -1487,11 +1494,12 @@
           <div class="progress-item">
             <div class="progress-header">
               <span class="progress-title">${m}月</span>
+              <span class="progress-meta">剩 ${remainMonthDays} 天</span>
             </div>
             <div class="month-sunday-row" style="grid-template-columns: repeat(${daysInMonth}, 1fr);" aria-hidden="true">
               ${sundayCapsHtml}
             </div>
-            <div class="month-days-track" style="grid-template-columns: repeat(${daysInMonth}, 1fr);" role="progressbar" aria-valuenow="${remainPct.toFixed(1)}" aria-valuemin="0" aria-valuemax="100">
+            <div class="month-days-track" style="grid-template-columns: repeat(${daysInMonth}, 1fr);" role="progressbar" aria-valuenow="${monthPct.toFixed(1)}" aria-valuemin="0" aria-valuemax="100">
               ${monthCellsHtml}
             </div>
             <div class="month-day-nums" style="grid-template-columns: repeat(${daysInMonth}, 1fr);">
@@ -1511,19 +1519,19 @@
         const startOfYear = new Date(y, 0, 1);
         const dayOfYear = Math.floor((new Date(y, m - 1, d) - startOfYear) / 86400000) + 1;
         const remainYearDays = daysInYear - dayOfYear;
-        const remainYearPct = (remainYearDays / daysInYear) * 100;
+        const yearPct = (dayOfYear / daysInYear) * 100;
 
         let yearCellsHtml = '';
         let yearLabelsHtml = '';
         for (let monthIdx = 1; monthIdx <= 12; monthIdx++) {
-          let cellRemainPct = 0;
-          if (monthIdx > m) {
-            cellRemainPct = 100;
+          let cellPct = 0;
+          if (monthIdx < m) {
+            cellPct = 100;
           } else if (monthIdx === m) {
-            cellRemainPct = ((daysInMonth - d) / daysInMonth) * 100;
+            cellPct = (d / daysInMonth) * 100;
           }
           const labelClass = monthIdx === m ? 'is-current' : (monthIdx < m ? 'is-passed' : '');
-          yearCellsHtml += `<div class="year-grid-cell" title="${monthIdx}月"><div class="year-grid-fill" style="width: ${cellRemainPct.toFixed(2)}%;"></div></div>`;
+          yearCellsHtml += `<div class="year-grid-cell" title="${monthIdx}月"><div class="year-grid-fill" style="width: ${cellPct.toFixed(2)}%;"></div></div>`;
           yearLabelsHtml += `<span class="${labelClass}">${monthIdx}</span>`;
         }
 
@@ -1539,8 +1547,9 @@
           <div class="progress-item">
             <div class="progress-header">
               <span class="progress-title">${y}年</span>
+              <span class="progress-meta">剩 ${remainYearDays} 天</span>
             </div>
-            <div class="year-grid-track" role="progressbar" aria-valuenow="${remainYearPct.toFixed(1)}" aria-valuemin="0" aria-valuemax="100">
+            <div class="year-grid-track" role="progressbar" aria-valuenow="${yearPct.toFixed(1)}" aria-valuemin="0" aria-valuemax="100">
               ${yearCellsHtml}
             </div>
             <div class="year-grid-labels">
