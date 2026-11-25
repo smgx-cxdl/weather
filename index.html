@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>岁时历 · 观天晴雨录</title>
+  <title>岁时历</title>
   <style>
     :root {
       --paper-bg: #eef3f1;
@@ -23,7 +23,6 @@
       --gold-dark: #b97524;
       --gold-border: #d2cbb7;
       --dark-border: #8fa3ad;
-      --cinnabar: #c93b2b;
       --shadow: 0 10px 30px rgba(38, 111, 136, 0.09);
     }
 
@@ -321,10 +320,6 @@
       margin-right: 4px;
     }
 
-    .progress-panel {
-      background: var(--card-inner);
-    }
-
     .progress-item {
       display: flex;
       flex-direction: column;
@@ -356,7 +351,7 @@
       margin-left: 6px;
     }
 
-    /* 进度条上方：立起来的小四边形周日标识 */
+    /* 进度条上方：圆形周日标识 */
     .month-sunday-row {
       display: grid;
       gap: 2px;
@@ -365,33 +360,33 @@
       margin-top: 2px;
       margin-bottom: 1px;
       justify-items: center;
-      align-items: end;
+      align-items: center;
     }
 
     .month-sunday-cap {
-      width: 5px;
-      height: 9px;
-      border-radius: 1.5px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
       background: transparent;
     }
 
     .month-sunday-cap.is-sunday {
-      background: linear-gradient(180deg, #f7b64c, #e57e25);
-      box-shadow: 0 1px 2px rgba(229, 126, 37, 0.3);
+      background: radial-gradient(circle at 35% 35%, #f9c663, #e68228);
+      box-shadow: 0 1px 2px rgba(230, 130, 40, 0.32);
     }
 
     .month-sunday-cap.is-sunday.is-future {
-      background: linear-gradient(180deg, #fad082, #f0a45d);
-      opacity: 0.82;
+      background: radial-gradient(circle at 35% 35%, #fbe0a3, #f0ac6b);
+      opacity: 0.85;
     }
 
-    /* 月份每日格子进度条：晴空天青蓝 + 当前日朱砂红（冷暖高对比） */
+    /* 月份每日格子进度条：无色底 + 淡浅蓝色已过 + 翠绿色今日 */
     .month-days-track {
       display: grid;
       gap: 2px;
       width: 100%;
       height: 15px;
-      background: rgba(252, 251, 247, 0.9);
+      background: transparent;
       border: 1px solid var(--gold-border);
       border-radius: 3px;
       padding: 2px;
@@ -399,23 +394,25 @@
 
     .month-day-cell {
       height: 100%;
-      background: rgba(61, 152, 181, 0.14);
+      background: transparent;
+      border: 1px solid rgba(155, 168, 174, 0.32);
       border-radius: 1.5px;
-      transition: background 0.25s ease, transform 0.25s ease;
+      transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
     }
 
     .month-day-cell.is-filled {
-      background: linear-gradient(180deg, #6bc3d8, #3d98b5);
+      background: linear-gradient(180deg, #cbe8f4, #9fd3e8);
+      border-color: rgba(114, 178, 204, 0.55);
     }
 
-    /* 当前日改用朱砂珊瑚红并微幅凸起，彻底区分于青蓝色已过天数 */
     .month-day-cell.is-current,
     .month-day-cell.is-filled.is-current {
       position: relative;
       z-index: 2;
-      background: linear-gradient(180deg, #ea6654, #c93b2b);
-      transform: scaleY(1.22);
-      box-shadow: 0 0 0 1.5px #fcfbf7, 0 2px 5px rgba(201, 59, 43, 0.38);
+      background: linear-gradient(180deg, #43c47e, #239055);
+      border-color: #1d7a47;
+      transform: scaleY(1.18);
+      box-shadow: 0 0 0 1px #fcfbf7, 0 1px 4px rgba(35, 144, 85, 0.32);
     }
 
     .month-day-nums,
@@ -442,7 +439,7 @@
       color: var(--ink-light);
     }
 
-    /* 周日保持暖琥珀橘加粗；非周日的当前日用朱砂红加粗标注 */
+    /* 周日保持暖琥珀橘加粗；非周日的当前日用翠绿色加粗标注 */
     .month-day-nums span.is-sunday,
     .month-weekdays span.is-sunday {
       color: #d66f19;
@@ -456,7 +453,7 @@
 
     .month-day-nums span.is-current:not(.is-sunday),
     .month-weekdays span.is-current:not(.is-sunday) {
-      color: var(--cinnabar);
+      color: var(--jade-green);
       font-weight: 700;
     }
 
@@ -477,23 +474,23 @@
       bottom: 0;
     }
 
-    /* 年份 12 格进度条：暖阳金黄 -> 杏橘渐变 + 四季柔和点缀 */
+    /* 年份 12 格进度条：更细巧的无色底 + 暖阳金黄渐变 */
     .year-grid-track {
       display: grid;
       grid-template-columns: repeat(12, 1fr);
       gap: 3px;
       width: 100%;
-      height: 13px;
-      background: rgba(252, 251, 247, 0.9);
+      height: 8px;
+      background: transparent;
       border: 1px solid var(--gold-border);
       border-radius: 3px;
-      padding: 2px;
+      padding: 1px;
     }
 
     .year-grid-cell {
       height: 100%;
-      background: rgba(235, 162, 68, 0.16);
-      border-radius: 1.5px;
+      background: rgba(180, 175, 160, 0.16);
+      border-radius: 1px;
       overflow: hidden;
     }
 
@@ -962,8 +959,8 @@
         padding: 0 2.5px;
       }
       .month-sunday-cap {
-        width: 4px;
-        height: 7px;
+        width: 5px;
+        height: 5px;
       }
       .month-days-track {
         gap: 1px;
@@ -990,8 +987,8 @@
         gap: 2px;
       }
       .year-grid-track {
-        height: 12px;
-        padding: 1.5px;
+        height: 7px;
+        padding: 1px;
       }
       .year-grid-labels span,
       .year-season-labels span {
@@ -1064,11 +1061,11 @@
 
         <main class="main-grid">
           <div>
-            <section class="panel progress-panel" id="monthProgressPanel">
+            <section class="panel" id="monthProgressPanel">
               <div class="status-msg">正在推演月份进度...</div>
             </section>
 
-            <section class="panel progress-panel" id="yearProgressPanel">
+            <section class="panel" id="yearProgressPanel">
               <div class="status-msg">正在推演年份进度...</div>
             </section>
 
