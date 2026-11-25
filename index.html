@@ -852,22 +852,72 @@
     }
 
     @media (max-width: 520px) {
+      body {
+        padding: 10px 6px 28px;
+      }
+      .scroll-frame {
+        padding: 4px;
+      }
+      .scroll-inner {
+        padding: 14px 10px;
+      }
+      .corner-ornament {
+        width: 12px;
+        height: 12px;
+      }
+      .panel {
+        padding: 12px 10px;
+        margin-bottom: 14px;
+      }
+      .panel-title {
+        font-size: 15px;
+        padding-bottom: 8px;
+        margin-bottom: 12px;
+      }
+      .progress-panel-box {
+        padding: 11px 10px;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
       .progress-header {
-        flex-direction: column;
-        gap: 2px;
+        flex-wrap: wrap;
+        gap: 2px 8px;
+      }
+      .month-grid-track,
+      .month-grid-labels {
+        gap: 3px;
       }
       .month-grid-labels span {
         font-size: 10px;
+        letter-spacing: -0.2px;
       }
       .year-grid-track,
       .year-grid-labels {
         gap: 2px;
       }
+      .month-grid-track,
+      .year-grid-track {
+        height: 12px;
+        padding: 1.5px;
+      }
       .year-grid-labels span {
         font-size: 10px;
       }
+      /* 手机端节气框并排且紧凑 */
       .jieqi-box {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .jieqi-col {
+        padding: 8px 10px;
+      }
+      .jieqi-label,
+      .jieqi-meta {
+        font-size: 11px;
+      }
+      .jieqi-name {
+        font-size: 15px;
+        margin: 1px 0;
       }
       .weather-metrics {
         grid-template-columns: repeat(2, 1fr);
