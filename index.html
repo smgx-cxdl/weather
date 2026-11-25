@@ -322,22 +322,16 @@
 
     .progress-header {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: baseline;
       gap: 8px;
-      font-size: 13px;
+      font-size: 14px;
     }
 
     .progress-title {
       font-weight: bold;
       color: var(--ocean-teal);
       letter-spacing: 0.8px;
-    }
-
-    .progress-meta {
-      color: var(--ink-sub);
-      font-size: 12px;
-      font-variant-numeric: tabular-nums;
     }
 
     /* 进度条上方：圆形周日标识 */
@@ -369,7 +363,7 @@
       opacity: 0.72;
     }
 
-    /* 月份每日格子进度条：已过无色透明 + 今日翠绿 + 剩余满格灰色 */
+    /* 月份每日格子进度条：已过无色透明 + 今日翠绿 + 剩余满格青色 */
     .month-days-track {
       display: grid;
       gap: 2px;
@@ -390,8 +384,8 @@
     }
 
     .month-day-cell.is-remaining {
-      background: linear-gradient(180deg, #dde2e5, #c3ccd1);
-      border-color: rgba(143, 163, 173, 0.6);
+      background: linear-gradient(180deg, #8fd4e4, #4ca7c0);
+      border-color: rgba(38, 111, 136, 0.45);
     }
 
     .month-day-cell.is-current {
@@ -675,7 +669,7 @@
       font-weight: bold;
     }
 
-    /* 蓝色实况框（内含当前温度 + 昨今明后四日） */
+    /* 蓝色实况框（内含城市 + 体感湿度日出日落 + 温度 + 四日对比） */
     .weather-now {
       padding: 10px 12px;
       background: linear-gradient(135deg, var(--sky-soft), var(--card-inner));
@@ -688,28 +682,62 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+    }
+
+    .weather-city-block {
+      min-width: 0;
+      flex-shrink: 1;
     }
 
     .weather-city-name {
       font-size: 18px;
       font-weight: bold;
       color: var(--ocean-teal);
-      line-height: 1.25;
+      line-height: 1.2;
     }
 
     .weather-city-sub {
       font-size: 11px;
       color: var(--ink-sub);
       margin-top: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* 挤进蓝色框中间的体感、湿度、日出日落（缩小字体） */
+    .weather-mid-metrics {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1px;
+      padding: 2px 8px;
+      border-left: 1px dashed rgba(61, 152, 181, 0.28);
+      border-right: 1px dashed rgba(61, 152, 181, 0.28);
+      font-size: 11px;
+      line-height: 1.28;
+      color: var(--ink-sub);
+      text-align: center;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .weather-mid-metrics strong {
+      color: var(--ink-main);
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      margin-left: 2px;
     }
 
     .weather-temp-wrap {
       text-align: right;
+      flex-shrink: 0;
     }
 
     .weather-temp-main {
-      font-size: 32px;
+      font-size: 30px;
       font-weight: bold;
       color: var(--ocean-teal);
       line-height: 1.05;
@@ -717,7 +745,7 @@
     }
 
     .weather-desc {
-      font-size: 13px;
+      font-size: 12.5px;
       color: var(--ink-main);
       margin-top: 1px;
     }
@@ -800,38 +828,147 @@
       font-weight: normal;
     }
 
-    .weather-metrics {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1.35fr;
-      gap: 8px;
-    }
-
-    .metric-item {
-      background: var(--card-bg);
+    /* 倒计时独立方框（占据原体感/湿度/日出日落栏位置） */
+    .countdown-box {
       border: 1px solid var(--gold-border);
-      padding: 6px 5px;
-      text-align: center;
+      background: var(--card-inner);
       border-radius: 3px;
-      min-width: 0;
+      padding: 8px 11px;
     }
 
-    .metric-label {
-      font-size: 11px;
-      color: var(--ink-light);
-      white-space: nowrap;
+    .countdown-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      min-height: 28px;
     }
 
-    .metric-val {
+    .countdown-left {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 4px;
       font-size: 13px;
-      font-weight: bold;
-      color: var(--ink-main);
-      margin-top: 1px;
+      color: var(--ink-sub);
       white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .countdown-left strong {
+      font-size: 20px;
+      line-height: 1;
+      color: var(--warm-amber);
       font-variant-numeric: tabular-nums;
     }
 
-    .metric-val.metric-sun {
+    .countdown-left.is-today strong {
+      font-size: 16px;
+      color: var(--jade-green);
+    }
+
+    .countdown-right {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .countdown-note {
+      font-size: 13.5px;
+      color: var(--ink-main);
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .countdown-date-tag {
+      font-size: 11.5px;
+      color: var(--ink-light);
+      font-weight: normal;
+      margin-left: 4px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .countdown-editor {
+      display: none;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--gold-border);
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .countdown-editor.show {
+      display: flex;
+    }
+
+    .countdown-fest-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .fest-pill {
+      padding: 2px 8px;
+      font-size: 11.5px;
+      font-family: inherit;
+      background: var(--card-bg);
+      border: 1px solid var(--gold-border);
+      color: var(--ink-sub);
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .fest-pill:hover {
+      border-color: var(--sky-cyan);
+      color: var(--ocean-teal);
+      background: var(--sky-soft);
+    }
+
+    .fest-pill.active {
+      background: var(--ocean-teal);
+      color: #fcfbf7;
+      border-color: var(--ocean-teal);
+    }
+
+    .countdown-custom-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .countdown-custom-row input[type="text"] {
+      flex: 1;
+      min-width: 120px;
+      padding: 4px 8px;
+      font-size: 12.5px;
+      font-family: inherit;
+      border: 1px solid var(--dark-border);
+      background: var(--card-bg);
+      color: var(--ink-main);
+      border-radius: 3px;
+      outline: none;
+    }
+
+    .countdown-custom-row input[type="date"] {
+      padding: 3px 6px;
       font-size: 12px;
+      font-family: inherit;
+      border: 1px solid var(--dark-border);
+      background: var(--card-bg);
+      color: var(--ink-main);
+      border-radius: 3px;
+      outline: none;
+    }
+
+    .countdown-custom-row input:focus {
+      border-color: var(--sky-cyan);
     }
 
     .forecast-list {
@@ -979,10 +1116,6 @@
         margin-bottom: 6px;
         letter-spacing: 1px;
       }
-      .progress-header {
-        flex-wrap: wrap;
-        gap: 1px 8px;
-      }
       .month-sunday-row {
         gap: 1px;
         padding: 0 2.5px;
@@ -1048,17 +1181,28 @@
         margin-top: 1px;
       }
       .weather-now {
-        padding: 8px 9px;
+        padding: 8px 8px;
         margin-bottom: 6px;
       }
+      .weather-now-top {
+        gap: 5px;
+      }
       .weather-city-name {
-        font-size: 17px;
+        font-size: 16px;
+      }
+      .weather-city-sub {
+        font-size: 10px;
+      }
+      .weather-mid-metrics {
+        padding: 1px 6px;
+        font-size: 10px;
+        line-height: 1.2;
       }
       .weather-temp-main {
-        font-size: 28px;
+        font-size: 25px;
       }
       .weather-desc {
-        font-size: 12px;
+        font-size: 11.5px;
       }
       .weather-four-days {
         gap: 4px;
@@ -1073,18 +1217,17 @@
       .day-mini-temp {
         font-size: 10.5px;
       }
-      .weather-metrics {
-        grid-template-columns: 1fr 1fr 1.45fr;
-        gap: 6px;
+      .countdown-box {
+        padding: 7px 8px;
       }
-      .metric-item {
-        padding: 5px 4px;
+      .countdown-left {
+        font-size: 12px;
       }
-      .metric-val {
+      .countdown-left strong {
+        font-size: 18px;
+      }
+      .countdown-note {
         font-size: 12.5px;
-      }
-      .metric-val.metric-sun {
-        font-size: 11.5px;
       }
       .forecast-row {
         grid-template-columns: 78px 1fr 44px 82px;
@@ -1110,6 +1253,13 @@
       .live-clock strong {
         font-size: 11px;
         margin-left: 3px;
+      }
+      .weather-mid-metrics {
+        font-size: 9.5px;
+        padding: 1px 4px;
+      }
+      .weather-temp-main {
+        font-size: 23px;
       }
     }
   </style>
@@ -1182,6 +1332,7 @@
               <div id="todayWeatherBox">
                 <div class="status-msg">正在获取气象数据...</div>
               </div>
+              <div id="countdownBox" class="countdown-box"></div>
             </section>
 
             <section class="panel panel-forecast">
@@ -1209,6 +1360,7 @@
       const WEEKDAY_CHARS = ['日', '一', '二', '三', '四', '五', '六'];
       const STORAGE_CITIES_KEY = 'suishi_saved_cities_v1';
       const STORAGE_ACTIVE_KEY = 'suishi_active_city_v1';
+      const STORAGE_COUNTDOWN_KEY = 'suishi_countdown_v1';
 
       const DEFAULT_CITIES = [
         { id: '1816670', name: '北京', admin1: '北京市', country: '中国', latitude: 39.9075, longitude: 116.39723 },
@@ -1223,6 +1375,8 @@
 
       let savedCities = loadCities();
       let activeCityId = loadActiveCityId(savedCities);
+      let countdownState = loadCountdownState();
+      let countdownEditorOpen = false;
 
       function escapeHtml(str) {
         return String(str || '').replace(/[&<>"']/g, function (m) {
@@ -1254,6 +1408,24 @@
           if (id && cities.some(c => String(c.id) === String(id))) return id;
         } catch (e) {}
         return String(cities[0].id);
+      }
+
+      function loadCountdownState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_COUNTDOWN_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && typeof parsed === 'object') return parsed;
+          }
+        } catch (e) {}
+        return { mode: 'auto', name: '', dateStr: '' };
+      }
+
+      function saveCountdownState(next) {
+        countdownState = next;
+        try {
+          localStorage.setItem(STORAGE_COUNTDOWN_KEY, JSON.stringify(next));
+        } catch (e) {}
       }
 
       function updateClock() {
@@ -1314,8 +1486,7 @@
         return `
           <div class="progress-item">
             <div class="progress-header">
-              <span class="progress-title">月份进度（${m}月）</span>
-              <span class="progress-meta">第 ${d} / ${daysInMonth} 天 · 剩 ${remainMonthDays} 天</span>
+              <span class="progress-title">${m}月</span>
             </div>
             <div class="month-sunday-row" style="grid-template-columns: repeat(${daysInMonth}, 1fr);" aria-hidden="true">
               ${sundayCapsHtml}
@@ -1367,8 +1538,7 @@
         return `
           <div class="progress-item">
             <div class="progress-header">
-              <span class="progress-title">年份进度（${y}年）</span>
-              <span class="progress-meta">第 ${dayOfYear} / ${daysInYear} 天 · 剩 ${remainYearDays} 天</span>
+              <span class="progress-title">${y}年</span>
             </div>
             <div class="year-grid-track" role="progressbar" aria-valuenow="${remainYearPct.toFixed(1)}" aria-valuemin="0" aria-valuemax="100">
               ${yearCellsHtml}
@@ -1405,6 +1575,184 @@
 
         monthBox.innerHTML = buildMonthProgressHtml(y, m, d);
         yearBox.innerHTML = buildYearProgressHtml(y, m, d);
+      }
+
+      function formatYmd(dateObj) {
+        const y = dateObj.getFullYear();
+        const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const d = String(dateObj.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+      }
+
+      function parseYmdLocal(dateStr) {
+        if (!dateStr || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return null;
+        const p = dateStr.split('-');
+        return new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+      }
+
+      function getUpcomingFestivals() {
+        const t = new Date();
+        const todayMidnight = new Date(t.getFullYear(), t.getMonth(), t.getDate());
+        const list = [];
+        const seen = new Set();
+
+        for (let offset = 0; offset <= 375; offset++) {
+          const dt = new Date(todayMidnight.getFullYear(), todayMidnight.getMonth(), todayMidnight.getDate() + offset);
+          const y = dt.getFullYear();
+          const m = dt.getMonth() + 1;
+          const d = dt.getDate();
+          const ymd = formatYmd(dt);
+
+          const addFest = name => {
+            if (!seen.has(name)) {
+              seen.add(name);
+              list.push({ name, dateStr: ymd, monthDay: `${m}月${d}日`, diffDays: offset });
+            }
+          };
+
+          if (m === 1 && d === 1) addFest('元旦');
+          if (m === 5 && d === 1) addFest('劳动节');
+          if (m === 10 && d === 1) addFest('国庆节');
+
+          if (typeof Solar !== 'undefined') {
+            const solar = Solar.fromYmd(y, m, d);
+            const lunar = solar.getLunar();
+            const jq = lunar.getJieQi();
+            if (jq === '清明') addFest('清明');
+            if (jq === '冬至') addFest('冬至');
+
+            const nextDt = new Date(y, m - 1, d + 1);
+            const nextLunar = Solar.fromYmd(nextDt.getFullYear(), nextDt.getMonth() + 1, nextDt.getDate()).getLunar();
+            if (nextLunar.getMonth() === 1 && nextLunar.getDay() === 1) {
+              addFest('除夕');
+            }
+
+            const lm = lunar.getMonth();
+            const ld = lunar.getDay();
+            if (lm === 1 && ld === 1) addFest('春节');
+            if (lm === 1 && ld === 15) addFest('元宵');
+            if (lm === 5 && ld === 5) addFest('端午');
+            if (lm === 7 && ld === 7) addFest('七夕');
+            if (lm === 8 && ld === 15) addFest('中秋');
+            if (lm === 9 && ld === 9) addFest('重阳');
+            if (lm === 12 && ld === 8) addFest('腊八');
+          }
+        }
+        return list;
+      }
+
+      function renderCountdown() {
+        const box = document.getElementById('countdownBox');
+        if (!box) return;
+
+        const t = new Date();
+        const todayMidnight = new Date(t.getFullYear(), t.getMonth(), t.getDate());
+        const festivals = getUpcomingFestivals();
+
+        let targetName = '';
+        let targetDateStr = '';
+
+        if (countdownState.mode === 'custom' && countdownState.dateStr) {
+          targetName = countdownState.name || '记事目标日';
+          targetDateStr = countdownState.dateStr;
+        } else if (countdownState.mode === 'festival' && countdownState.name) {
+          const matched = festivals.find(f => f.name === countdownState.name);
+          if (matched) {
+            targetName = matched.name;
+            targetDateStr = matched.dateStr;
+          } else if (countdownState.dateStr) {
+            targetName = countdownState.name;
+            targetDateStr = countdownState.dateStr;
+          }
+        }
+
+        if (!targetDateStr) {
+          if (festivals.length > 0) {
+            targetName = festivals[0].name;
+            targetDateStr = festivals[0].dateStr;
+          } else {
+            const nextYear = new Date(t.getFullYear() + 1, 0, 1);
+            targetName = '元旦';
+            targetDateStr = formatYmd(nextYear);
+          }
+        }
+
+        const targetDate = parseYmdLocal(targetDateStr) || todayMidnight;
+        const diffDays = Math.round((targetDate - todayMidnight) / 86400000);
+        const mdLabel = `${targetDate.getMonth() + 1}月${targetDate.getDate()}日`;
+
+        let leftHtml = '';
+        if (diffDays > 0) {
+          leftHtml = `<div class="countdown-left">还剩 <strong>${diffDays}</strong> 天</div>`;
+        } else if (diffDays === 0) {
+          leftHtml = `<div class="countdown-left is-today">就是 <strong>今日</strong></div>`;
+        } else {
+          leftHtml = `<div class="countdown-left">已过 <strong>${Math.abs(diffDays)}</strong> 天</div>`;
+        }
+
+        const pillsHtml = festivals.map(f => {
+          const isAct = countdownState.mode !== 'custom' && f.name === targetName;
+          return `<button type="button" class="fest-pill${isAct ? ' active' : ''}" data-fest-name="${escapeHtml(f.name)}" data-fest-date="${f.dateStr}">${escapeHtml(f.name)} ${f.monthDay}</button>`;
+        }).join('');
+
+        box.innerHTML = `
+          <div class="countdown-bar">
+            ${leftHtml}
+            <div class="countdown-right">
+              <div class="countdown-note" title="${escapeHtml(targetName)}（${mdLabel}）">
+                ${escapeHtml(targetName)}<span class="countdown-date-tag">${mdLabel}</span>
+              </div>
+              <button type="button" class="cal-btn" id="toggleCountdownBtn">${countdownEditorOpen ? '收起' : '记事'}</button>
+            </div>
+          </div>
+          <div class="countdown-editor${countdownEditorOpen ? ' show' : ''}" id="countdownEditor">
+            <div class="countdown-fest-pills">
+              ${pillsHtml}
+            </div>
+            <div class="countdown-custom-row">
+              <input type="text" id="countdownTextInput" maxlength="20" placeholder="可输入记事文字（仅存本地）" value="${countdownState.mode === 'custom' ? escapeHtml(countdownState.name) : ''}" />
+              <input type="date" id="countdownDateInput" value="${targetDateStr}" />
+              <button type="button" class="cal-btn" id="saveCountdownBtn">确定</button>
+              <button type="button" class="cal-btn" id="autoCountdownBtn">自动最近</button>
+            </div>
+          </div>
+        `;
+
+        document.getElementById('toggleCountdownBtn').addEventListener('click', () => {
+          countdownEditorOpen = !countdownEditorOpen;
+          renderCountdown();
+        });
+
+        box.querySelectorAll('.fest-pill').forEach(btn => {
+          btn.addEventListener('click', () => {
+            saveCountdownState({
+              mode: 'festival',
+              name: btn.getAttribute('data-fest-name'),
+              dateStr: btn.getAttribute('data-fest-date')
+            });
+            countdownEditorOpen = false;
+            renderCountdown();
+          });
+        });
+
+        document.getElementById('saveCountdownBtn').addEventListener('click', () => {
+          const txt = document.getElementById('countdownTextInput').value.trim();
+          const dt = document.getElementById('countdownDateInput').value;
+          if (!dt) return;
+          saveCountdownState({
+            mode: 'custom',
+            name: txt || '记事目标日',
+            dateStr: dt
+          });
+          countdownEditorOpen = false;
+          renderCountdown();
+        });
+
+        document.getElementById('autoCountdownBtn').addEventListener('click', () => {
+          saveCountdownState({ mode: 'auto', name: '', dateStr: '' });
+          countdownEditorOpen = false;
+          renderCountdown();
+        });
       }
 
       function renderCalendar(year, month) {
@@ -1674,9 +2022,14 @@
           todayBox.innerHTML = `
             <div class="weather-now">
               <div class="weather-now-top">
-                <div>
+                <div class="weather-city-block">
                   <div class="weather-city-name">${escapeHtml(city.name)}</div>
                   <div class="weather-city-sub">${escapeHtml(regionSub)}</div>
+                </div>
+                <div class="weather-mid-metrics">
+                  <div><span>体感</span><strong>${Math.round(curr.apparent_temperature)}°C</strong></div>
+                  <div><span>湿度</span><strong>${curr.relative_humidity_2m}%</strong></div>
+                  <div><span>日出/落</span><strong>${sunriseTime}/${sunsetTime}</strong></div>
                 </div>
                 <div class="weather-temp-wrap">
                   <div class="weather-temp-main">${Math.round(curr.temperature_2m)}°C</div>
@@ -1684,20 +2037,6 @@
                 </div>
               </div>
               ${fourDaysHtml}
-            </div>
-            <div class="weather-metrics">
-              <div class="metric-item">
-                <div class="metric-label">体感</div>
-                <div class="metric-val">${Math.round(curr.apparent_temperature)}°C</div>
-              </div>
-              <div class="metric-item">
-                <div class="metric-label">湿度</div>
-                <div class="metric-val">${curr.relative_humidity_2m}%</div>
-              </div>
-              <div class="metric-item">
-                <div class="metric-label">日出 / 日落</div>
-                <div class="metric-val metric-sun">${sunriseTime} / ${sunsetTime}</div>
-              </div>
             </div>
           `;
 
@@ -1832,6 +2171,7 @@
           s.async = true;
           s.onload = function () {
             renderCalendar(viewYear, viewMonth);
+            renderCountdown();
           };
           s.onerror = tryLoad;
           document.body.appendChild(s);
@@ -1842,6 +2182,7 @@
       renderDateDetail(selectedDate);
       renderCalendar(viewYear, viewMonth);
       renderCityTabs();
+      renderCountdown();
       fetchWeatherForActiveCity();
       loadLunarAsync();
     })();
