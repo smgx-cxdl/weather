@@ -6,21 +6,24 @@
   <title>岁时历 · 观天晴雨录</title>
   <style>
     :root {
-      --paper-bg: #efe9dc;
-      --card-bg: #faf7f0;
-      --card-inner: #f1ebdd;
-      --ink-main: #222629;
-      --ink-sub: #596066;
-      --ink-light: #868b8e;
-      --royal-navy: #1b365d;
-      --navy-soft: #e7edf4;
-      --forest-green: #2e5a4c;
-      --forest-soft: #e5efe9;
-      --antique-gold: #a68342;
-      --gold-dark: #7d6028;
-      --gold-border: #cbb994;
-      --dark-border: #7a6a50;
-      --shadow: 0 10px 30px rgba(27, 54, 93, 0.09);
+      --paper-bg: #eef3f1;
+      --card-bg: #fcfbf7;
+      --card-inner: #f2f6f5;
+      --ink-main: #24343d;
+      --ink-sub: #536973;
+      --ink-light: #8799a2;
+      --ocean-teal: #266f88;
+      --sky-cyan: #3d98b5;
+      --sky-soft: #e6f3f7;
+      --jade-green: #2b8e5e;
+      --jade-soft: #e6f4ec;
+      --warm-amber: #d67624;
+      --amber-soft: #fdf2e4;
+      --sun-gold: #d9a441;
+      --gold-dark: #b97524;
+      --gold-border: #d2cbb7;
+      --dark-border: #8fa3ad;
+      --shadow: 0 10px 30px rgba(38, 111, 136, 0.09);
     }
 
     * {
@@ -33,9 +36,10 @@
       font-family: "Palatino Linotype", "Book Antiqua", Baskerville, Georgia, "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", serif;
       background-color: var(--paper-bg);
       background-image:
-        radial-gradient(rgba(27, 54, 93, 0.04) 1px, transparent 0),
-        linear-gradient(to bottom, rgba(166, 131, 66, 0.05), transparent 260px);
-      background-size: 28px 28px, 100% 100%;
+        radial-gradient(rgba(61, 152, 181, 0.05) 1px, transparent 0),
+        radial-gradient(circle at 12% 0%, rgba(98, 190, 212, 0.14), transparent 45%),
+        radial-gradient(circle at 88% 100%, rgba(240, 178, 92, 0.12), transparent 45%);
+      background-size: 28px 28px, 100% 100%, 100% 100%;
       color: var(--ink-main);
       line-height: 1.6;
       min-height: 100vh;
@@ -50,15 +54,15 @@
     .scroll-frame {
       position: relative;
       background: var(--card-bg);
-      border: 2px solid var(--royal-navy);
+      border: 2px solid var(--ocean-teal);
       padding: 7px;
       box-shadow: var(--shadow);
-      border-radius: 2px;
+      border-radius: 3px;
     }
 
     .scroll-inner {
       position: relative;
-      border: 1px solid var(--antique-gold);
+      border: 1px solid var(--sun-gold);
       padding: 20px 26px;
       background: var(--card-bg);
     }
@@ -67,7 +71,7 @@
       position: absolute;
       width: 16px;
       height: 16px;
-      border-color: var(--royal-navy);
+      border-color: var(--ocean-teal);
       border-style: solid;
       pointer-events: none;
     }
@@ -94,7 +98,7 @@
 
     .brand-title h1 {
       font-size: 24px;
-      color: var(--royal-navy);
+      color: var(--ocean-teal);
       letter-spacing: 3px;
       font-weight: 700;
       line-height: 1.25;
@@ -114,11 +118,11 @@
       padding: 5px 12px;
       background: var(--card-inner);
       border: 1px solid var(--gold-border);
-      border-radius: 2px;
+      border-radius: 3px;
     }
 
     .live-clock strong {
-      color: var(--royal-navy);
+      color: var(--ocean-teal);
       font-size: 15px;
       margin-left: 8px;
       font-variant-numeric: tabular-nums;
@@ -134,7 +138,7 @@
       background: var(--card-inner);
       padding: 10px 14px;
       border: 1px solid var(--gold-border);
-      border-radius: 2px;
+      border-radius: 3px;
     }
 
     .city-tabs {
@@ -160,22 +164,23 @@
       border: 1px solid var(--gold-border);
       background: var(--card-bg);
       color: var(--ink-main);
-      border-radius: 2px;
+      border-radius: 3px;
       cursor: pointer;
       transition: all 0.2s;
       font-family: inherit;
     }
 
     .city-tab:hover {
-      border-color: var(--royal-navy);
-      color: var(--royal-navy);
+      border-color: var(--sky-cyan);
+      color: var(--ocean-teal);
+      background: var(--sky-soft);
     }
 
     .city-tab.active {
-      background: var(--royal-navy);
-      color: #faf7f0;
-      border-color: var(--royal-navy);
-      box-shadow: inset 0 0 0 1px rgba(166, 131, 66, 0.5);
+      background: var(--ocean-teal);
+      color: #fcfbf7;
+      border-color: var(--ocean-teal);
+      box-shadow: inset 0 0 0 1px rgba(243, 198, 99, 0.55);
     }
 
     .city-tab .remove-city {
@@ -205,22 +210,22 @@
       border: 1px solid var(--dark-border);
       background: var(--card-bg);
       color: var(--ink-main);
-      border-radius: 2px;
+      border-radius: 3px;
       outline: none;
     }
 
     .city-search-wrap input:focus {
-      border-color: var(--royal-navy);
+      border-color: var(--sky-cyan);
     }
 
     .btn-classic {
       padding: 5px 14px;
       font-size: 14px;
       font-family: inherit;
-      background: var(--royal-navy);
-      color: #faf7f0;
-      border: 1px solid var(--royal-navy);
-      border-radius: 2px;
+      background: var(--ocean-teal);
+      color: #fcfbf7;
+      border: 1px solid var(--ocean-teal);
+      border-radius: 3px;
       cursor: pointer;
       white-space: nowrap;
       letter-spacing: 1px;
@@ -228,8 +233,8 @@
     }
 
     .btn-classic:hover {
-      background: var(--gold-dark);
-      border-color: var(--gold-dark);
+      background: var(--warm-amber);
+      border-color: var(--warm-amber);
     }
 
     .search-dropdown {
@@ -238,13 +243,13 @@
       left: 0;
       right: 0;
       background: var(--card-bg);
-      border: 1px solid var(--royal-navy);
+      border: 1px solid var(--ocean-teal);
       box-shadow: var(--shadow);
       z-index: 100;
       max-height: 240px;
       overflow-y: auto;
       display: none;
-      border-radius: 2px;
+      border-radius: 3px;
     }
 
     .search-dropdown.show {
@@ -266,8 +271,8 @@
     }
 
     .search-item:hover {
-      background: var(--navy-soft);
-      color: var(--royal-navy);
+      background: var(--sky-soft);
+      color: var(--ocean-teal);
     }
 
     .search-item small {
@@ -286,9 +291,9 @@
       border: 1px solid var(--gold-border);
       background: var(--card-bg);
       padding: 14px 18px;
-      border-radius: 2px;
+      border-radius: 3px;
       margin-bottom: 16px;
-      box-shadow: 0 2px 10px rgba(27, 54, 93, 0.03);
+      box-shadow: 0 2px 10px rgba(38, 111, 136, 0.03);
     }
 
     .panel:last-child {
@@ -301,7 +306,7 @@
       align-items: center;
       font-size: 16px;
       font-weight: bold;
-      color: var(--royal-navy);
+      color: var(--ocean-teal);
       padding-bottom: 8px;
       margin-bottom: 12px;
       border-bottom: 2px double var(--gold-border);
@@ -310,7 +315,7 @@
 
     .panel-title-deco::before {
       content: "✦ ";
-      color: var(--antique-gold);
+      color: var(--warm-amber);
       font-size: 13px;
       margin-right: 4px;
     }
@@ -318,11 +323,11 @@
     .progress-panel-box {
       display: flex;
       flex-direction: column;
-      gap: 13px;
+      gap: 14px;
       padding: 12px 14px;
       background: var(--card-inner);
       border: 1px solid var(--gold-border);
-      border-radius: 2px;
+      border-radius: 3px;
       margin-bottom: 10px;
     }
 
@@ -342,7 +347,7 @@
 
     .progress-title {
       font-weight: bold;
-      color: var(--royal-navy);
+      color: var(--ocean-teal);
       letter-spacing: 0.8px;
     }
 
@@ -353,49 +358,64 @@
     }
 
     .progress-meta strong {
-      color: var(--royal-navy);
+      color: var(--ocean-teal);
       margin-left: 6px;
     }
 
-    /* 月份每日格子进度条（进度条 + 日期号 + 星期几） */
+    /* 进度条上方：专属周日标识格 */
+    .month-sunday-row {
+      display: grid;
+      gap: 2px;
+      width: 100%;
+      padding: 0 3px;
+      margin-top: 2px;
+      margin-bottom: -1px;
+    }
+
+    .month-sunday-cap {
+      height: 5px;
+      border-radius: 2px;
+      background: transparent;
+    }
+
+    .month-sunday-cap.is-sunday {
+      background: linear-gradient(90deg, #f7b64c, #eb8634);
+      box-shadow: 0 1px 2px rgba(235, 134, 52, 0.25);
+    }
+
+    .month-sunday-cap.is-sunday.is-future {
+      background: linear-gradient(90deg, #fad082, #f2aa66);
+      opacity: 0.85;
+    }
+
+    /* 月份每日格子进度条：晴空天青蓝 + 当前日翠绿 */
     .month-days-track {
       display: grid;
       gap: 2px;
       width: 100%;
-      height: 14px;
-      background: rgba(250, 247, 240, 0.85);
+      height: 15px;
+      background: rgba(252, 251, 247, 0.9);
       border: 1px solid var(--gold-border);
-      border-radius: 2px;
+      border-radius: 3px;
       padding: 2px;
     }
 
     .month-day-cell {
       height: 100%;
-      background: rgba(27, 54, 93, 0.12);
-      border-radius: 1px;
+      background: rgba(61, 152, 181, 0.14);
+      border-radius: 1.5px;
       transition: background 0.25s ease;
     }
 
     .month-day-cell.is-filled {
-      background: linear-gradient(180deg, #2b4c7e, var(--royal-navy));
+      background: linear-gradient(180deg, #64c2d8, #3892b0);
     }
 
-    /* 周日上方格子：已过去为浅暖金橙色，未到为极浅暖橙色 */
-    .month-day-cell.is-sunday {
-      background: rgba(220, 150, 53, 0.24);
-    }
-
-    .month-day-cell.is-filled.is-sunday {
-      background: linear-gradient(180deg, #f0bc5e, #dc9635);
-    }
-
-    /* 当前到达/选中的那一天：变成翠玉绿色（优先级高于周日色） */
+    /* 到了哪天，那天的实体格就变成翡翠绿 */
     .month-day-cell.is-current,
-    .month-day-cell.is-filled.is-current,
-    .month-day-cell.is-current.is-sunday,
-    .month-day-cell.is-filled.is-current.is-sunday {
-      background: linear-gradient(180deg, #3ea36a, #257548);
-      box-shadow: inset 0 0 0 1px rgba(27, 94, 56, 0.35);
+    .month-day-cell.is-filled.is-current {
+      background: linear-gradient(180deg, #4cc488, #2a9660);
+      box-shadow: inset 0 0 0 1px rgba(27, 107, 67, 0.3);
     }
 
     .month-day-nums,
@@ -422,31 +442,16 @@
       color: var(--ink-light);
     }
 
-    /* 周日：序号与“日”字加粗并改为亮琥珀橙色 */
+    /* 下方的字保持周日暖琥珀橘加粗，不随当前日变绿 */
     .month-day-nums span.is-sunday,
     .month-weekdays span.is-sunday {
-      color: #d06814;
+      color: #d66f19;
       font-weight: 700;
     }
 
     .month-day-nums span.is-sunday.is-future,
     .month-weekdays span.is-sunday.is-future {
-      color: #df8a3c;
-    }
-
-    /* 当前日：序号与星期字变成绿色加粗 */
-    .month-day-nums span.is-current,
-    .month-weekdays span.is-current,
-    .month-day-nums span.is-current.is-sunday,
-    .month-weekdays span.is-current.is-sunday {
-      color: #216e43;
-      font-weight: 700;
-    }
-
-    .month-day-nums span.is-current,
-    .month-day-nums span.is-current.is-sunday {
-      background: rgba(45, 138, 86, 0.16);
-      border-radius: 2px;
+      color: #e29148;
     }
 
     /* 在“日”与上方序号右侧加竖向虚线 */
@@ -457,7 +462,7 @@
       right: -1.5px;
       top: 0;
       bottom: -3px;
-      border-right: 1px dashed rgba(208, 104, 20, 0.45);
+      border-right: 1px dashed rgba(214, 111, 25, 0.45);
       pointer-events: none;
     }
 
@@ -466,29 +471,29 @@
       bottom: 0;
     }
 
-    /* 年份 12 格进度条 + 月份 + 季节 */
+    /* 年份 12 格进度条：暖阳金黄 -> 杏橘渐变 + 四季柔和点缀 */
     .year-grid-track {
       display: grid;
       grid-template-columns: repeat(12, 1fr);
       gap: 3px;
       width: 100%;
       height: 13px;
-      background: rgba(250, 247, 240, 0.85);
+      background: rgba(252, 251, 247, 0.9);
       border: 1px solid var(--gold-border);
-      border-radius: 2px;
+      border-radius: 3px;
       padding: 2px;
     }
 
     .year-grid-cell {
       height: 100%;
-      background: rgba(166, 131, 66, 0.14);
-      border-radius: 1px;
+      background: rgba(235, 162, 68, 0.16);
+      border-radius: 1.5px;
       overflow: hidden;
     }
 
     .year-grid-fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--gold-dark), var(--antique-gold));
+      background: linear-gradient(90deg, #f3c45f, #e88b38);
       transition: width 0.35s ease;
     }
 
@@ -512,7 +517,7 @@
     }
 
     .year-grid-labels span.is-current {
-      color: var(--gold-dark);
+      color: var(--warm-amber);
       font-weight: bold;
     }
 
@@ -528,19 +533,37 @@
       font-size: 11px;
       color: var(--ink-light);
       line-height: 1.25;
-      border-top: 1px solid rgba(203, 185, 148, 0.65);
+      border-top: 1px solid rgba(210, 203, 183, 0.75);
       padding-top: 2px;
       white-space: nowrap;
     }
 
     .year-season-labels span + span {
-      border-left: 1px dashed rgba(203, 185, 148, 0.8);
+      border-left: 1px dashed rgba(210, 203, 183, 0.85);
     }
 
     .year-season-labels span.is-current {
-      color: var(--gold-dark);
       font-weight: bold;
-      border-top-color: var(--antique-gold);
+    }
+
+    .year-season-labels span.season-spring.is-current {
+      color: var(--jade-green);
+      border-top-color: var(--jade-green);
+    }
+
+    .year-season-labels span.season-summer.is-current {
+      color: var(--warm-amber);
+      border-top-color: var(--warm-amber);
+    }
+
+    .year-season-labels span.season-autumn.is-current {
+      color: #c88924;
+      border-top-color: #d9a441;
+    }
+
+    .year-season-labels span.season-winter.is-current {
+      color: var(--sky-cyan);
+      border-top-color: var(--sky-cyan);
     }
 
     .jieqi-box {
@@ -551,18 +574,18 @@
 
     .jieqi-col {
       padding: 9px 12px;
-      border-radius: 2px;
+      border-radius: 3px;
       font-size: 13px;
     }
 
     .jieqi-col.prev {
-      background: var(--forest-soft);
-      border: 1px solid rgba(46, 90, 76, 0.28);
+      background: var(--jade-soft);
+      border: 1px solid rgba(43, 142, 94, 0.28);
     }
 
     .jieqi-col.next {
-      background: var(--navy-soft);
-      border: 1px solid rgba(27, 54, 93, 0.24);
+      background: var(--sky-soft);
+      border: 1px solid rgba(61, 152, 181, 0.28);
     }
 
     .jieqi-label {
@@ -577,8 +600,8 @@
       margin: 1px 0;
     }
 
-    .jieqi-col.prev .jieqi-name { color: var(--forest-green); }
-    .jieqi-col.next .jieqi-name { color: var(--royal-navy); }
+    .jieqi-col.prev .jieqi-name { color: var(--jade-green); }
+    .jieqi-col.next .jieqi-name { color: var(--ocean-teal); }
 
     .jieqi-meta {
       font-size: 11px;
@@ -599,14 +622,14 @@
       border: 1px solid var(--gold-border);
       color: var(--ink-main);
       cursor: pointer;
-      border-radius: 2px;
+      border-radius: 3px;
       transition: all 0.15s;
     }
 
     .cal-btn:hover {
-      border-color: var(--royal-navy);
-      color: var(--royal-navy);
-      background: var(--navy-soft);
+      border-color: var(--sky-cyan);
+      color: var(--ocean-teal);
+      background: var(--sky-soft);
     }
 
     .cal-weekdays, .cal-days {
@@ -626,7 +649,7 @@
     }
 
     .cal-weekdays div.weekend {
-      color: var(--gold-dark);
+      color: var(--warm-amber);
     }
 
     .cal-cell {
@@ -634,7 +657,7 @@
       padding: 3px 2px;
       text-align: center;
       border: 1px solid transparent;
-      border-radius: 2px;
+      border-radius: 3px;
       cursor: pointer;
       display: flex;
       flex-direction: column;
@@ -644,8 +667,8 @@
     }
 
     .cal-cell:hover {
-      background: var(--card-inner);
-      border-color: var(--gold-border);
+      background: var(--sky-soft);
+      border-color: rgba(61, 152, 181, 0.35);
     }
 
     .cal-cell.other-month {
@@ -653,20 +676,20 @@
     }
 
     .cal-cell.selected {
-      border: 1.5px solid var(--antique-gold);
-      background: var(--card-inner);
-      box-shadow: inset 0 0 0 1px rgba(166, 131, 66, 0.25);
+      border: 1.5px solid var(--jade-green);
+      background: var(--jade-soft);
+      box-shadow: inset 0 0 0 1px rgba(43, 142, 94, 0.18);
     }
 
     .cal-cell.today {
-      background: var(--royal-navy);
-      color: #faf7f0;
-      border-color: var(--antique-gold);
-      box-shadow: inset 0 0 0 1px rgba(250, 247, 240, 0.25);
+      background: var(--ocean-teal);
+      color: #fcfbf7;
+      border-color: var(--sun-gold);
+      box-shadow: inset 0 0 0 1px rgba(252, 251, 247, 0.25);
     }
 
     .cal-cell.today .cal-lunar {
-      color: rgba(250, 247, 240, 0.88);
+      color: rgba(252, 251, 247, 0.9);
     }
 
     .cal-solar {
@@ -677,7 +700,7 @@
     }
 
     .cal-cell.is-weekend:not(.today) .cal-solar {
-      color: var(--gold-dark);
+      color: var(--warm-amber);
     }
 
     .cal-lunar {
@@ -692,7 +715,7 @@
     }
 
     .cal-cell:not(.today) .cal-lunar.is-highlight {
-      color: var(--royal-navy);
+      color: var(--ocean-teal);
       font-weight: bold;
     }
 
@@ -701,8 +724,9 @@
       justify-content: space-between;
       align-items: center;
       padding: 16px;
-      background: var(--card-inner);
-      border: 1px solid var(--gold-border);
+      background: linear-gradient(135deg, var(--sky-soft), var(--card-inner));
+      border: 1px solid rgba(61, 152, 181, 0.3);
+      border-radius: 3px;
       margin-bottom: 14px;
       gap: 12px;
     }
@@ -710,7 +734,7 @@
     .weather-city-name {
       font-size: 20px;
       font-weight: bold;
-      color: var(--royal-navy);
+      color: var(--ocean-teal);
     }
 
     .weather-city-sub {
@@ -725,7 +749,7 @@
     .weather-temp-main {
       font-size: 40px;
       font-weight: bold;
-      color: var(--royal-navy);
+      color: var(--ocean-teal);
       line-height: 1.1;
       font-variant-numeric: lining-nums;
     }
@@ -748,7 +772,7 @@
       border: 1px solid var(--gold-border);
       padding: 9px 6px;
       text-align: center;
-      border-radius: 2px;
+      border-radius: 3px;
     }
 
     .metric-label {
@@ -766,9 +790,9 @@
     .weather-yesterday {
       margin-top: 12px;
       padding: 10px 14px;
-      background: var(--card-inner);
-      border: 1px solid var(--gold-border);
-      border-radius: 2px;
+      background: var(--amber-soft);
+      border: 1px solid rgba(214, 118, 36, 0.28);
+      border-radius: 3px;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
@@ -788,8 +812,8 @@
       display: inline-block;
       padding: 1px 7px;
       font-size: 11px;
-      background: var(--royal-navy);
-      color: #faf7f0;
+      background: var(--warm-amber);
+      color: #fcfbf7;
       border-radius: 2px;
       letter-spacing: 0.5px;
     }
@@ -806,7 +830,7 @@
 
     .yesterday-precip {
       font-size: 12px;
-      color: var(--forest-green);
+      color: var(--jade-green);
     }
 
     .yesterday-right {
@@ -819,7 +843,7 @@
 
     .yesterday-temp {
       font-weight: bold;
-      color: var(--royal-navy);
+      color: var(--ocean-teal);
     }
 
     .yesterday-diff {
@@ -838,7 +862,7 @@
       align-items: center;
       gap: 8px;
       padding: 10px 6px;
-      border-bottom: 1px solid rgba(203, 185, 148, 0.55);
+      border-bottom: 1px solid rgba(210, 203, 183, 0.65);
       font-size: 14px;
     }
 
@@ -870,7 +894,7 @@
 
     .forecast-rain {
       font-size: 12px;
-      color: var(--forest-green);
+      color: var(--jade-green);
       text-align: center;
     }
 
@@ -882,12 +906,12 @@
     }
 
     .temp-low {
-      color: var(--ink-sub);
+      color: var(--sky-cyan);
       font-weight: normal;
     }
 
     .temp-high {
-      color: var(--royal-navy);
+      color: var(--warm-amber);
     }
 
     .status-msg {
@@ -967,16 +991,23 @@
       }
       .progress-panel-box {
         padding: 9px 10px;
-        gap: 10px;
+        gap: 11px;
         margin-bottom: 8px;
       }
       .progress-header {
         flex-wrap: wrap;
         gap: 1px 8px;
       }
+      .month-sunday-row {
+        gap: 1px;
+        padding: 0 2.5px;
+      }
+      .month-sunday-cap {
+        height: 4px;
+      }
       .month-days-track {
         gap: 1px;
-        height: 12px;
+        height: 13px;
         padding: 1.5px;
       }
       .month-day-nums,
@@ -1222,7 +1253,8 @@
         const remainMonthDays = daysInMonth - d;
         const monthPct = (d / daysInMonth) * 100;
 
-        // 月份进度条 + 每日数字 + 对应星期
+        // 上方周日刻度 + 月份进度条 + 每日数字 + 对应星期
+        let sundayCapsHtml = '';
         let monthCellsHtml = '';
         let monthNumsHtml = '';
         let monthWeekdaysHtml = '';
@@ -1235,20 +1267,25 @@
           const isSunday = dayOfWeek === 0;
           const isWeekEnd = isSunday && dayIdx < daysInMonth;
 
+          const capCls = [
+            'month-sunday-cap',
+            isSunday ? 'is-sunday' : '',
+            !isFilled ? 'is-future' : ''
+          ].filter(Boolean).join(' ');
+
           const cellCls = [
             'month-day-cell',
             isFilled ? 'is-filled' : '',
-            isCurrent ? 'is-current' : '',
-            isSunday ? 'is-sunday' : ''
+            isCurrent ? 'is-current' : ''
           ].filter(Boolean).join(' ');
 
           const labelCls = [
             !isFilled ? 'is-future' : '',
-            isCurrent ? 'is-current' : '',
             isSunday ? 'is-sunday' : '',
             isWeekEnd ? 'is-week-end' : ''
           ].filter(Boolean).join(' ');
 
+          sundayCapsHtml += `<div class="${capCls}" title="${isSunday ? `${m}月${dayIdx}日 周日` : ''}"></div>`;
           monthCellsHtml += `<div class="${cellCls}" title="${m}月${dayIdx}日 星期${weekdayChar}"></div>`;
           monthNumsHtml += `<span class="${labelCls}">${dayIdx}</span>`;
           monthWeekdaysHtml += `<span class="${labelCls}">${weekdayChar}</span>`;
@@ -1291,6 +1328,9 @@
                 <span class="progress-title">月份进度（${m}月）</span>
                 <span class="progress-meta">第 ${d} / ${daysInMonth} 天 · 剩 ${remainMonthDays} 天 <strong>${monthPct.toFixed(1)}%</strong></span>
               </div>
+              <div class="month-sunday-row" style="grid-template-columns: repeat(${daysInMonth}, 1fr);" aria-hidden="true">
+                ${sundayCapsHtml}
+              </div>
               <div class="month-days-track" style="grid-template-columns: repeat(${daysInMonth}, 1fr);" role="progressbar" aria-valuenow="${monthPct.toFixed(1)}" aria-valuemin="0" aria-valuemax="100">
                 ${monthCellsHtml}
               </div>
@@ -1313,11 +1353,11 @@
                 ${yearLabelsHtml}
               </div>
               <div class="year-season-labels">
-                <span class="${seasonCls.winEarly}">冬季</span>
-                <span class="${seasonCls.spring}">春季</span>
-                <span class="${seasonCls.summer}">夏季</span>
-                <span class="${seasonCls.autumn}">秋季</span>
-                <span class="${seasonCls.winLate}">冬</span>
+                <span class="season-winter ${seasonCls.winEarly}">冬季</span>
+                <span class="season-spring ${seasonCls.spring}">春季</span>
+                <span class="season-summer ${seasonCls.summer}">夏季</span>
+                <span class="season-autumn ${seasonCls.autumn}">秋季</span>
+                <span class="season-winter ${seasonCls.winLate}">冬</span>
               </div>
             </div>
           </div>
