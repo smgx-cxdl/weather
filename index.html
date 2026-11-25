@@ -608,7 +608,9 @@
     }
 
     .cal-weekdays div.weekend {
-      color: var(--warm-amber);
+      color: #707880;
+      background: rgba(130, 140, 150, 0.09);
+      border-radius: 3px 3px 0 0;
     }
 
     .cal-cell {
@@ -623,6 +625,10 @@
       justify-content: center;
       align-items: center;
       transition: all 0.15s;
+    }
+
+    .cal-cell.is-weekend:not(.today):not(.selected):not(:hover) {
+      background: rgba(130, 140, 150, 0.09);
     }
 
     .cal-cell:hover {
@@ -659,7 +665,7 @@
     }
 
     .cal-cell.is-weekend:not(.today) .cal-solar {
-      color: var(--warm-amber);
+      color: #6b737b;
     }
 
     .cal-lunar {
@@ -678,7 +684,7 @@
       font-weight: bold;
     }
 
-    .cal-cell:not(.today) .cal-lunar.is-traditional {
+    .cal-cell:not(.today) .cal-lunar.is-statutory {
       color: #c93b2b;
       font-weight: bold;
     }
@@ -688,8 +694,8 @@
       font-weight: bold;
     }
 
-    .cal-cell:not(.today) .cal-lunar.is-statutory {
-      color: #1f8050;
+    .cal-cell:not(.today) .cal-lunar.is-traditional {
+      color: #6e747c;
       font-weight: bold;
     }
 
@@ -1417,13 +1423,12 @@
     (function () {
       const WEEKDAYS = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
       const WEEKDAY_CHARS = ['日', '一', '二', '三', '四', '五', '六'];
+      const STATUTORY_FESTIVALS = new Set([
+        '元旦节', '除夕', '春节', '清明', '劳动节', '端午节', '中秋节', '国庆节'
+      ]);
       const WESTERN_FESTIVALS = new Set([
         '情人节', '愚人节', '母亲节', '父亲节',
         '万圣节前夜', '万圣节', '感恩节', '平安夜', '圣诞节'
-      ]);
-      const STATUTORY_FESTIVALS = new Set([
-        '元旦节', '劳动节', '国庆节',
-        '妇女节', '青年节', '儿童节', '建军节'
       ]);
       const STORAGE_CITIES_KEY = 'suishi_saved_cities_v1';
       const STORAGE_ACTIVE_KEY = 'suishi_active_city_v1';
@@ -1878,15 +1883,17 @@
             const lunarFests = lunar.getFestivals();
             const solarFests = solar.getFestivals();
             const fests = [...lunarFests, ...solarFests];
+            const statutoryHit = fests.find(f => STATUTORY_FESTIVALS.has(f)) || (STATUTORY_FESTIVALS.has(jq) ? jq : '');
 
-            if (fests.length > 0) {
+            if (statutoryHit) {
+              lunarText = statutoryHit;
+              lunarClass = 'is-statutory';
+            } else if (fests.length > 0) {
               lunarText = fests[0];
-              if (lunarFests.includes(lunarText)) {
-                lunarClass = 'is-traditional';
-              } else if (WESTERN_FESTIVALS.has(lunarText)) {
+              if (WESTERN_FESTIVALS.has(lunarText)) {
                 lunarClass = 'is-western';
-              } else if (STATUTORY_FESTIVALS.has(lunarText)) {
-                lunarClass = 'is-statutory';
+              } else if (lunarFests.includes(lunarText)) {
+                lunarClass = 'is-traditional';
               } else {
                 lunarClass = 'is-highlight';
               }
