@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>嵗時曆</title>
+  <title>时历</title>
   <style>
     :root {
       --paper-bg: #eef3f1;
@@ -82,10 +82,10 @@
 
     .header {
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       padding-bottom: 12px;
       border-bottom: 3px double var(--gold-border);
       margin-bottom: 16px;
@@ -94,6 +94,7 @@
     .brand {
       display: flex;
       align-items: center;
+      flex-shrink: 0;
     }
 
     .brand-title h1 {
@@ -102,6 +103,7 @@
       letter-spacing: 3px;
       font-weight: 700;
       line-height: 1.25;
+      white-space: nowrap;
     }
 
     .header-right {
@@ -109,6 +111,7 @@
       flex-direction: column;
       align-items: flex-end;
       gap: 6px;
+      min-width: 0;
     }
 
     .live-clock {
@@ -119,6 +122,7 @@
       background: var(--card-inner);
       border: 1px solid var(--gold-border);
       border-radius: 3px;
+      white-space: nowrap;
     }
 
     .live-clock strong {
@@ -679,29 +683,33 @@
       font-weight: bold;
     }
 
+    /* 蓝色实况框（内含当前温度 + 昨今明后四日） */
     .weather-now {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 14px 16px;
+      padding: 10px 12px;
       background: linear-gradient(135deg, var(--sky-soft), var(--card-inner));
       border: 1px solid rgba(61, 152, 181, 0.3);
       border-radius: 3px;
-      margin-bottom: 10px;
-      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .weather-now-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
     }
 
     .weather-city-name {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: bold;
       color: var(--ocean-teal);
-      line-height: 1.3;
+      line-height: 1.25;
     }
 
     .weather-city-sub {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--ink-sub);
-      margin-top: 2px;
+      margin-top: 1px;
     }
 
     .weather-temp-wrap {
@@ -709,30 +717,107 @@
     }
 
     .weather-temp-main {
-      font-size: 40px;
+      font-size: 32px;
       font-weight: bold;
       color: var(--ocean-teal);
-      line-height: 1.1;
+      line-height: 1.05;
       font-variant-numeric: lining-nums;
     }
 
     .weather-desc {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--ink-main);
-      margin-top: 2px;
+      margin-top: 1px;
+    }
+
+    /* 蓝框内部四日对比：昨日（淡）、今日、明日（淡）、后日（淡） */
+    .weather-four-days {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(61, 152, 181, 0.25);
+    }
+
+    .day-mini-card {
+      border-radius: 3px;
+      padding: 4px 3px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+      min-width: 0;
+    }
+
+    .day-mini-card.is-muted {
+      opacity: 0.52;
+      background: rgba(252, 251, 247, 0.42);
+      border: 1px solid rgba(61, 152, 181, 0.14);
+    }
+
+    .day-mini-card.is-today {
+      background: rgba(252, 251, 247, 0.88);
+      border: 1px solid rgba(38, 111, 136, 0.35);
+      box-shadow: 0 1px 3px rgba(38, 111, 136, 0.06);
+    }
+
+    .day-mini-label {
+      font-size: 11px;
+      color: var(--ink-sub);
+      line-height: 1.2;
+    }
+
+    .day-mini-card.is-today .day-mini-label {
+      color: var(--ocean-teal);
+      font-weight: bold;
+    }
+
+    .day-mini-cond {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      max-width: 100%;
+      font-size: 11px;
+      line-height: 1.25;
+      color: var(--ink-main);
+    }
+
+    .day-mini-card.is-muted .day-mini-cond {
+      color: var(--ink-sub);
+    }
+
+    .day-mini-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .day-mini-temp {
+      font-size: 11.5px;
+      font-weight: bold;
+      line-height: 1.2;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .day-mini-card.is-muted .day-mini-temp {
+      color: var(--ink-sub);
+      font-weight: normal;
     }
 
     .weather-metrics {
       display: grid;
       grid-template-columns: 1fr 1fr 1.35fr;
       gap: 8px;
-      margin-bottom: 10px;
     }
 
     .metric-item {
       background: var(--card-bg);
       border: 1px solid var(--gold-border);
-      padding: 8px 6px;
+      padding: 6px 5px;
       text-align: center;
       border-radius: 3px;
       min-width: 0;
@@ -745,91 +830,16 @@
     }
 
     .metric-val {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: bold;
       color: var(--ink-main);
-      margin-top: 2px;
+      margin-top: 1px;
       white-space: nowrap;
       font-variant-numeric: tabular-nums;
     }
 
     .metric-val.metric-sun {
-      font-size: 13px;
-    }
-
-    /* 四日对比：昨日（淡）、今日、明日（淡）、后日（淡） */
-    .weather-four-days {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 8px;
-    }
-
-    .day-mini-card {
-      background: var(--card-bg);
-      border: 1px solid var(--gold-border);
-      border-radius: 3px;
-      padding: 8px 6px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-      min-width: 0;
-    }
-
-    .day-mini-card.is-muted {
-      opacity: 0.56;
-      background: rgba(242, 246, 245, 0.45);
-      border-color: rgba(210, 203, 183, 0.7);
-    }
-
-    .day-mini-card.is-today {
-      background: linear-gradient(180deg, var(--sky-soft), var(--card-bg));
-      border-color: rgba(61, 152, 181, 0.5);
-    }
-
-    .day-mini-label {
       font-size: 12px;
-      color: var(--ink-sub);
-      line-height: 1.2;
-    }
-
-    .day-mini-card.is-today .day-mini-label {
-      color: var(--ocean-teal);
-      font-weight: bold;
-    }
-
-    .day-mini-icon {
-      font-size: 17px;
-      line-height: 1.25;
-    }
-
-    .day-mini-text {
-      font-size: 12px;
-      color: var(--ink-main);
-      line-height: 1.2;
-      max-width: 100%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .day-mini-card.is-muted .day-mini-text {
-      color: var(--ink-sub);
-    }
-
-    .day-mini-temp {
-      font-size: 12px;
-      font-weight: bold;
-      line-height: 1.25;
-      white-space: nowrap;
-      font-variant-numeric: tabular-nums;
-      margin-top: 1px;
-    }
-
-    .day-mini-card.is-muted .day-mini-temp {
-      color: var(--ink-sub);
-      font-weight: normal;
     }
 
     .forecast-list {
@@ -917,9 +927,6 @@
         grid-template-columns: 1fr;
         gap: 12px;
       }
-      .header-right {
-        align-items: flex-start;
-      }
       .scroll-inner {
         padding: 16px 14px;
       }
@@ -945,15 +952,17 @@
         gap: 6px;
       }
       .brand-title h1 {
-        font-size: 20px;
+        font-size: 19px;
         letter-spacing: 2px;
       }
       .live-clock {
-        font-size: 12px;
-        padding: 4px 10px;
+        font-size: 11.5px;
+        letter-spacing: 0.2px;
+        padding: 4px 8px;
       }
       .live-clock strong {
-        font-size: 14px;
+        font-size: 12.5px;
+        margin-left: 5px;
       }
       .city-bar {
         padding: 8px 10px;
@@ -1038,37 +1047,64 @@
         font-size: 9.5px;
         margin-top: 1px;
       }
-      .weather-metrics {
-        grid-template-columns: 1fr 1fr 1.45fr;
-        gap: 6px;
-        margin-bottom: 8px;
+      .weather-now {
+        padding: 9px 10px;
+        margin-bottom: 7px;
       }
-      .metric-item {
-        padding: 7px 4px;
+      .weather-city-name {
+        font-size: 17px;
       }
-      .metric-val {
-        font-size: 13px;
+      .weather-temp-main {
+        font-size: 28px;
       }
-      .metric-val.metric-sun {
+      .weather-desc {
         font-size: 12px;
       }
       .weather-four-days {
-        gap: 5px;
+        gap: 4px;
+        margin-top: 7px;
+        padding-top: 7px;
       }
       .day-mini-card {
-        padding: 7px 3px;
+        padding: 4px 2px;
       }
       .day-mini-label,
-      .day-mini-text,
+      .day-mini-cond,
       .day-mini-temp {
-        font-size: 11px;
+        font-size: 10.5px;
       }
-      .day-mini-icon {
-        font-size: 16px;
+      .weather-metrics {
+        grid-template-columns: 1fr 1fr 1.45fr;
+        gap: 6px;
+      }
+      .metric-item {
+        padding: 6px 4px;
+      }
+      .metric-val {
+        font-size: 12.5px;
+      }
+      .metric-val.metric-sun {
+        font-size: 11.5px;
       }
       .forecast-row {
         grid-template-columns: 78px 1fr 44px 82px;
         font-size: 13px;
+      }
+    }
+
+    @media (max-width: 375px) {
+      .brand-title h1 {
+        font-size: 17px;
+        letter-spacing: 1px;
+      }
+      .live-clock {
+        font-size: 10.5px;
+        letter-spacing: 0;
+        padding: 3px 6px;
+      }
+      .live-clock strong {
+        font-size: 11.5px;
+        margin-left: 4px;
       }
     }
   </style>
@@ -1085,7 +1121,7 @@
         <header class="header">
           <div class="brand">
             <div class="brand-title">
-              <h1>岁时历 · 观天晴雨录</h1>
+              <h1>时历</h1>
             </div>
           </div>
           <div class="header-right">
@@ -1095,7 +1131,7 @@
 
         <section class="city-bar">
           <div class="city-tabs" id="cityTabs">
-            <span class="city-tabs-label">城市：</span>
+            <span class="city-tabs-label">观象城市：</span>
           </div>
           <div class="city-search-wrap">
             <input type="text" id="cityInput" placeholder="输入城市名添加（如：苏州、成都）" autocomplete="off" />
@@ -1525,7 +1561,7 @@
 
       function renderCityTabs() {
         const container = document.getElementById('cityTabs');
-        container.innerHTML = '<span class="city-tabs-label">城市：</span>';
+        container.innerHTML = '<span class="city-tabs-label">观象城市：</span>';
 
         savedCities.forEach(city => {
           const isActive = String(city.id) === String(activeCityId);
@@ -1614,8 +1650,10 @@
               fourDaysHtml += `
                 <div class="${cls}">
                   <div class="day-mini-label">${item.label}</div>
-                  <div class="day-mini-icon">${dInfo.icon}</div>
-                  <div class="day-mini-text">${dInfo.text}</div>
+                  <div class="day-mini-cond">
+                    <span>${dInfo.icon}</span>
+                    <span class="day-mini-text">${dInfo.text}</span>
+                  </div>
                   <div class="day-mini-temp">${tempHtml}</div>
                 </div>
               `;
@@ -1623,8 +1661,7 @@
               fourDaysHtml += `
                 <div class="${cls}">
                   <div class="day-mini-label">${item.label}</div>
-                  <div class="day-mini-icon">--</div>
-                  <div class="day-mini-text">暂无</div>
+                  <div class="day-mini-cond"><span class="day-mini-text">暂无</span></div>
                   <div class="day-mini-temp">--</div>
                 </div>
               `;
@@ -1634,14 +1671,17 @@
 
           todayBox.innerHTML = `
             <div class="weather-now">
-              <div>
-                <div class="weather-city-name">${escapeHtml(city.name)}</div>
-                <div class="weather-city-sub">${escapeHtml(regionSub)}</div>
+              <div class="weather-now-top">
+                <div>
+                  <div class="weather-city-name">${escapeHtml(city.name)}</div>
+                  <div class="weather-city-sub">${escapeHtml(regionSub)}</div>
+                </div>
+                <div class="weather-temp-wrap">
+                  <div class="weather-temp-main">${Math.round(curr.temperature_2m)}°C</div>
+                  <div class="weather-desc">${wInfo.icon} ${wInfo.text}</div>
+                </div>
               </div>
-              <div class="weather-temp-wrap">
-                <div class="weather-temp-main">${Math.round(curr.temperature_2m)}°C</div>
-                <div class="weather-desc">${wInfo.icon} ${wInfo.text}</div>
-              </div>
+              ${fourDaysHtml}
             </div>
             <div class="weather-metrics">
               <div class="metric-item">
@@ -1657,7 +1697,6 @@
                 <div class="metric-val metric-sun">${sunriseTime} / ${sunsetTime}</div>
               </div>
             </div>
-            ${fourDaysHtml}
           `;
 
           let rowsHtml = '<div class="forecast-list">';
