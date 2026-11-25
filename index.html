@@ -62,7 +62,7 @@
 
     .scroll-inner {
       position: relative;
-      padding: 6px 14px 16px;
+      padding: 4px 14px 14px;
       background: var(--card-bg);
     }
 
@@ -73,32 +73,23 @@
       align-items: center;
       gap: 10px;
       padding-top: 2px;
-      padding-bottom: 6px;
+      padding-bottom: 5px;
       border-bottom: 3px double var(--gold-border);
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
       flex-shrink: 0;
-    }
-
-    .roman-clock {
-      width: 72px;
-      height: 72px;
-      display: block;
-      flex-shrink: 0;
-      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.12));
     }
 
     .brand-title h1 {
-      font-size: 26px;
+      font-size: 22px;
       color: var(--ocean-teal);
       letter-spacing: 3px;
       font-weight: 700;
-      line-height: 1.25;
+      line-height: 1.15;
       white-space: nowrap;
     }
 
@@ -106,15 +97,15 @@
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 6px;
+      gap: 4px;
       min-width: 0;
     }
 
     .live-clock {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--ink-sub);
-      letter-spacing: 0.8px;
-      padding: 5px 12px;
+      letter-spacing: 0.6px;
+      padding: 3px 10px;
       background: var(--card-inner);
       border: 1px solid var(--gold-border);
       border-radius: 3px;
@@ -123,8 +114,8 @@
 
     .live-clock strong {
       color: var(--ocean-teal);
-      font-size: 15px;
-      margin-left: 8px;
+      font-size: 14px;
+      margin-left: 6px;
       font-variant-numeric: tabular-nums;
     }
 
@@ -370,12 +361,12 @@
       box-shadow: 0 1px 2px rgba(230, 130, 40, 0.32);
     }
 
-    .month-sunday-cap.is-sunday.is-future {
+    .month-sunday-cap.is-sunday.is-passed {
       background: radial-gradient(circle at 35% 35%, #fbe0a3, #f0ac6b);
-      opacity: 0.85;
+      opacity: 0.72;
     }
 
-    /* 月份每日格子进度条：无色底 + 淡浅蓝色已过 + 翠绿色今日 */
+    /* 月份每日格子进度条：已过无色透明 + 今日翠绿 + 剩余满格灰色 */
     .month-days-track {
       display: grid;
       gap: 2px;
@@ -390,18 +381,17 @@
     .month-day-cell {
       height: 100%;
       background: transparent;
-      border: 1px solid rgba(155, 168, 174, 0.32);
+      border: 1px solid rgba(155, 168, 174, 0.25);
       border-radius: 1.5px;
       transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
     }
 
-    .month-day-cell.is-filled {
-      background: linear-gradient(180deg, #cbe8f4, #9fd3e8);
-      border-color: rgba(114, 178, 204, 0.55);
+    .month-day-cell.is-remaining {
+      background: linear-gradient(180deg, #dde2e5, #c3ccd1);
+      border-color: rgba(143, 163, 173, 0.6);
     }
 
-    .month-day-cell.is-current,
-    .month-day-cell.is-filled.is-current {
+    .month-day-cell.is-current {
       position: relative;
       z-index: 2;
       background: linear-gradient(180deg, #43c47e, #239055);
@@ -429,8 +419,8 @@
       user-select: none;
     }
 
-    .month-day-nums span.is-future,
-    .month-weekdays span.is-future {
+    .month-day-nums span.is-passed,
+    .month-weekdays span.is-passed {
       color: var(--ink-light);
     }
 
@@ -441,8 +431,8 @@
       font-weight: 700;
     }
 
-    .month-day-nums span.is-sunday.is-future,
-    .month-weekdays span.is-sunday.is-future {
+    .month-day-nums span.is-sunday.is-passed,
+    .month-weekdays span.is-sunday.is-passed {
       color: #e29148;
     }
 
@@ -469,7 +459,7 @@
       bottom: 0;
     }
 
-    /* 年份 12 格进度条：退后为低饱和浅亚麻沙色 */
+    /* 年份 12 格进度条：年初满格灰色，随时间流逝从左向右缩短 */
     #yearProgressPanel .progress-title {
       color: var(--ink-sub);
     }
@@ -488,14 +478,17 @@
 
     .year-grid-cell {
       height: 100%;
-      background: rgba(180, 175, 160, 0.12);
+      background: transparent;
+      border: 1px solid rgba(155, 168, 174, 0.25);
       border-radius: 1.5px;
       overflow: hidden;
+      display: flex;
+      justify-content: flex-end;
     }
 
     .year-grid-fill {
       height: 100%;
-      background: linear-gradient(90deg, #e5decb, #cfc3a6);
+      background: linear-gradient(90deg, #dde2e5, #c3ccd1);
       transition: width 0.35s ease;
     }
 
@@ -509,17 +502,17 @@
     .year-grid-labels span {
       text-align: center;
       font-size: 11px;
-      color: var(--ink-light);
+      color: var(--ink-sub);
       line-height: 1.1;
       font-variant-numeric: tabular-nums;
     }
 
     .year-grid-labels span.is-passed {
-      color: var(--ink-sub);
+      color: var(--ink-light);
     }
 
     .year-grid-labels span.is-current {
-      color: #7c6d4f;
+      color: var(--ink-main);
       font-weight: bold;
     }
 
@@ -924,7 +917,7 @@
         gap: 9px;
       }
       .scroll-inner {
-        padding: 5px 10px 12px;
+        padding: 4px 10px 12px;
       }
     }
 
@@ -936,29 +929,22 @@
         padding: 0;
       }
       .scroll-inner {
-        padding: 4px 6px 10px;
+        padding: 3px 6px 10px;
       }
       .header {
         padding-top: 1px;
-        padding-bottom: 5px;
-        margin-bottom: 7px;
+        padding-bottom: 4px;
+        margin-bottom: 6px;
         gap: 6px;
       }
-      .brand {
-        gap: 7px;
-      }
-      .roman-clock {
-        width: 58px;
-        height: 58px;
-      }
       .brand-title h1 {
-        font-size: 20px;
+        font-size: 18px;
         letter-spacing: 1.5px;
       }
       .live-clock {
         font-size: 11px;
         letter-spacing: 0.2px;
-        padding: 3px 7px;
+        padding: 2px 7px;
       }
       .live-clock strong {
         font-size: 12px;
@@ -1101,21 +1087,14 @@
     }
 
     @media (max-width: 375px) {
-      .brand {
-        gap: 5px;
-      }
-      .roman-clock {
-        width: 50px;
-        height: 50px;
-      }
       .brand-title h1 {
-        font-size: 18px;
+        font-size: 17px;
         letter-spacing: 1px;
       }
       .live-clock {
         font-size: 10px;
         letter-spacing: 0;
-        padding: 3px 5px;
+        padding: 2px 5px;
       }
       .live-clock strong {
         font-size: 11px;
@@ -1130,19 +1109,6 @@
       <div class="scroll-inner">
         <header class="header">
           <div class="brand">
-            <svg class="roman-clock" viewBox="0 0 100 100" aria-label="罗马数字实时时钟">
-              <circle cx="50" cy="50" r="47" fill="#fcfbf7" stroke="#111111" stroke-width="2.2" />
-              <circle cx="50" cy="50" r="44.2" fill="none" stroke="#536973" stroke-width="0.5" />
-              <g id="clockTicks"></g>
-              <g id="clockNumerals"></g>
-              <path id="clockHour" d="M 50 57 L 48.8 50 L 49.1 33 L 47.4 29 L 50 22 L 52.6 29 L 50.9 33 L 51.2 50 Z" fill="#24343d" />
-              <path id="clockMinute" d="M 50 58 L 49.1 50 L 49.3 23 L 48.0 19.5 L 50 13.5 L 52.0 19.5 L 50.7 23 L 50.9 50 Z" fill="#24343d" />
-              <g id="clockSecond">
-                <line x1="50" y1="61" x2="50" y2="11" stroke="#24343d" stroke-width="1.4" stroke-linecap="round" />
-                <circle cx="50" cy="63" r="2.2" fill="none" stroke="#24343d" stroke-width="1.2" />
-              </g>
-              <circle cx="50" cy="50" r="2.9" fill="#fcfbf7" stroke="#24343d" stroke-width="1.6" />
-            </svg>
             <div class="brand-title">
               <h1>时历</h1>
             </div>
@@ -1279,78 +1245,21 @@
         return String(cities[0].id);
       }
 
-      function initRomanClockDial() {
-        const svgNS = 'http://www.w3.org/2000/svg';
-        const ticksGroup = document.getElementById('clockTicks');
-        const numsGroup = document.getElementById('clockNumerals');
-        if (!ticksGroup || !numsGroup) return;
-
-        for (let i = 0; i < 60; i++) {
-          const isHour = i % 5 === 0;
-          const line = document.createElementNS(svgNS, 'line');
-          line.setAttribute('x1', '50');
-          line.setAttribute('x2', '50');
-          line.setAttribute('y1', isHour ? '4.5' : '5.2');
-          line.setAttribute('y2', isHour ? '10' : '8');
-          line.setAttribute('stroke', isHour ? '#24343d' : '#536973');
-          line.setAttribute('stroke-width', isHour ? '1.8' : '0.9');
-          line.setAttribute('transform', `rotate(${i * 6} 50 50)`);
-          ticksGroup.appendChild(line);
-        }
-
-        const romans = ['XII', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI'];
-        const radius = 33.5;
-        romans.forEach((label, idx) => {
-          const deg = idx * 30;
-          const rad = ((deg - 90) * Math.PI) / 180;
-          const x = 50 + radius * Math.cos(rad);
-          const y = 50 + radius * Math.sin(rad);
-          const rot = idx >= 4 && idx <= 8 ? deg - 180 : deg;
-
-          const text = document.createElementNS(svgNS, 'text');
-          text.setAttribute('x', x.toFixed(2));
-          text.setAttribute('y', y.toFixed(2));
-          text.setAttribute('text-anchor', 'middle');
-          text.setAttribute('dominant-baseline', 'central');
-          text.setAttribute('fill', '#24343d');
-          text.setAttribute('font-size', '9.2');
-          text.setAttribute('font-family', 'Georgia, "Times New Roman", serif');
-          text.setAttribute('transform', `rotate(${rot} ${x.toFixed(2)} ${y.toFixed(2)})`);
-          text.textContent = label;
-          numsGroup.appendChild(text);
-        });
-      }
-
       function updateClock() {
         const d = new Date();
         const pad = n => String(n).padStart(2, '0');
         const dateStr = `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日 ${WEEKDAYS[d.getDay()]}`;
         const timeStr = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
         document.getElementById('liveClock').innerHTML = `${dateStr} <strong>${timeStr}</strong>`;
-
-        const h = d.getHours();
-        const m = d.getMinutes();
-        const s = d.getSeconds();
-        const hourDeg = ((h % 12) + m / 60 + s / 3600) * 30;
-        const minDeg = (m + s / 60) * 6;
-        const secDeg = s * 6;
-
-        const hEl = document.getElementById('clockHour');
-        const mEl = document.getElementById('clockMinute');
-        const sEl = document.getElementById('clockSecond');
-        if (hEl) hEl.setAttribute('transform', `rotate(${hourDeg.toFixed(2)} 50 50)`);
-        if (mEl) mEl.setAttribute('transform', `rotate(${minDeg.toFixed(2)} 50 50)`);
-        if (sEl) sEl.setAttribute('transform', `rotate(${secDeg} 50 50)`);
       }
 
-      initRomanClockDial();
       updateClock();
       setInterval(updateClock, 1000);
 
       function buildMonthProgressHtml(y, m, d) {
         const daysInMonth = new Date(y, m, 0).getDate();
         const remainMonthDays = daysInMonth - d;
-        const monthPct = (d / daysInMonth) * 100;
+        const remainPct = (remainMonthDays / daysInMonth) * 100;
 
         let sundayCapsHtml = '';
         let monthCellsHtml = '';
@@ -1360,25 +1269,26 @@
         for (let dayIdx = 1; dayIdx <= daysInMonth; dayIdx++) {
           const dayOfWeek = new Date(y, m - 1, dayIdx).getDay();
           const weekdayChar = WEEKDAY_CHARS[dayOfWeek];
-          const isFilled = dayIdx <= d;
+          const isPassed = dayIdx < d;
           const isCurrent = dayIdx === d;
+          const isRemaining = dayIdx > d;
           const isSunday = dayOfWeek === 0;
           const isWeekEnd = isSunday && dayIdx < daysInMonth;
 
           const capCls = [
             'month-sunday-cap',
             isSunday ? 'is-sunday' : '',
-            !isFilled ? 'is-future' : ''
+            isPassed ? 'is-passed' : ''
           ].filter(Boolean).join(' ');
 
           const cellCls = [
             'month-day-cell',
-            isFilled ? 'is-filled' : '',
+            isRemaining ? 'is-remaining' : '',
             isCurrent ? 'is-current' : ''
           ].filter(Boolean).join(' ');
 
           const labelCls = [
-            !isFilled ? 'is-future' : '',
+            isPassed ? 'is-passed' : '',
             isCurrent ? 'is-current' : '',
             isSunday ? 'is-sunday' : '',
             isWeekEnd ? 'is-week-end' : ''
@@ -1399,7 +1309,7 @@
             <div class="month-sunday-row" style="grid-template-columns: repeat(${daysInMonth}, 1fr);" aria-hidden="true">
               ${sundayCapsHtml}
             </div>
-            <div class="month-days-track" style="grid-template-columns: repeat(${daysInMonth}, 1fr);" role="progressbar" aria-valuenow="${monthPct.toFixed(1)}" aria-valuemin="0" aria-valuemax="100">
+            <div class="month-days-track" style="grid-template-columns: repeat(${daysInMonth}, 1fr);" role="progressbar" aria-valuenow="${remainPct.toFixed(1)}" aria-valuemin="0" aria-valuemax="100">
               ${monthCellsHtml}
             </div>
             <div class="month-day-nums" style="grid-template-columns: repeat(${daysInMonth}, 1fr);">
@@ -1419,19 +1329,19 @@
         const startOfYear = new Date(y, 0, 1);
         const dayOfYear = Math.floor((new Date(y, m - 1, d) - startOfYear) / 86400000) + 1;
         const remainYearDays = daysInYear - dayOfYear;
-        const yearPct = (dayOfYear / daysInYear) * 100;
+        const remainYearPct = (remainYearDays / daysInYear) * 100;
 
         let yearCellsHtml = '';
         let yearLabelsHtml = '';
         for (let monthIdx = 1; monthIdx <= 12; monthIdx++) {
-          let cellPct = 0;
-          if (monthIdx < m) {
-            cellPct = 100;
+          let cellRemainPct = 0;
+          if (monthIdx > m) {
+            cellRemainPct = 100;
           } else if (monthIdx === m) {
-            cellPct = (d / daysInMonth) * 100;
+            cellRemainPct = ((daysInMonth - d) / daysInMonth) * 100;
           }
           const labelClass = monthIdx === m ? 'is-current' : (monthIdx < m ? 'is-passed' : '');
-          yearCellsHtml += `<div class="year-grid-cell" title="${monthIdx}月"><div class="year-grid-fill" style="width: ${cellPct.toFixed(2)}%;"></div></div>`;
+          yearCellsHtml += `<div class="year-grid-cell" title="${monthIdx}月"><div class="year-grid-fill" style="width: ${cellRemainPct.toFixed(2)}%;"></div></div>`;
           yearLabelsHtml += `<span class="${labelClass}">${monthIdx}</span>`;
         }
 
@@ -1449,7 +1359,7 @@
               <span class="progress-title">年份进度（${y}年）</span>
               <span class="progress-meta">第 ${dayOfYear} / ${daysInYear} 天 · 剩 ${remainYearDays} 天</span>
             </div>
-            <div class="year-grid-track" role="progressbar" aria-valuenow="${yearPct.toFixed(1)}" aria-valuemin="0" aria-valuemax="100">
+            <div class="year-grid-track" role="progressbar" aria-valuenow="${remainYearPct.toFixed(1)}" aria-valuemin="0" aria-valuemax="100">
               ${yearCellsHtml}
             </div>
             <div class="year-grid-labels">
