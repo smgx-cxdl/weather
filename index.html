@@ -280,7 +280,7 @@
 
     .main-grid {
       display: grid;
-      grid-template-columns: 1.04fr 0.96fr;
+      grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
       gap: 11px;
       align-items: start;
     }
@@ -294,6 +294,8 @@
     }
 
     .panel {
+      width: 100%;
+      min-width: 0;
       border: 1px solid var(--gold-border);
       background: var(--card-bg);
       padding: 10px 13px;
@@ -321,7 +323,7 @@
       margin-right: 4px;
     }
 
-    /* 今日实况标题栏中的日/月天文图标（左移到标题右侧一点，且图标紧贴对应文字） */
+    /* 今日实况标题栏中的日/月天文图标 */
     .weather-panel-title {
       gap: 6px;
     }
@@ -631,6 +633,7 @@
     }
 
     .cal-weekdays, .cal-days {
+      width: 100%;
       display: grid;
       grid-template-columns: repeat(7, minmax(0, 1fr));
       gap: 3px;
@@ -651,8 +654,9 @@
     }
 
     .cal-cell {
+      width: 100%;
       min-width: 0;
-      min-height: 45px;
+      height: 47px;
       padding: 5px 2px 3px;
       text-align: center;
       border: 1px solid transparent;
@@ -1235,7 +1239,7 @@
 
     @media (max-width: 860px) {
       .main-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
         gap: 8px;
       }
       .main-col-left,
@@ -1404,7 +1408,7 @@
         margin-bottom: 1.5px;
       }
       .cal-cell {
-        min-height: 32px;
+        height: 34px;
         padding: 1.5px 1px;
       }
       .cal-solar {
@@ -2276,7 +2280,8 @@
         const daysInPrevMonth = new Date(year, month - 1, 0).getDate();
 
         const today = new Date();
-        const totalCells = Math.ceil((firstDayOfWeek + daysInMonth) / 7) * 7;
+        // 固定 6 行 × 7 列 = 42 格，使所有月份保持相同尺寸
+        const totalCells = 42;
 
         for (let i = 0; i < totalCells; i++) {
           let cellY = year;
