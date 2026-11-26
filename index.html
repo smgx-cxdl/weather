@@ -715,7 +715,7 @@
 
     /* 今日实况卡片 */
     .weather-now {
-      min-height: 146px;
+      min-height: 152px;
       padding: 10px 12px;
       background: transparent;
       border: 1px solid rgba(61, 152, 181, 0.3);
@@ -735,28 +735,28 @@
       opacity: 0.58;
     }
 
-    /* 左侧信息区 + 右侧日月出落演示区 */
+    /* 左侧信息区（紧凑）+ 右侧日月圆环（最大化） */
     .weather-now-main {
       display: flex;
       justify-content: space-between;
-      align-items: stretch;
-      gap: 12px;
+      align-items: center;
+      gap: 10px;
     }
 
     .weather-left-info {
-      flex: 1;
+      flex: 0 0 198px;
       min-width: 0;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      gap: 7px;
+      justify-content: center;
+      gap: 6px;
     }
 
     .weather-head-row {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      gap: 8px;
+      gap: 6px;
     }
 
     .weather-city-block {
@@ -768,11 +768,11 @@
       font-size: 18px;
       font-weight: bold;
       color: var(--ocean-teal);
-      line-height: 1.2;
+      line-height: 1.15;
     }
 
     .weather-city-sub {
-      font-size: 11px;
+      font-size: 10.5px;
       color: var(--ink-sub);
       margin-top: 1px;
       white-space: nowrap;
@@ -786,7 +786,7 @@
     }
 
     .weather-temp-main {
-      font-size: 28px;
+      font-size: 26px;
       font-weight: bold;
       color: var(--ocean-teal);
       line-height: 1.05;
@@ -794,7 +794,7 @@
     }
 
     .weather-desc {
-      font-size: 12px;
+      font-size: 11.5px;
       color: var(--ink-main);
       margin-top: 1px;
       white-space: nowrap;
@@ -802,106 +802,128 @@
 
     .weather-metrics-row {
       display: flex;
-      flex-wrap: wrap;
       align-items: center;
-      gap: 4px 12px;
-      font-size: 12px;
-      line-height: 1.3;
+      gap: 10px;
+      font-size: 11.5px;
+      line-height: 1.25;
       color: var(--ink-sub);
+      white-space: nowrap;
     }
 
     .weather-metrics-row strong {
       color: var(--ink-main);
       font-weight: 600;
       font-variant-numeric: tabular-nums;
-      margin-left: 3px;
+      margin-left: 2px;
     }
 
-    /* 紫外线 5 格紫色实体进度条 */
-    .uv-block {
+    /* 极简紧凑紫外线 5 格（未填充部分无色透明，已填充部分紫色+白色字体） */
+    .uv-row {
       display: flex;
-      flex-direction: column;
-      gap: 3px;
+      align-items: center;
+      gap: 5px;
     }
 
-    .uv-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      font-size: 11.5px;
-      line-height: 1.2;
-      color: var(--ink-sub);
-    }
-
-    .uv-header strong {
-      color: #6b2fb5;
+    .uv-title {
       font-size: 11px;
-      font-weight: 600;
-      font-variant-numeric: tabular-nums;
+      color: var(--ink-sub);
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .uv-track {
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 2px;
-      width: 100%;
-      height: 18px;
-      padding: 1.5px;
-      border: 1px solid rgba(107, 47, 181, 0.45);
-      border-radius: 3px;
-      background: rgba(124, 77, 189, 0.12);
+      gap: 1.5px;
+      width: 122px;
+      height: 14px;
+      padding: 1px;
+      background: transparent;
+      border: 1px solid rgba(110, 56, 179, 0.35);
+      border-radius: 2.5px;
+      flex-shrink: 0;
     }
 
     .uv-cell {
       position: relative;
       height: 100%;
+      background: transparent;
+      border: 1px solid rgba(110, 56, 179, 0.28);
       border-radius: 1.5px;
       overflow: hidden;
-      background: #9f87c4;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .uv-cell-fill {
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      background: linear-gradient(180deg, #8b47e6, #6525b8);
-      transition: width 0.35s ease;
-    }
-
-    .uv-cell-label {
-      position: relative;
-      z-index: 2;
-      color: #ffffff;
-      font-size: 10px;
+    .uv-label {
+      font-size: 8.5px;
       font-weight: 600;
       line-height: 1;
       white-space: nowrap;
       user-select: none;
-      text-shadow: 0 1px 1px rgba(42, 12, 82, 0.4);
     }
 
-    /* 右侧日月出落演示区 */
-    .weather-celestial-wrap {
-      flex: 0 0 212px;
+    .uv-label-base {
+      color: #6f3cb5;
+    }
+
+    .uv-fill-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, #8b47e6, #6525b8);
       display: flex;
       align-items: center;
       justify-content: center;
+      pointer-events: none;
+    }
+
+    .uv-label-white {
+      color: #ffffff;
+    }
+
+    /* 移至左侧的日出日落 / 月出月落时刻 */
+    .astro-times-left {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      font-size: 10.5px;
+      line-height: 1.3;
+      color: var(--ink-sub);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .astro-times-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .astro-times-line strong {
+      color: var(--ink-main);
+      font-weight: 600;
+      margin-left: 2px;
+    }
+
+    /* 右侧日月出落圆环区域：占据所有剩余空间并尽量最大化 */
+    .weather-celestial-wrap {
+      flex: 1;
       min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .celestial-svg {
       width: 100%;
+      max-width: 184px;
       height: auto;
-      max-height: 158px;
       display: block;
       overflow: visible;
     }
 
-    /* 四日对比（已去掉顶部灰线） */
+    /* 四日对比（无顶部灰线） */
     .weather-four-days {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1358,52 +1380,58 @@
         line-height: 1.08;
       }
       .weather-now {
-        min-height: 128px;
-        padding: 8px 8px;
+        min-height: 138px;
+        padding: 7px 7px;
       }
       .weather-now-main {
-        gap: 8px;
+        gap: 6px;
       }
       .weather-left-info {
-        gap: 5px;
+        flex: 0 0 156px;
+        gap: 4px;
       }
       .weather-head-row {
         gap: 4px;
       }
       .weather-city-name {
-        font-size: 16px;
+        font-size: 15.5px;
       }
       .weather-city-sub {
-        font-size: 10px;
+        font-size: 9.5px;
       }
       .weather-temp-main {
-        font-size: 23px;
+        font-size: 22px;
       }
       .weather-desc {
-        font-size: 11px;
+        font-size: 10.5px;
       }
       .weather-metrics-row {
-        gap: 3px 9px;
-        font-size: 11px;
-      }
-      .uv-header {
+        gap: 8px;
         font-size: 10.5px;
       }
-      .uv-header strong {
-        font-size: 10.5px;
+      .uv-row {
+        gap: 4px;
+      }
+      .uv-title {
+        font-size: 10px;
       }
       .uv-track {
-        height: 16px;
-        gap: 1.5px;
+        width: 112px;
+        height: 13px;
+        gap: 1px;
+        padding: 1px;
       }
-      .uv-cell-label {
-        font-size: 9px;
+      .uv-label {
+        font-size: 7.8px;
       }
-      .weather-celestial-wrap {
-        flex: 0 0 148px;
+      .astro-times-left {
+        font-size: 9.8px;
+      }
+      .astro-times-line {
+        gap: 6px;
       }
       .celestial-svg {
-        max-height: 122px;
+        max-width: 170px;
       }
       .weather-four-days {
         gap: 4px;
@@ -1455,14 +1483,20 @@
         font-size: 11px;
         margin-left: 3px;
       }
+      .weather-left-info {
+        flex: 0 0 144px;
+      }
       .weather-temp-main {
-        font-size: 21px;
+        font-size: 20px;
       }
-      .weather-celestial-wrap {
-        flex: 0 0 134px;
+      .uv-track {
+        width: 104px;
       }
-      .uv-cell-label {
-        font-size: 8.5px;
+      .uv-label {
+        font-size: 7.4px;
+      }
+      .astro-times-left {
+        font-size: 9.2px;
       }
     }
   </style>
@@ -1581,7 +1615,7 @@
         { id: '1808926', name: '杭州', admin1: '浙江省', country: '中国', latitude: 30.29365, longitude: 120.16142 }
       ];
 
-      // 内嵌轻量级太阳/月亮位置与月相推演算法（源自 SunCalc 天文公式）
+      // 内嵌轻量级太阳/月亮位置与月相推演算法
       const SunCalcLite = (function () {
         const PI = Math.PI;
         const sin = Math.sin;
@@ -1772,6 +1806,7 @@
       let countdownState = loadCountdownState();
       let countdownEditorOpen = false;
       let hasWeatherRendered = false;
+      let lastCelestialCtx = null;
 
       function escapeHtml(str) {
         return String(str || '').replace(/[&<>"']/g, function (m) {
@@ -2323,7 +2358,7 @@
         return map[code] || { text: '气象未知', icon: '🌡️' };
       }
 
-      // 构建紫外线 5 格紫色实体进度条
+      // 极简紫外线 5 格进度条（未填充无色，已填充部分紫色底+白色字体）
       function buildUvBarHtml(uvRaw) {
         const uv = Math.max(0, Number.isFinite(uvRaw) ? uvRaw : 0);
         const tiers = [
@@ -2346,20 +2381,22 @@
           } else if (uv > tier.min) {
             pct = ((uv - tier.min) / (tier.max - tier.min)) * 100;
           }
+          const clipRight = (100 - pct).toFixed(1);
           return `
             <div class="uv-cell" title="${tier.label}（UV ${uv.toFixed(1)}）">
-              <div class="uv-cell-fill" style="width: ${pct.toFixed(1)}%;"></div>
-              <span class="uv-cell-label">${tier.label}</span>
+              <span class="uv-label uv-label-base">${tier.label}</span>
+              ${pct > 0 ? `
+                <div class="uv-fill-overlay" style="clip-path: inset(0 ${clipRight}% 0 0);">
+                  <span class="uv-label uv-label-white">${tier.label}</span>
+                </div>
+              ` : ''}
             </div>
           `;
         }).join('');
 
         return `
-          <div class="uv-block">
-            <div class="uv-header">
-              <span>紫外线</span>
-              <strong>${uv.toFixed(1)} · ${activeLabel}</strong>
-            </div>
+          <div class="uv-row" title="实时紫外线指数 ${uv.toFixed(1)} · ${activeLabel}">
+            <span class="uv-title">紫外线</span>
             <div class="uv-track" role="progressbar" aria-valuenow="${uv.toFixed(1)}" aria-valuemin="0" aria-valuemax="12">
               ${cellsHtml}
             </div>
@@ -2375,29 +2412,27 @@
         return `${hh}:${mm}`;
       }
 
-      function getOrbitAngleFromEvents(nowMs, events, fallbackAbove) {
+      function getCityLocalHours(utcMs, offsetSec) {
+        const d = new Date(utcMs + offsetSec * 1000);
+        return d.getUTCHours() + d.getUTCMinutes() / 60 + d.getUTCSeconds() / 3600;
+      }
+
+      // 24小时制圆环角度：12点在正上方(π/2)，18点在正右(0)，0点在正下(-π/2)，6点在正左(π)
+      function timeTo24hAngle(hours24) {
+        return Math.PI * (1.5 - hours24 / 12);
+      }
+
+      function isBodyAboveHorizon(nowMs, events, fallbackAbove) {
         let prev = null;
-        let next = null;
         for (let i = 0; i < events.length; i++) {
           if (events[i].time <= nowMs) {
             prev = events[i];
           } else {
-            next = events[i];
             break;
           }
         }
-        if (prev && next && next.time > prev.time) {
-          const p = (nowMs - prev.time) / (next.time - prev.time);
-          if (prev.type === 'rise' && next.type === 'set') {
-            // 地平线之上：左侧(π) -> 顶部(π/2) -> 右侧(0)
-            return Math.PI * (1 - p);
-          }
-          if (prev.type === 'set' && next.type === 'rise') {
-            // 地平线之下：右侧(0) -> 底部(-π/2) -> 左侧(-π)
-            return -Math.PI * p;
-          }
-        }
-        return fallbackAbove ? Math.PI / 2 : -Math.PI / 2;
+        if (prev) return prev.type === 'rise';
+        return fallbackAbove;
       }
 
       function getMoonPhaseName(phase) {
@@ -2420,11 +2455,9 @@
         } else if (fraction > 0.015) {
           const rx = Math.max(0.01, Math.abs(Math.cos(phase * 2 * Math.PI)) * r);
           if (phase <= 0.5) {
-            // 渐盈：右侧亮，sweep=1 从上经右到下
             const termSweep = phase < 0.25 ? 0 : 1;
             litPath = `<path d="M 0 ${-r} A ${r} ${r} 0 0 1 0 ${r} A ${rx.toFixed(2)} ${r} 0 0 ${termSweep} 0 ${-r} Z" fill="#e6eaee" />`;
           } else {
-            // 渐亏：左侧亮，sweep=0 从上经左到下
             const termSweep = phase < 0.75 ? 0 : 1;
             litPath = `<path d="M 0 ${-r} A ${r} ${r} 0 0 0 0 ${r} A ${rx.toFixed(2)} ${r} 0 0 ${termSweep} 0 ${-r} Z" fill="#e6eaee" />`;
           }
@@ -2441,14 +2474,13 @@
         `;
       }
 
-      // 构建右侧“日月出落演示”SVG
-      function buildCelestialDiagramHtml(city, offsetSec, fallbackSunriseStr, fallbackSunsetStr) {
+      // 计算天文数据（日出日落、月出月落、实时位置与月相）
+      function computeCelestialState(city, offsetSec, fallbackSunriseStr, fallbackSunsetStr) {
         const lat = Number(city.latitude);
         const lng = Number(city.longitude);
         const nowMs = Date.now();
         const nowDate = new Date(nowMs);
 
-        // 计算目标城市当地的“今日零点”与“今日正午”对应的 UTC 时间戳
         const shifted = new Date(nowMs + offsetSec * 1000);
         const cY = shifted.getUTCFullYear();
         const cM = shifted.getUTCMonth();
@@ -2457,7 +2489,6 @@
         const dayEndMs = dayStartMs + 86400000;
         const dayNoonMs = dayStartMs + 43200000;
 
-        // 搜集昨日、今日、明日的日出/日落事件
         const sunEvents = [];
         [-86400000, 0, 86400000].forEach(delta => {
           const st = SunCalcLite.getSunTimes(new Date(dayNoonMs + delta), lat, lng);
@@ -2471,7 +2502,6 @@
         const sunriseLabel = todaySunRise ? formatCityHm(todaySunRise.time, offsetSec) : (fallbackSunriseStr || '--:--');
         const sunsetLabel = todaySunSet ? formatCityHm(todaySunSet.time, offsetSec) : (fallbackSunsetStr || '--:--');
 
-        // 搜集72小时内的月出/月落事件
         const moonEvents = SunCalcLite.getMoonEvents(dayStartMs - 86400000, 72, lat, lng);
         const todayMoonRise = moonEvents.find(e => e.type === 'rise' && e.time >= dayStartMs && e.time < dayEndMs);
         const todayMoonSet = moonEvents.find(e => e.type === 'set' && e.time >= dayStartMs && e.time < dayEndMs);
@@ -2482,93 +2512,202 @@
         const moonPos = SunCalcLite.getMoonPosition(nowDate, lat, lng);
         const moonIllum = SunCalcLite.getMoonIllumination(nowDate);
 
-        const sunAngle = getOrbitAngleFromEvents(nowMs, sunEvents, sunPos.altitude >= 0);
-        const moonAngle = getOrbitAngleFromEvents(nowMs, moonEvents, moonPos.altitude >= 0);
+        const nowH = getCityLocalHours(nowMs, offsetSec);
+        const isDaytime = isBodyAboveHorizon(nowMs, sunEvents, sunPos.altitude >= 0);
+        const isMoonVisible = isBodyAboveHorizon(nowMs, moonEvents, moonPos.altitude >= 0);
 
-        // SVG 坐标系设计（在所属区域尽量最大化）
-        const cx = 92;
-        const cy = 73;
-        const R = 48;
-        const sunR = 8.8;
+        return {
+          lat,
+          nowMs,
+          nowH,
+          offsetSec,
+          sunriseLabel,
+          sunsetLabel,
+          moonriseLabel,
+          moonsetLabel,
+          todaySunRise,
+          todaySunSet,
+          todayMoonRise,
+          todayMoonSet,
+          isDaytime,
+          isMoonVisible,
+          moonIllum
+        };
+      }
+
+      // 构建右侧 24 小时制“日月出落圆环”SVG
+      function buildCelestialSvg(state) {
+        const cx = 78;
+        const cy = 78;
+        const R = 59;
+        const sunR = 8.6;
         const moonR = 6.0;
 
-        let sunRadius = R;
-        let moonRadius = R;
+        const nowAngle = timeTo24hAngle(state.nowH);
 
-        let sx = cx + sunRadius * Math.cos(sunAngle);
-        let sy = cy - sunRadius * Math.sin(sunAngle);
-        let mx = cx + moonRadius * Math.cos(moonAngle);
-        let my = cy - moonRadius * Math.sin(moonAngle);
-
-        // 若日月位置重合或过近，将月亮向内侧轨道错开、太阳略微外移
-        const dist = Math.hypot(sx - mx, sy - my);
-        if (dist < sunR + moonR + 4.5) {
-          sunRadius = R + 3.5;
-          moonRadius = R - 13.5;
-          sx = cx + sunRadius * Math.cos(sunAngle);
-          sy = cy - sunRadius * Math.sin(sunAngle);
-          mx = cx + moonRadius * Math.cos(moonAngle);
-          my = cy - moonRadius * Math.sin(moonAngle);
+        // 实际日出日落白天扇区
+        let daylightSectorHtml = '';
+        if (state.todaySunRise && state.todaySunSet) {
+          const hRise = getCityLocalHours(state.todaySunRise.time, state.offsetSec);
+          const hSet = getCityLocalHours(state.todaySunSet.time, state.offsetSec);
+          const aRise = timeTo24hAngle(hRise);
+          const aSet = timeTo24hAngle(hSet);
+          const sx1 = cx + R * Math.cos(aRise);
+          const sy1 = cy - R * Math.sin(aRise);
+          const sx2 = cx + R * Math.cos(aSet);
+          const sy2 = cy - R * Math.sin(aSet);
+          const largeArc = (hSet - hRise) > 12 ? 1 : 0;
+          daylightSectorHtml = `
+            <path d="M ${cx} ${cy} L ${sx1.toFixed(2)} ${sy1.toFixed(2)} A ${R} ${R} 0 ${largeArc} 1 ${sx2.toFixed(2)} ${sy2.toFixed(2)} Z" fill="rgba(255, 196, 92, 0.13)" />
+          `;
+        } else {
+          daylightSectorHtml = `
+            <path d="M ${cx - R} ${cy} A ${R} ${R} 0 0 1 ${cx + R} ${cy} Z" fill="rgba(255, 196, 92, 0.10)" />
+          `;
         }
 
-        const moonName = getMoonPhaseName(moonIllum.phase);
-        const moonPct = Math.round(moonIllum.fraction * 100);
-        const sunTitle = `太阳当前状态（日出 ${sunriseLabel} / 日落 ${sunsetLabel}）`;
-        const moonTitle = `当前月相：${moonName}（照明 ${moonPct}% · 月出 ${moonriseLabel} / 月落 ${moonsetLabel}）`;
+        // 出落刻点微标记（日出/日落为橙色小点，月出/月落为灰色小点）
+        let markersHtml = '';
+        if (state.todaySunRise) {
+          const a = timeTo24hAngle(getCityLocalHours(state.todaySunRise.time, state.offsetSec));
+          markersHtml += `<circle cx="${(cx + R * Math.cos(a)).toFixed(2)}" cy="${(cy - R * Math.sin(a)).toFixed(2)}" r="2.2" fill="#e68228" opacity="0.85" />`;
+        }
+        if (state.todaySunSet) {
+          const a = timeTo24hAngle(getCityLocalHours(state.todaySunSet.time, state.offsetSec));
+          markersHtml += `<circle cx="${(cx + R * Math.cos(a)).toFixed(2)}" cy="${(cy - R * Math.sin(a)).toFixed(2)}" r="2.2" fill="#e68228" opacity="0.85" />`;
+        }
+        if (state.todayMoonRise) {
+          const a = timeTo24hAngle(getCityLocalHours(state.todayMoonRise.time, state.offsetSec));
+          markersHtml += `<circle cx="${(cx + R * Math.cos(a)).toFixed(2)}" cy="${(cy - R * Math.sin(a)).toFixed(2)}" r="2.1" fill="#7c8790" opacity="0.85" />`;
+        }
+        if (state.todayMoonSet) {
+          const a = timeTo24hAngle(getCityLocalHours(state.todayMoonSet.time, state.offsetSec));
+          markersHtml += `<circle cx="${(cx + R * Math.cos(a)).toFixed(2)}" cy="${(cy - R * Math.sin(a)).toFixed(2)}" r="2.1" fill="#7c8790" opacity="0.85" />`;
+        }
+
+        // 计算太阳与月亮坐标（同处于当前时刻 nowAngle，若同时显示则径向错开防重叠）
+        let sunRadius = R;
+        let moonRadius = R;
+        if (state.isMoonVisible) {
+          sunRadius = R + 3.5;
+          moonRadius = R - 13.5;
+        }
+
+        const sx = cx + sunRadius * Math.cos(nowAngle);
+        const sy = cy - sunRadius * Math.sin(nowAngle);
+        const mx = cx + moonRadius * Math.cos(nowAngle);
+        const my = cy - moonRadius * Math.sin(nowAngle);
+
+        const moonName = getMoonPhaseName(state.moonIllum.phase);
+        const moonPct = Math.round(state.moonIllum.fraction * 100);
+        const nowClockStr = formatCityHm(state.nowMs, state.offsetSec);
+        const sunTitle = `太阳（当前 ${nowClockStr} · 日出 ${state.sunriseLabel} / 日落 ${state.sunsetLabel}）`;
+        const moonTitle = `月亮：${moonName}（照明 ${moonPct}% · 月出 ${state.moonriseLabel} / 月落 ${state.moonsetLabel}）`;
+
+        const sunElementHtml = state.isDaytime
+          ? `
+            <g>
+              <title>${sunTitle}</title>
+              <circle cx="${sx.toFixed(2)}" cy="${sy.toFixed(2)}" r="${sunR + 4.8}" fill="url(#sunHaloGrad)" />
+              <circle cx="${sx.toFixed(2)}" cy="${sy.toFixed(2)}" r="${sunR}" fill="url(#sunBodyGrad)" stroke="#eb6b09" stroke-width="0.7" />
+            </g>
+          `
+          : `
+            <g opacity="0.38">
+              <title>${sunTitle}（夜间在地平线下）</title>
+              <circle cx="${sx.toFixed(2)}" cy="${sy.toFixed(2)}" r="${sunR - 1}" fill="#f7a03b" stroke="#d97014" stroke-width="0.8" stroke-dasharray="2 1.5" />
+            </g>
+          `;
+
+        const moonElementHtml = state.isMoonVisible
+          ? `
+            <g>
+              <title>${moonTitle}</title>
+              ${buildMoonPhaseSvg(mx, my, moonR, state.moonIllum.phase, state.moonIllum.fraction, state.lat < 0)}
+            </g>
+          `
+          : '';
 
         return `
-          <div class="weather-celestial-wrap" title="日月出落实时演示 · 左升右落顺时针">
-            <svg class="celestial-svg" viewBox="0 0 184 146" role="img" aria-label="日月出落实时演示">
-              <defs>
-                <radialGradient id="sunBodyGrad" cx="38%" cy="35%" r="65%">
-                  <stop offset="0%" stop-color="#ffe169" />
-                  <stop offset="58%" stop-color="#ff9914" />
-                  <stop offset="100%" stop-color="#f26b0a" />
-                </radialGradient>
-                <radialGradient id="sunHaloGrad" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stop-color="rgba(255, 152, 24, 0.42)" />
-                  <stop offset="100%" stop-color="rgba(255, 152, 24, 0)" />
-                </radialGradient>
-              </defs>
+          <svg class="celestial-svg" viewBox="0 0 156 156" role="img" aria-label="24小时制日月出落实时演示">
+            <defs>
+              <radialGradient id="sunBodyGrad" cx="38%" cy="35%" r="65%">
+                <stop offset="0%" stop-color="#ffe169" />
+                <stop offset="58%" stop-color="#ff9914" />
+                <stop offset="100%" stop-color="#f26b0a" />
+              </radialGradient>
+              <radialGradient id="sunHaloGrad" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="rgba(255, 152, 24, 0.42)" />
+                <stop offset="100%" stop-color="rgba(255, 152, 24, 0)" />
+              </radialGradient>
+            </defs>
 
-              <!-- 昼/夜背景区域微弱区分 -->
-              <path d="M ${cx - R} ${cy} A ${R} ${R} 0 0 1 ${cx + R} ${cy} Z" fill="rgba(255, 196, 92, 0.08)" />
-              <path d="M ${cx - R} ${cy} A ${R} ${R} 0 0 0 ${cx + R} ${cy} Z" fill="rgba(38, 111, 136, 0.06)" />
+            <!-- 夜间下半圆底色 + 实际白天扇区 -->
+            <path d="M ${cx - R} ${cy} A ${R} ${R} 0 0 0 ${cx + R} ${cy} Z" fill="rgba(38, 111, 136, 0.05)" />
+            ${daylightSectorHtml}
 
-              <!-- 运行虚线圆环 -->
-              <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#8ea0aa" stroke-width="1.25" stroke-dasharray="4 3.2" />
+            <!-- 24小时制虚线圆环 -->
+            <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#8ea0aa" stroke-width="1.25" stroke-dasharray="4 3" />
 
-              <!-- 水平地平线 -->
-              <line x1="${cx - R - 18}" y1="${cy}" x2="${cx + R + 18}" y2="${cy}" stroke="#6c7e88" stroke-width="1.2" />
-              <circle cx="${cx - R}" cy="${cy}" r="2.1" fill="#6c7e88" />
-              <circle cx="${cx + R}" cy="${cy}" r="2.1" fill="#6c7e88" />
+            <!-- 06:00 - 18:00 水平分界线 -->
+            <line x1="${cx - R - 4}" y1="${cy}" x2="${cx + R + 4}" y2="${cy}" stroke="#6c7e88" stroke-width="1.15" />
 
-              <!-- 昼 / 夜 标识 -->
-              <text x="${cx}" y="${cy - 8}" text-anchor="middle" font-size="12" font-weight="600" fill="#c96c1f" opacity="0.85">昼</text>
-              <text x="${cx}" y="${cy + 17}" text-anchor="middle" font-size="12" font-weight="600" fill="#4f6570" opacity="0.85">夜</text>
+            <!-- 12 / 0 刻度短线 -->
+            <line x1="${cx}" y1="${cy - R - 2.5}" x2="${cx}" y2="${cy - R + 2.5}" stroke="#8ea0aa" stroke-width="1" />
+            <line x1="${cx}" y1="${cy + R - 2.5}" x2="${cx}" y2="${cy + R + 2.5}" stroke="#8ea0aa" stroke-width="1" />
 
-              <!-- 四角出落时刻标签 -->
-              <text x="2" y="13" text-anchor="start" font-size="10.5" fill="#c96c1f" font-weight="600">日出 ${sunriseLabel}</text>
-              <text x="182" y="13" text-anchor="end" font-size="10.5" fill="#c96c1f" font-weight="600">日落 ${sunsetLabel}</text>
-              <text x="2" y="140" text-anchor="start" font-size="10.5" fill="#5e6e78">月出 ${moonriseLabel}</text>
-              <text x="182" y="140" text-anchor="end" font-size="10.5" fill="#5e6e78">月落 ${moonsetLabel}</text>
+            <!-- 24小时制极简数字刻度 -->
+            <text x="${cx}" y="12.5" text-anchor="middle" font-size="9.5" fill="#8799a2">12</text>
+            <text x="148" y="${cy + 3.2}" text-anchor="middle" font-size="9.5" fill="#8799a2">18</text>
+            <text x="${cx}" y="151" text-anchor="middle" font-size="9.5" fill="#8799a2">0</text>
+            <text x="8" y="${cy + 3.2}" text-anchor="middle" font-size="9.5" fill="#8799a2">6</text>
 
-              <!-- 月亮（灰色实时月相） -->
-              <g>
-                <title>${moonTitle}</title>
-                ${buildMoonPhaseSvg(mx, my, moonR, moonIllum.phase, moonIllum.fraction, lat < 0)}
-              </g>
+            <!-- 昼 / 夜 标识 -->
+            <text x="${cx}" y="${cy - 9}" text-anchor="middle" font-size="12.5" font-weight="600" fill="#c96c1f" opacity="0.82">昼</text>
+            <text x="${cx}" y="${cy + 18}" text-anchor="middle" font-size="12.5" font-weight="600" fill="#4f6570" opacity="0.82">夜</text>
 
-              <!-- 太阳（亮橘橙色，大于月亮） -->
-              <g>
-                <title>${sunTitle}</title>
-                <circle cx="${sx.toFixed(2)}" cy="${sy.toFixed(2)}" r="${sunR + 4.8}" fill="url(#sunHaloGrad)" />
-                <circle cx="${sx.toFixed(2)}" cy="${sy.toFixed(2)}" r="${sunR}" fill="url(#sunBodyGrad)" stroke="#eb6b09" stroke-width="0.7" />
-              </g>
-            </svg>
-          </div>
+            <!-- 出落刻点 -->
+            ${markersHtml}
+
+            <!-- 月亮（仅月出后至月落前显示） -->
+            ${moonElementHtml}
+
+            <!-- 太阳 -->
+            ${sunElementHtml}
+          </svg>
         `;
       }
+
+      function refreshLiveCelestial() {
+        if (!lastCelestialCtx) return;
+        const stage = document.getElementById('celestialStage');
+        const astroLeft = document.getElementById('astroTimesLeft');
+        if (!stage) return;
+
+        const cState = computeCelestialState(
+          lastCelestialCtx.city,
+          lastCelestialCtx.offsetSec,
+          lastCelestialCtx.sunriseTime,
+          lastCelestialCtx.sunsetTime
+        );
+        stage.innerHTML = buildCelestialSvg(cState);
+
+        if (astroLeft) {
+          const moonPhaseName = getMoonPhaseName(cState.moonIllum.phase);
+          astroLeft.innerHTML = `
+            <div class="astro-times-line">
+              <span>日出<strong>${cState.sunriseLabel}</strong></span>
+              <span>日落<strong>${cState.sunsetLabel}</strong></span>
+            </div>
+            <div class="astro-times-line" title="当前月相：${moonPhaseName}">
+              <span>月出<strong>${cState.moonriseLabel}</strong></span>
+              <span>月落<strong>${cState.moonsetLabel}</strong></span>
+            </div>
+          `;
+        }
+      }
+
+      setInterval(refreshLiveCelestial, 30000);
 
       function renderCityTabs() {
         const container = document.getElementById('cityTabs');
@@ -2650,8 +2789,12 @@
           const sunsetTime = daily.sunset && daily.sunset[todayIdx] ? daily.sunset[todayIdx].slice(11, 16) : '--:--';
           const regionSub = [city.admin1, city.country].filter(Boolean).join(' · ');
 
+          lastCelestialCtx = { city, offsetSec, sunriseTime, sunsetTime };
+          const cState = computeCelestialState(city, offsetSec, sunriseTime, sunsetTime);
+          const moonPhaseName = getMoonPhaseName(cState.moonIllum.phase);
+
           const uvBarHtml = buildUvBarHtml(curr.uv_index != null ? Number(curr.uv_index) : 0);
-          const celestialHtml = buildCelestialDiagramHtml(city, offsetSec, sunriseTime, sunsetTime);
+          const celestialSvgHtml = buildCelestialSvg(cState);
 
           const fourDaysSpec = [
             { offset: -1, label: '昨日', isToday: false },
@@ -2713,8 +2856,20 @@
                     <span>湿度<strong>${curr.relative_humidity_2m}%</strong></span>
                   </div>
                   ${uvBarHtml}
+                  <div class="astro-times-left" id="astroTimesLeft">
+                    <div class="astro-times-line">
+                      <span>日出<strong>${cState.sunriseLabel}</strong></span>
+                      <span>日落<strong>${cState.sunsetLabel}</strong></span>
+                    </div>
+                    <div class="astro-times-line" title="当前月相：${moonPhaseName}">
+                      <span>月出<strong>${cState.moonriseLabel}</strong></span>
+                      <span>月落<strong>${cState.moonsetLabel}</strong></span>
+                    </div>
+                  </div>
                 </div>
-                ${celestialHtml}
+                <div class="weather-celestial-wrap" id="celestialStage" title="24小时制日月出落实时演示（12点在顶、0点在底）">
+                  ${celestialSvgHtml}
+                </div>
               </div>
               ${fourDaysHtml}
             </div>
