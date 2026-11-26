@@ -718,54 +718,34 @@
       font-weight: bold;
     }
 
-    /* 今日实况卡片：固定最小高度，加载与刷新不回缩不跳动 */
+    /* 今日实况三块结构：左上气象+日出日落 / 右上昼夜时长+日落日出倒计时+圆环 / 底部四日对比 */
     .weather-now {
-      min-height: 268px;
-      padding: 10px 12px;
       background: transparent;
-      border: 1px solid rgba(61, 152, 181, 0.3);
+      border: 1px solid rgba(61, 152, 181, 0.35);
       border-radius: 3px;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      transition: opacity 0.2s ease;
     }
 
-    .weather-now.is-loading {
-      justify-content: center;
-      align-items: center;
-    }
-
-    .is-refreshing {
-      opacity: 0.58;
-    }
-
-    .weather-now-main {
+    .weather-top-grid {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
+      align-items: stretch;
     }
 
-    .weather-left-info {
-      flex: 0 0 182px;
+    .weather-left-col {
+      flex: 0 0 156px;
       min-width: 0;
+      padding: 9px 10px;
+      border-right: 1px solid rgba(61, 152, 181, 0.24);
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      gap: 7px;
-    }
-
-    .weather-head-row {
-      display: flex;
       justify-content: space-between;
-      align-items: flex-start;
       gap: 6px;
     }
 
     .weather-city-block {
       min-width: 0;
-      flex-shrink: 1;
     }
 
     .weather-city-name {
@@ -784,9 +764,12 @@
       text-overflow: ellipsis;
     }
 
-    .weather-temp-wrap {
-      text-align: right;
-      flex-shrink: 0;
+    /* 20°C 与天气现象移至广东·中国下方 */
+    .weather-temp-block {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      transition: opacity 0.2s ease;
     }
 
     .weather-temp-main {
@@ -800,29 +783,10 @@
     .weather-desc {
       font-size: 12px;
       color: var(--ink-main);
-      margin-top: 1px;
       white-space: nowrap;
     }
 
-    .weather-metrics-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 12px;
-      line-height: 1.3;
-      color: var(--ink-sub);
-      white-space: nowrap;
-    }
-
-    .weather-metrics-row strong {
-      color: var(--ink-main);
-      font-weight: 600;
-      font-variant-numeric: tabular-nums;
-      margin-left: 2px;
-    }
-
-    /* 移至左侧的日出日落 / 月出月落时刻 */
-    .astro-times-left {
+    .weather-stats-list {
       display: flex;
       flex-direction: column;
       gap: 2px;
@@ -833,42 +797,99 @@
       white-space: nowrap;
     }
 
-    .astro-times-line {
+    .weather-stats-row {
       display: flex;
       align-items: center;
-      gap: 9px;
+      gap: 8px;
     }
 
-    .astro-times-line strong {
+    .weather-stats-row strong {
       color: var(--ink-main);
       font-weight: 600;
       margin-left: 2px;
     }
 
-    /* 右侧日月出落圆环区域：尽量最大化 */
+    .weather-right-col {
+      flex: 1;
+      min-width: 0;
+      padding: 7px 9px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .celestial-top-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 6px;
+      font-size: 11px;
+      line-height: 1.28;
+      color: var(--ink-sub);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .celestial-dur-box {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .celestial-dur-box strong {
+      color: var(--ink-main);
+      font-weight: 600;
+      margin-left: 2px;
+    }
+
+    .celestial-cd-box {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      text-align: right;
+    }
+
+    .celestial-cd-label {
+      color: var(--ink-sub);
+    }
+
+    .celestial-cd-val {
+      color: var(--warm-amber);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
     .weather-celestial-wrap {
       flex: 1;
       min-width: 0;
       display: flex;
       align-items: center;
       justify-content: center;
+      margin-top: -2px;
     }
 
     .celestial-svg {
       width: 100%;
-      max-width: 204px;
+      max-width: 184px;
       height: auto;
       display: block;
       overflow: visible;
     }
 
-    /* 四日对比（无顶部灰线） */
+    .weather-bottom-strip {
+      border-top: 1px solid rgba(61, 152, 181, 0.24);
+      padding: 7px 9px;
+      transition: opacity 0.2s ease;
+    }
+
+    .is-refreshing {
+      opacity: 0.58;
+    }
+
+    /* 底部四日对比 */
     .weather-four-days {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 6px;
-      margin-top: 8px;
-      padding-top: 0;
     }
 
     .day-mini-card {
@@ -1353,26 +1374,16 @@
         font-size: 7px;
         line-height: 1.05;
       }
-      /* 手机端保持固定最小高度，加载与刷新不回缩 */
-      .weather-now {
-        min-height: 218px;
-        padding: 7px 7px;
-      }
-      .weather-now-main {
-        gap: 8px;
-      }
-      .weather-left-info {
-        flex: 0 0 144px;
-        gap: 5px;
-      }
-      .weather-head-row {
+      .weather-left-col {
+        flex: 0 0 124px;
+        padding: 6px 6px;
         gap: 4px;
       }
       .weather-city-name {
         font-size: 16px;
       }
       .weather-city-sub {
-        font-size: 10px;
+        font-size: 9.5px;
       }
       .weather-temp-main {
         font-size: 22px;
@@ -1380,31 +1391,36 @@
       .weather-desc {
         font-size: 10.5px;
       }
-      .weather-metrics-row {
-        gap: 8px;
-        font-size: 10.8px;
+      .weather-stats-list {
+        font-size: 9.6px;
+        gap: 1.5px;
       }
-      .astro-times-left {
-        font-size: 10px;
-        line-height: 1.28;
+      .weather-stats-row {
+        gap: 5px;
       }
-      .astro-times-line {
-        gap: 7px;
+      .weather-right-col {
+        padding: 5px 6px;
+      }
+      .celestial-top-info {
+        font-size: 9.5px;
+        line-height: 1.22;
       }
       .celestial-svg {
-        max-width: 158px;
+        max-width: 142px;
+      }
+      .weather-bottom-strip {
+        padding: 5px 6px;
       }
       .weather-four-days {
         gap: 4px;
-        margin-top: 6px;
       }
       .day-mini-card {
-        padding: 3.5px 2px;
+        padding: 3px 2px;
       }
       .day-mini-label,
       .day-mini-cond,
       .day-mini-temp {
-        font-size: 10.2px;
+        font-size: 10px;
         line-height: 1.18;
       }
       #forecastBox {
@@ -1436,20 +1452,21 @@
       .city-search-wrap {
         width: 126px;
       }
-      .weather-now {
-        min-height: 206px;
-      }
-      .weather-left-info {
-        flex: 0 0 134px;
+      .weather-left-col {
+        flex: 0 0 116px;
+        padding: 5px 5px;
       }
       .weather-temp-main {
         font-size: 20px;
       }
-      .astro-times-left {
-        font-size: 9.4px;
+      .weather-stats-list {
+        font-size: 9px;
+      }
+      .celestial-top-info {
+        font-size: 9px;
       }
       .celestial-svg {
-        max-width: 146px;
+        max-width: 132px;
       }
     }
   </style>
@@ -1519,11 +1536,7 @@
                 <span class="panel-title-deco">气象 · 今日实况</span>
                 <button class="cal-btn" id="refreshWeatherBtn">刷新</button>
               </div>
-              <div id="todayWeatherBox">
-                <div class="weather-now is-loading">
-                  <div class="status-msg">正在获取气象数据...</div>
-                </div>
-              </div>
+              <div id="todayWeatherBox"></div>
             </section>
 
             <section class="panel panel-forecast">
@@ -1559,6 +1572,7 @@
       const STORAGE_CITIES_KEY = 'suishi_saved_cities_v1';
       const STORAGE_ACTIVE_KEY = 'suishi_active_city_v1';
       const STORAGE_COUNTDOWN_KEY = 'suishi_countdown_v1';
+      const STORAGE_WEATHER_CACHE_KEY = 'suishi_weather_cache_v1';
 
       const DEFAULT_CITIES = [
         { id: '1816670', name: '北京', admin1: '北京市', country: '中国', latitude: 39.9075, longitude: 116.39723 },
@@ -1756,8 +1770,9 @@
       let activeCityId = loadActiveCityId(savedCities);
       let countdownState = loadCountdownState();
       let countdownEditorOpen = false;
-      let hasWeatherRendered = false;
+      let weatherCacheMap = loadWeatherCacheMap();
       let lastCelestialCtx = null;
+      let lastSvgMinuteKey = '';
 
       function escapeHtml(str) {
         return String(str || '').replace(/[&<>"']/g, function (m) {
@@ -1807,6 +1822,35 @@
         try {
           localStorage.setItem(STORAGE_COUNTDOWN_KEY, JSON.stringify(next));
         } catch (e) {}
+      }
+
+      function loadWeatherCacheMap() {
+        try {
+          const raw = localStorage.getItem(STORAGE_WEATHER_CACHE_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && typeof parsed === 'object') return parsed;
+          }
+        } catch (e) {}
+        return {};
+      }
+
+      function saveWeatherCache(cityId, payload) {
+        weatherCacheMap[String(cityId)] = payload;
+        try {
+          localStorage.setItem(STORAGE_WEATHER_CACHE_KEY, JSON.stringify(weatherCacheMap));
+        } catch (e) {}
+      }
+
+      function inferCityOffsetSec(city, cached) {
+        if (cached && Number.isFinite(cached.utc_offset_seconds)) {
+          return cached.utc_offset_seconds;
+        }
+        if (city && city.country === '中国') return 28800;
+        if (city && Number.isFinite(Number(city.longitude))) {
+          return Math.round(Number(city.longitude) / 15) * 3600;
+        }
+        return -new Date().getTimezoneOffset() * 60;
       }
 
       function updateClock() {
@@ -2340,6 +2384,22 @@
         return fallbackAbove;
       }
 
+      function formatDurationHm(totalMins) {
+        const clamped = Math.max(0, Math.min(1440, Math.round(totalMins)));
+        const h = Math.floor(clamped / 60);
+        const m = String(clamped % 60).padStart(2, '0');
+        return `${h}时${m}分`;
+      }
+
+      function formatCountdownHms(diffMs) {
+        if (!Number.isFinite(diffMs) || diffMs < 0) return '--时--分--秒';
+        const totalSec = Math.floor(diffMs / 1000);
+        const h = String(Math.floor(totalSec / 3600)).padStart(2, '0');
+        const m = String(Math.floor((totalSec % 3600) / 60)).padStart(2, '0');
+        const s = String(totalSec % 60).padStart(2, '0');
+        return `${h}时${m}分${s}秒`;
+      }
+
       function getMoonPhaseName(phase) {
         if (phase < 0.03 || phase >= 0.97) return '新月';
         if (phase < 0.22) return '蛾眉月';
@@ -2379,8 +2439,8 @@
         `;
       }
 
-      // 计算天文数据（日出日落、月出月落、实时位置与月相）
-      function computeCelestialState(city, offsetSec, fallbackSunriseStr, fallbackSunsetStr) {
+      // 本地天文推演（昼夜时长、距日出/日落交替倒计时、日月实时位置与月相）
+      function computeCelestialState(city, offsetSec) {
         const lat = Number(city.latitude);
         const lng = Number(city.longitude);
         const nowMs = Date.now();
@@ -2404,8 +2464,8 @@
 
         const todaySunRise = sunEvents.find(e => e.type === 'rise' && e.time >= dayStartMs && e.time < dayEndMs);
         const todaySunSet = sunEvents.find(e => e.type === 'set' && e.time >= dayStartMs && e.time < dayEndMs);
-        const sunriseLabel = todaySunRise ? formatCityHm(todaySunRise.time, offsetSec) : (fallbackSunriseStr || '--:--');
-        const sunsetLabel = todaySunSet ? formatCityHm(todaySunSet.time, offsetSec) : (fallbackSunsetStr || '--:--');
+        const sunriseLabel = todaySunRise ? formatCityHm(todaySunRise.time, offsetSec) : '--:--';
+        const sunsetLabel = todaySunSet ? formatCityHm(todaySunSet.time, offsetSec) : '--:--';
 
         const moonEvents = SunCalcLite.getMoonEvents(dayStartMs - 86400000, 72, lat, lng);
         const todayMoonRise = moonEvents.find(e => e.type === 'rise' && e.time >= dayStartMs && e.time < dayEndMs);
@@ -2420,6 +2480,22 @@
         const nowH = getCityLocalHours(nowMs, offsetSec);
         const isDaytime = isBodyAboveHorizon(nowMs, sunEvents, sunPos.altitude >= 0);
         const isMoonVisible = isBodyAboveHorizon(nowMs, moonEvents, moonPos.altitude >= 0);
+
+        // 昼夜各多少时分
+        let dayMins = isDaytime ? 1440 : 0;
+        if (todaySunRise && todaySunSet && todaySunSet.time > todaySunRise.time) {
+          dayMins = Math.round((todaySunSet.time - todaySunRise.time) / 60000);
+        }
+        const nightMins = Math.max(0, 1440 - dayMins);
+
+        // 距日出 / 距日落 交替倒计时（日出后只显示距日落，日落后只显示距日出）
+        const nextSunEvent = sunEvents.find(e => e.time > nowMs);
+        let cdLabel = isDaytime ? '距日落' : '距日出';
+        let cdDiffMs = null;
+        if (nextSunEvent) {
+          cdLabel = nextSunEvent.type === 'set' ? '距日落' : '距日出';
+          cdDiffMs = nextSunEvent.time - nowMs;
+        }
 
         return {
           lat,
@@ -2436,7 +2512,11 @@
           todayMoonSet,
           isDaytime,
           isMoonVisible,
-          moonIllum
+          moonIllum,
+          dayDurText: formatDurationHm(dayMins),
+          nightDurText: formatDurationHm(nightMins),
+          cdLabel,
+          cdValText: formatCountdownHms(cdDiffMs)
         };
       }
 
@@ -2450,7 +2530,6 @@
 
         const nowAngle = timeTo24hAngle(state.nowH);
 
-        // 确定日出/日落扇形角度
         let hRise = 6;
         let hSet = 18;
         if (state.todaySunRise && state.todaySunSet) {
@@ -2467,13 +2546,11 @@
         const dayLargeArc = (hSet - hRise) > 12 ? 1 : 0;
         const nightLargeArc = (24 - (hSet - hRise)) > 12 ? 1 : 0;
 
-        // 除去日照之外即月照扇形
         const moonSectorHtml = `
           <path d="M ${cx} ${cy} L ${rx2.toFixed(2)} ${ry2.toFixed(2)} A ${R} ${R} 0 ${nightLargeArc} 1 ${rx1.toFixed(2)} ${ry1.toFixed(2)} Z"
                 fill="rgba(116, 138, 154, 0.14)" />
         `;
 
-        // 日照淡橙色扇形（盖在最上层，重叠时依然保持纯净淡橙色）
         const daySectorHtml = `
           <path d="M ${cx} ${cy} L ${rx1.toFixed(2)} ${ry1.toFixed(2)} A ${R} ${R} 0 ${dayLargeArc} 1 ${rx2.toFixed(2)} ${ry2.toFixed(2)} Z"
                 fill="#fcfbf7" />
@@ -2481,7 +2558,6 @@
                 fill="rgba(255, 178, 66, 0.22)" />
         `;
 
-        // 扇形两条实线边（按日出日落角度设定）
         const sectorSolidLinesHtml = `
           <line x1="${cx}" y1="${cy}" x2="${rx1.toFixed(2)}" y2="${ry1.toFixed(2)}"
                 stroke="#d68536" stroke-width="1.15" opacity="0.88" />
@@ -2491,7 +2567,6 @@
           <circle cx="${rx2.toFixed(2)}" cy="${ry2.toFixed(2)}" r="1.8" fill="#e68228" />
         `;
 
-        // 表盘刻度：0~23 每小时1个刻度（6/12/18/0为主刻度，6与12之间7/8/9/10/11共5个小刻度）
         let dialTicksHtml = '';
         for (let hr = 0; hr < 24; hr += 1) {
           const ang = timeTo24hAngle(hr);
@@ -2505,7 +2580,6 @@
           dialTicksHtml += `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="${isMajor ? '#536873' : '#8ea0aa'}" stroke-width="${isMajor ? '1.5' : '0.95'}" stroke-linecap="round" />`;
         }
 
-        // 月出/月落微点标记
         let moonMarkersHtml = '';
         if (state.todayMoonRise) {
           const a = timeTo24hAngle(getCityLocalHours(state.todayMoonRise.time, state.offsetSec));
@@ -2516,7 +2590,6 @@
           moonMarkersHtml += `<circle cx="${(cx + R * Math.cos(a)).toFixed(2)}" cy="${(cy - R * Math.sin(a)).toFixed(2)}" r="1.8" fill="#7c8790" opacity="0.85" />`;
         }
 
-        // 细时间指针
         const tipX = cx + R * Math.cos(nowAngle);
         const tipY = cy - R * Math.sin(nowAngle);
         const handColor = state.isDaytime ? 'rgba(225, 118, 22, 0.55)' : 'rgba(92, 116, 130, 0.45)';
@@ -2525,7 +2598,6 @@
                 stroke="${handColor}" stroke-width="0.9" stroke-linecap="round" />
         `;
 
-        // 太阳居中于轨道 R，若月亮同时可见则置于内侧轨道(R - 11.5)防重叠
         const sunRadius = R;
         const moonRadius = R - 11.5;
 
@@ -2579,77 +2651,257 @@
               </radialGradient>
             </defs>
 
-            <!-- 月照扇形 + 淡橙色日照扇形 -->
             ${moonSectorHtml}
             ${daySectorHtml}
 
-            <!-- 24小时制虚线外圈 -->
             <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#7d909b" stroke-width="1.25" stroke-dasharray="4 3" />
 
-            <!-- 24小时表盘全刻度（6/12/18/0主刻度 + 每小时细刻度） -->
             ${dialTicksHtml}
-
-            <!-- 日出/日落实线扇形边界 -->
             ${sectorSolidLinesHtml}
 
-            <!-- 24小时制数字刻度 -->
             <text x="${cx}" y="11" text-anchor="middle" font-size="9.5" font-weight="600" fill="#6b7f8a">12</text>
             <text x="156" y="${cy + 3.2}" text-anchor="middle" font-size="9.5" font-weight="600" fill="#6b7f8a">18</text>
             <text x="${cx}" y="159.5" text-anchor="middle" font-size="9.5" font-weight="600" fill="#6b7f8a">0</text>
             <text x="8" y="${cy + 3.2}" text-anchor="middle" font-size="9.5" font-weight="600" fill="#6b7f8a">6</text>
 
-            <!-- 昼 / 夜 标识 -->
             <text x="${cx}" y="${cy - 10}" text-anchor="middle" font-size="12" font-weight="600" fill="#c96c1f" opacity="0.88">昼</text>
             <text x="${cx}" y="${cy + 18}" text-anchor="middle" font-size="12" font-weight="600" fill="#4f6570" opacity="0.88">夜</text>
 
-            <!-- 精确时间指针细线 -->
             ${timeNeedleHtml}
-
-            <!-- 圆心点 -->
             <circle cx="${cx}" cy="${cy}" r="2.2" fill="#566b76" />
 
-            <!-- 月出/月落微点 -->
             ${moonMarkersHtml}
-
-            <!-- 月亮（仅月出后至月落前显示） -->
             ${moonElementHtml}
-
-            <!-- 太阳 -->
             ${sunElementHtml}
           </svg>
         `;
       }
 
-      function refreshLiveCelestial() {
-        if (!lastCelestialCtx) return;
-        const stage = document.getElementById('celestialStage');
-        const astroLeft = document.getElementById('astroTimesLeft');
-        if (!stage) return;
+      // 构建底部 4 日卡片（支持缓存或占位）
+      function buildFourDaysHtml(weatherData) {
+        const fourDaysSpec = [
+          { offset: -1, label: '昨日', isToday: false },
+          { offset: 0,  label: '今日', isToday: true },
+          { offset: 1,  label: '明日', isToday: false },
+          { offset: 2,  label: '后日', isToday: false }
+        ];
 
-        const cState = computeCelestialState(
-          lastCelestialCtx.city,
-          lastCelestialCtx.offsetSec,
-          lastCelestialCtx.sunriseTime,
-          lastCelestialCtx.sunsetTime
-        );
-        stage.innerHTML = buildCelestialSvg(cState);
-
-        if (astroLeft) {
-          const moonPhaseName = getMoonPhaseName(cState.moonIllum.phase);
-          astroLeft.innerHTML = `
-            <div class="astro-times-line">
-              <span>日出<strong>${cState.sunriseLabel}</strong></span>
-              <span>日落<strong>${cState.sunsetLabel}</strong></span>
+        if (!weatherData || !weatherData.daily) {
+          return '<div class="weather-four-days">' + fourDaysSpec.map(item => `
+            <div class="${item.isToday ? 'day-mini-card is-today' : 'day-mini-card is-muted'}">
+              <div class="day-mini-label">${item.label}</div>
+              <div class="day-mini-cond"><span class="day-mini-text">--</span></div>
+              <div class="day-mini-temp">--°~--°</div>
             </div>
-            <div class="astro-times-line" title="当前月相：${moonPhaseName}">
-              <span>月出<strong>${cState.moonriseLabel}</strong></span>
-              <span>月落<strong>${cState.moonsetLabel}</strong></span>
+          `).join('') + '</div>';
+        }
+
+        const curr = weatherData.current;
+        const daily = weatherData.daily;
+        const todayStr = curr && curr.time ? curr.time.slice(0, 10) : '';
+        let todayIdx = todayStr ? daily.time.indexOf(todayStr) : -1;
+        if (todayIdx === -1) {
+          todayIdx = daily.time.length >= 9 ? 1 : 0;
+        }
+
+        let html = '<div class="weather-four-days">';
+        fourDaysSpec.forEach(item => {
+          const idx = todayIdx + item.offset;
+          const cls = item.isToday ? 'day-mini-card is-today' : 'day-mini-card is-muted';
+          if (idx >= 0 && idx < daily.time.length) {
+            const dInfo = parseWeatherCode(daily.weather_code[idx]);
+            const dMin = Math.round(daily.temperature_2m_min[idx]);
+            const dMax = Math.round(daily.temperature_2m_max[idx]);
+            const tempHtml = item.isToday
+              ? `<span class="temp-low">${dMin}°</span>~<span class="temp-high">${dMax}°</span>`
+              : `${dMin}°~${dMax}°`;
+
+            html += `
+              <div class="${cls}">
+                <div class="day-mini-label">${item.label}</div>
+                <div class="day-mini-cond">
+                  <span>${dInfo.icon}</span>
+                  <span class="day-mini-text">${dInfo.text}</span>
+                </div>
+                <div class="day-mini-temp">${tempHtml}</div>
+              </div>
+            `;
+          } else {
+            html += `
+              <div class="${cls}">
+                <div class="day-mini-label">${item.label}</div>
+                <div class="day-mini-cond"><span class="day-mini-text">暂无</span></div>
+                <div class="day-mini-temp">--</div>
+              </div>
+            `;
+          }
+        });
+        html += '</div>';
+        return html;
+      }
+
+      function buildForecastHtml(weatherData) {
+        if (!weatherData || !weatherData.daily) {
+          return '<div class="status-msg">正在获取七日预报...</div>';
+        }
+        const curr = weatherData.current;
+        const daily = weatherData.daily;
+        const todayStr = curr && curr.time ? curr.time.slice(0, 10) : '';
+        let todayIdx = todayStr ? daily.time.indexOf(todayStr) : -1;
+        if (todayIdx === -1) {
+          todayIdx = daily.time.length >= 9 ? 1 : 0;
+        }
+
+        let rowsHtml = '<div class="forecast-list">';
+        for (let offset = 1; offset <= 7; offset++) {
+          const i = todayIdx + offset;
+          if (i >= daily.time.length) break;
+
+          const dateStr = daily.time[i];
+          const parts = dateStr.split('-');
+          const dObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+          const wdLabel = offset === 1 ? '明日' : offset === 2 ? '后日' : WEEKDAYS[dObj.getDay()];
+          const mdLabel = `${Number(parts[1])}月${Number(parts[2])}日`;
+          const fInfo = parseWeatherCode(daily.weather_code[i]);
+          const rainProb = daily.precipitation_probability_max ? daily.precipitation_probability_max[i] : null;
+          const tMin = Math.round(daily.temperature_2m_min[i]);
+          const tMax = Math.round(daily.temperature_2m_max[i]);
+
+          rowsHtml += `
+            <div class="forecast-row">
+              <div class="forecast-date">
+                <strong>${wdLabel}</strong>
+                <span>${mdLabel}</span>
+              </div>
+              <div class="forecast-cond">
+                <span>${fInfo.icon}</span>
+                <span>${fInfo.text}</span>
+              </div>
+              <div class="forecast-rain">
+                ${rainProb !== null && rainProb > 0 ? `💧${rainProb}%` : ''}
+              </div>
+              <div class="forecast-temp">
+                <span class="temp-low">${tMin}°</span> ~ <span class="temp-high">${tMax}°</span>
+              </div>
             </div>
           `;
         }
+        rowsHtml += '</div>';
+        return rowsHtml;
       }
 
-      setInterval(refreshLiveCelestial, 30000);
+      // 立即渲染三块式实况与本地天文推演（刷新/切换城市绝不留白）
+      function renderWeatherPanelImmediate(city, weatherData) {
+        const todayBox = document.getElementById('todayWeatherBox');
+        const forecastBox = document.getElementById('forecastBox');
+        const offsetSec = inferCityOffsetSec(city, weatherData);
+
+        lastCelestialCtx = { city, offsetSec };
+        const cState = computeCelestialState(city, offsetSec);
+        lastSvgMinuteKey = formatCityHm(cState.nowMs, offsetSec);
+
+        const regionSub = [city.admin1, city.country].filter(Boolean).join(' · ');
+        const curr = weatherData && weatherData.current ? weatherData.current : null;
+        const wInfo = curr ? parseWeatherCode(curr.weather_code) : { text: '更新中', icon: '🌡️' };
+        const tempStr = curr ? `${Math.round(curr.temperature_2m)}°C` : '--°C';
+        const feelsStr = curr ? `${Math.round(curr.apparent_temperature)}°C` : '--°C';
+        const humStr = curr ? `${curr.relative_humidity_2m}%` : '--%';
+        const moonPhaseName = getMoonPhaseName(cState.moonIllum.phase);
+
+        todayBox.innerHTML = `
+          <div class="weather-now">
+            <div class="weather-top-grid">
+              <div class="weather-left-col">
+                <div class="weather-city-block">
+                  <div class="weather-city-name">${escapeHtml(city.name)}</div>
+                  <div class="weather-city-sub">${escapeHtml(regionSub)}</div>
+                </div>
+                <div class="weather-temp-block" id="weatherTempBlock">
+                  <div class="weather-temp-main" id="weatherTempVal">${tempStr}</div>
+                  <div class="weather-desc" id="weatherDescVal">${wInfo.icon} ${wInfo.text}</div>
+                </div>
+                <div class="weather-stats-list">
+                  <div class="weather-stats-row">
+                    <span>体感<strong id="weatherFeelsVal">${feelsStr}</strong></span>
+                    <span>湿度<strong id="weatherHumVal">${humStr}</strong></span>
+                  </div>
+                  <div class="weather-stats-row" id="sunTimesLeft">
+                    <span>日出<strong>${cState.sunriseLabel}</strong></span>
+                    <span>日落<strong>${cState.sunsetLabel}</strong></span>
+                  </div>
+                  <div class="weather-stats-row" id="moonTimesLeft" title="当前月相：${moonPhaseName}">
+                    <span>月出<strong>${cState.moonriseLabel}</strong></span>
+                    <span>月落<strong>${cState.moonsetLabel}</strong></span>
+                  </div>
+                </div>
+              </div>
+              <div class="weather-right-col">
+                <div class="celestial-top-info">
+                  <div class="celestial-dur-box" id="celestialDurBox">
+                    <div>昼<strong>${cState.dayDurText}</strong></div>
+                    <div>夜<strong>${cState.nightDurText}</strong></div>
+                  </div>
+                  <div class="celestial-cd-box">
+                    <span class="celestial-cd-label" id="sunCountdownLabel">${cState.cdLabel}</span>
+                    <span class="celestial-cd-val" id="sunCountdownVal">${cState.cdValText}</span>
+                  </div>
+                </div>
+                <div class="weather-celestial-wrap" id="celestialStage" title="24小时制表盘昼夜与日月出落实时演示">
+                  ${buildCelestialSvg(cState)}
+                </div>
+              </div>
+            </div>
+            <div class="weather-bottom-strip" id="weatherBottomStrip">
+              ${buildFourDaysHtml(weatherData)}
+            </div>
+          </div>
+        `;
+
+        forecastBox.innerHTML = buildForecastHtml(weatherData);
+      }
+
+      // 每秒实时更新右上角“距日出/日落”秒级倒计时，并在跨分钟时平滑重绘圆环
+      function tickCelestialLive() {
+        if (!lastCelestialCtx) return;
+        const cState = computeCelestialState(lastCelestialCtx.city, lastCelestialCtx.offsetSec);
+
+        const cdLabelEl = document.getElementById('sunCountdownLabel');
+        const cdValEl = document.getElementById('sunCountdownVal');
+        if (cdLabelEl) cdLabelEl.textContent = cState.cdLabel;
+        if (cdValEl) cdValEl.textContent = cState.cdValText;
+
+        const minKey = formatCityHm(cState.nowMs, lastCelestialCtx.offsetSec);
+        if (minKey !== lastSvgMinuteKey) {
+          lastSvgMinuteKey = minKey;
+          const stage = document.getElementById('celestialStage');
+          const durBox = document.getElementById('celestialDurBox');
+          const sunLeft = document.getElementById('sunTimesLeft');
+          const moonLeft = document.getElementById('moonTimesLeft');
+
+          if (stage) stage.innerHTML = buildCelestialSvg(cState);
+          if (durBox) {
+            durBox.innerHTML = `
+              <div>昼<strong>${cState.dayDurText}</strong></div>
+              <div>夜<strong>${cState.nightDurText}</strong></div>
+            `;
+          }
+          if (sunLeft) {
+            sunLeft.innerHTML = `
+              <span>日出<strong>${cState.sunriseLabel}</strong></span>
+              <span>日落<strong>${cState.sunsetLabel}</strong></span>
+            `;
+          }
+          if (moonLeft) {
+            moonLeft.title = `当前月相：${getMoonPhaseName(cState.moonIllum.phase)}`;
+            moonLeft.innerHTML = `
+              <span>月出<strong>${cState.moonriseLabel}</strong></span>
+              <span>月落<strong>${cState.moonsetLabel}</strong></span>
+            `;
+          }
+        }
+      }
+
+      setInterval(tickCelestialLive, 1000);
 
       function renderCityTabs() {
         const container = document.getElementById('cityTabs');
@@ -2694,22 +2946,21 @@
         const city = savedCities.find(c => String(c.id) === String(activeCityId)) || savedCities[0];
         if (!city) return;
 
-        const todayBox = document.getElementById('todayWeatherBox');
-        const forecastBox = document.getElementById('forecastBox');
         const refreshBtn = document.getElementById('refreshWeatherBtn');
+        const cached = weatherCacheMap[String(city.id)] || null;
+
+        // 1. 立即用本地天文推演 + 缓存天气完整渲染三块结构（绝不清空、不回缩）
+        renderWeatherPanelImmediate(city, cached);
+
+        const tempBlock = document.getElementById('weatherTempBlock');
+        const bottomStrip = document.getElementById('weatherBottomStrip');
+        const forecastBox = document.getElementById('forecastBox');
 
         if (refreshBtn) refreshBtn.textContent = '刷新中...';
-        if (hasWeatherRendered) {
-          // 锁定刷新过程中的容器高度，防止高度回缩或跳动
-          const th = todayBox.offsetHeight;
-          const fh = forecastBox.offsetHeight;
-          if (th > 0) todayBox.style.minHeight = th + 'px';
-          if (fh > 0) forecastBox.style.minHeight = fh + 'px';
-          todayBox.classList.add('is-refreshing');
-          forecastBox.classList.add('is-refreshing');
-        } else {
-          todayBox.innerHTML = `<div class="weather-now is-loading"><div class="status-msg">正在获取气象数据（${escapeHtml(city.name)}）...</div></div>`;
-          forecastBox.innerHTML = `<div class="status-msg">正在获取七日预报...</div>`;
+        if (cached) {
+          if (tempBlock) tempBlock.classList.add('is-refreshing');
+          if (bottomStrip) bottomStrip.classList.add('is-refreshing');
+          if (forecastBox) forecastBox.classList.add('is-refreshing');
         }
 
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(city.latitude)}&longitude=${encodeURIComponent(city.longitude)}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset&timezone=auto&past_days=1&forecast_days=8`;
@@ -2719,154 +2970,24 @@
           if (!res.ok) throw new Error('网络请求异常');
           const data = await res.json();
 
-          const curr = data.current;
-          const daily = data.daily;
-          const wInfo = parseWeatherCode(curr.weather_code);
-          const offsetSec = Number.isFinite(data.utc_offset_seconds)
-            ? data.utc_offset_seconds
-            : -new Date().getTimezoneOffset() * 60;
-
-          const todayStr = curr.time ? curr.time.slice(0, 10) : '';
-          let todayIdx = todayStr ? daily.time.indexOf(todayStr) : -1;
-          if (todayIdx === -1) {
-            todayIdx = daily.time.length >= 9 ? 1 : 0;
+          // 仅若当前选中城市仍是此城才更新 UI，但先写入缓存
+          saveWeatherCache(city.id, data);
+          if (String(city.id) === String(activeCityId)) {
+            renderWeatherPanelImmediate(city, data);
           }
-
-          const sunriseTime = daily.sunrise && daily.sunrise[todayIdx] ? daily.sunrise[todayIdx].slice(11, 16) : '--:--';
-          const sunsetTime = daily.sunset && daily.sunset[todayIdx] ? daily.sunset[todayIdx].slice(11, 16) : '--:--';
-          const regionSub = [city.admin1, city.country].filter(Boolean).join(' · ');
-
-          lastCelestialCtx = { city, offsetSec, sunriseTime, sunsetTime };
-          const cState = computeCelestialState(city, offsetSec, sunriseTime, sunsetTime);
-          const moonPhaseName = getMoonPhaseName(cState.moonIllum.phase);
-          const celestialSvgHtml = buildCelestialSvg(cState);
-
-          const fourDaysSpec = [
-            { offset: -1, label: '昨日', isToday: false },
-            { offset: 0,  label: '今日', isToday: true },
-            { offset: 1,  label: '明日', isToday: false },
-            { offset: 2,  label: '后日', isToday: false }
-          ];
-
-          let fourDaysHtml = '<div class="weather-four-days">';
-          fourDaysSpec.forEach(item => {
-            const idx = todayIdx + item.offset;
-            const cls = item.isToday ? 'day-mini-card is-today' : 'day-mini-card is-muted';
-            if (idx >= 0 && idx < daily.time.length) {
-              const dInfo = parseWeatherCode(daily.weather_code[idx]);
-              const dMin = Math.round(daily.temperature_2m_min[idx]);
-              const dMax = Math.round(daily.temperature_2m_max[idx]);
-              const tempHtml = item.isToday
-                ? `<span class="temp-low">${dMin}°</span>~<span class="temp-high">${dMax}°</span>`
-                : `${dMin}°~${dMax}°`;
-
-              fourDaysHtml += `
-                <div class="${cls}">
-                  <div class="day-mini-label">${item.label}</div>
-                  <div class="day-mini-cond">
-                    <span>${dInfo.icon}</span>
-                    <span class="day-mini-text">${dInfo.text}</span>
-                  </div>
-                  <div class="day-mini-temp">${tempHtml}</div>
-                </div>
-              `;
-            } else {
-              fourDaysHtml += `
-                <div class="${cls}">
-                  <div class="day-mini-label">${item.label}</div>
-                  <div class="day-mini-cond"><span class="day-mini-text">暂无</span></div>
-                  <div class="day-mini-temp">--</div>
-                </div>
-              `;
-            }
-          });
-          fourDaysHtml += '</div>';
-
-          todayBox.innerHTML = `
-            <div class="weather-now">
-              <div class="weather-now-main">
-                <div class="weather-left-info">
-                  <div class="weather-head-row">
-                    <div class="weather-city-block">
-                      <div class="weather-city-name">${escapeHtml(city.name)}</div>
-                      <div class="weather-city-sub">${escapeHtml(regionSub)}</div>
-                    </div>
-                    <div class="weather-temp-wrap">
-                      <div class="weather-temp-main">${Math.round(curr.temperature_2m)}°C</div>
-                      <div class="weather-desc">${wInfo.icon} ${wInfo.text}</div>
-                    </div>
-                  </div>
-                  <div class="weather-metrics-row">
-                    <span>体感<strong>${Math.round(curr.apparent_temperature)}°C</strong></span>
-                    <span>湿度<strong>${curr.relative_humidity_2m}%</strong></span>
-                  </div>
-                  <div class="astro-times-left" id="astroTimesLeft">
-                    <div class="astro-times-line">
-                      <span>日出<strong>${cState.sunriseLabel}</strong></span>
-                      <span>日落<strong>${cState.sunsetLabel}</strong></span>
-                    </div>
-                    <div class="astro-times-line" title="当前月相：${moonPhaseName}">
-                      <span>月出<strong>${cState.moonriseLabel}</strong></span>
-                      <span>月落<strong>${cState.moonsetLabel}</strong></span>
-                    </div>
-                  </div>
-                </div>
-                <div class="weather-celestial-wrap" id="celestialStage" title="24小时制表盘昼夜与日月出落实时演示">
-                  ${celestialSvgHtml}
-                </div>
-              </div>
-              ${fourDaysHtml}
-            </div>
-          `;
-
-          let rowsHtml = '<div class="forecast-list">';
-          for (let offset = 1; offset <= 7; offset++) {
-            const i = todayIdx + offset;
-            if (i >= daily.time.length) break;
-
-            const dateStr = daily.time[i];
-            const parts = dateStr.split('-');
-            const dObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-            const wdLabel = offset === 1 ? '明日' : offset === 2 ? '后日' : WEEKDAYS[dObj.getDay()];
-            const mdLabel = `${Number(parts[1])}月${Number(parts[2])}日`;
-            const fInfo = parseWeatherCode(daily.weather_code[i]);
-            const rainProb = daily.precipitation_probability_max ? daily.precipitation_probability_max[i] : null;
-            const tMin = Math.round(daily.temperature_2m_min[i]);
-            const tMax = Math.round(daily.temperature_2m_max[i]);
-
-            rowsHtml += `
-              <div class="forecast-row">
-                <div class="forecast-date">
-                  <strong>${wdLabel}</strong>
-                  <span>${mdLabel}</span>
-                </div>
-                <div class="forecast-cond">
-                  <span>${fInfo.icon}</span>
-                  <span>${fInfo.text}</span>
-                </div>
-                <div class="forecast-rain">
-                  ${rainProb !== null && rainProb > 0 ? `💧${rainProb}%` : ''}
-                </div>
-                <div class="forecast-temp">
-                  <span class="temp-low">${tMin}°</span> ~ <span class="temp-high">${tMax}°</span>
-                </div>
-              </div>
-            `;
-          }
-          rowsHtml += '</div>';
-          forecastBox.innerHTML = rowsHtml;
-          hasWeatherRendered = true;
-
         } catch (err) {
-          if (!hasWeatherRendered) {
-            todayBox.innerHTML = `<div class="weather-now is-loading"><div class="status-msg">气象接口暂时无法连接，请稍后点击刷新。</div></div>`;
-            forecastBox.innerHTML = `<div class="status-msg">暂无未来七日数据</div>`;
+          // 网络失败时保留本地天文与缓存展示，若无缓存才提示七日预报暂不可用
+          if (!cached && String(city.id) === String(activeCityId)) {
+            const descEl = document.getElementById('weatherDescVal');
+            if (descEl) descEl.textContent = '🌡️ 离线';
+            if (forecastBox) forecastBox.innerHTML = `<div class="status-msg">气象接口暂时无法连接，请稍后点击刷新。</div>`;
           }
         } finally {
-          todayBox.style.minHeight = '';
-          forecastBox.style.minHeight = '';
-          todayBox.classList.remove('is-refreshing');
-          forecastBox.classList.remove('is-refreshing');
+          const tb = document.getElementById('weatherTempBlock');
+          const bs = document.getElementById('weatherBottomStrip');
+          if (tb) tb.classList.remove('is-refreshing');
+          if (bs) bs.classList.remove('is-refreshing');
+          if (forecastBox) forecastBox.classList.remove('is-refreshing');
           if (refreshBtn) refreshBtn.textContent = '刷新';
         }
       }
