@@ -321,7 +321,7 @@
       margin-right: 4px;
     }
 
-    /* 今日实况标题栏中的日/月天文图标 */
+    /* 今日实况标题栏中的日/月天文图标（左移到标题右侧一点，且图标紧贴对应文字） */
     .weather-panel-title {
       gap: 6px;
     }
@@ -329,9 +329,9 @@
     .header-astro-group {
       display: inline-flex;
       align-items: center;
-      gap: 9px;
-      margin-left: auto;
-      margin-right: 4px;
+      gap: 10px;
+      margin-left: 10px;
+      margin-right: auto;
       font-size: 12.5px;
       font-weight: normal;
       letter-spacing: 0;
@@ -342,12 +342,19 @@
     .header-astro-item {
       display: inline-flex;
       align-items: center;
-      gap: 1px;
+      gap: 0;
+      line-height: 1;
+    }
+
+    .header-astro-label {
+      display: inline-block;
+      margin-right: 1px;
     }
 
     .header-astro-svg {
-      width: 17px;
-      height: 17px;
+      width: 18px;
+      height: 18px;
+      margin-left: -1px;
       display: inline-block;
       vertical-align: middle;
       overflow: visible;
@@ -1313,13 +1320,13 @@
         letter-spacing: 0.8px;
       }
       .header-astro-group {
-        gap: 6px;
-        font-size: 11.5px;
-        margin-right: 2px;
+        gap: 8px;
+        font-size: 12px;
+        margin-left: 7px;
       }
       .header-astro-svg {
-        width: 15px;
-        height: 15px;
+        width: 16px;
+        height: 16px;
       }
       .progress-item {
         gap: 2.5px;
@@ -1448,7 +1455,6 @@
         font-size: 9.5px;
         line-height: 1.18;
       }
-      /* 适度缩小圆环尺寸，确保底部昨日/今日/明日/后日天气在首屏完整露出 */
       .weather-celestial-wrap {
         margin-top: -6px;
       }
@@ -1500,12 +1506,13 @@
         width: 126px;
       }
       .header-astro-group {
-        font-size: 10.5px;
-        gap: 5px;
+        font-size: 11px;
+        gap: 6px;
+        margin-left: 5px;
       }
       .header-astro-svg {
-        width: 14px;
-        height: 14px;
+        width: 15px;
+        height: 15px;
       }
       .weather-left-col {
         flex: 0 0 116px;
@@ -1591,25 +1598,24 @@
                 <span class="panel-title-deco">气象 · 今日实况</span>
                 <span class="header-astro-group">
                   <span class="header-astro-item" id="headerSunBadge" title="太阳">
-                    日：<svg class="header-astro-svg" viewBox="0 0 20 20" aria-hidden="true">
+                    <span class="header-astro-label">日:</span><svg class="header-astro-svg" viewBox="0 0 20 20" aria-hidden="true">
                       <defs>
                         <radialGradient id="hdrSunBodyGrad" cx="38%" cy="35%" r="65%">
-                          <stop offset="0%" stop-color="#ffe169" />
-                          <stop offset="60%" stop-color="#ff9914" />
-                          <stop offset="100%" stop-color="#f26b0a" />
+                          <stop offset="0%" stop-color="#ffd24c" />
+                          <stop offset="55%" stop-color="#ff9518" />
+                          <stop offset="100%" stop-color="#ea6a08" />
                         </radialGradient>
                         <radialGradient id="hdrSunHaloGrad" cx="50%" cy="50%" r="50%">
-                          <stop offset="0%" stop-color="rgba(255, 152, 24, 0.36)" />
-                          <stop offset="100%" stop-color="rgba(255, 152, 24, 0)" />
+                          <stop offset="0%" stop-color="rgba(255, 160, 32, 0.36)" />
+                          <stop offset="100%" stop-color="rgba(255, 160, 32, 0)" />
                         </radialGradient>
                       </defs>
-                      <circle cx="10" cy="10" r="8.4" fill="url(#hdrSunHaloGrad)" />
-                      <circle cx="10" cy="10" r="5.5" fill="url(#hdrSunBodyGrad)" stroke="#eb6b09" stroke-width="0.6" />
-                      <circle cx="10" cy="10" r="1.2" fill="#fff7d6" opacity="0.9" />
+                      <circle cx="10" cy="10" r="9.6" fill="url(#hdrSunHaloGrad)" />
+                      <circle cx="10" cy="10" r="7.0" fill="url(#hdrSunBodyGrad)" stroke="#e06508" stroke-width="0.6" />
                     </svg>
                   </span>
                   <span class="header-astro-item" id="headerMoonBadge" title="月相">
-                    月：<svg class="header-astro-svg" id="headerMoonSvg" viewBox="0 0 20 20" aria-hidden="true"></svg>
+                    <span class="header-astro-label">月:</span><svg class="header-astro-svg" id="headerMoonSvg" viewBox="0 0 20 20" aria-hidden="true"></svg>
                   </span>
                 </span>
                 <button class="cal-btn" id="refreshWeatherBtn">刷新</button>
@@ -2535,7 +2541,7 @@
           moonSvg.innerHTML = buildMoonPhaseSvg(
             10,
             10,
-            7.4,
+            6.0,
             cState.moonIllum.phase,
             cState.moonIllum.fraction,
             cState.lat < 0
@@ -2627,13 +2633,13 @@
         };
       }
 
-      // 构建右侧 24 小时制昼夜表盘圆环（纯亮面月相，能清晰分辨盈缺）
+      // 构建右侧 24 小时制昼夜表盘圆环（淡橙色昼区 + 实心无洞日标 + 纯亮面月相）
       function buildCelestialSvg(state) {
         const cx = 80;
         const cy = 80;
         const R = 66.5;
-        const sunR = 5.3;
-        const moonR = 6.2;
+        const sunR = 6.2;
+        const moonR = 5.4;
 
         const nowAngle = timeTo24hAngle(state.nowH);
 
@@ -2662,7 +2668,7 @@
           <path d="M ${cx} ${cy} L ${rx1.toFixed(2)} ${ry1.toFixed(2)} A ${R} ${R} 0 ${dayLargeArc} 1 ${rx2.toFixed(2)} ${ry2.toFixed(2)} Z"
                 fill="#fcfbf7" />
           <path d="M ${cx} ${cy} L ${rx1.toFixed(2)} ${ry1.toFixed(2)} A ${R} ${R} 0 ${dayLargeArc} 1 ${rx2.toFixed(2)} ${ry2.toFixed(2)} Z"
-                fill="rgba(255, 178, 66, 0.22)" />
+                fill="rgba(245, 184, 65, 0.20)" />
         `;
 
         const sectorSolidLinesHtml = `
@@ -2724,9 +2730,8 @@
           ? `
             <g>
               <title>${sunTitle}</title>
-              <circle cx="${sx.toFixed(2)}" cy="${sy.toFixed(2)}" r="${sunR + 2.5}" fill="url(#sunHaloGrad)" />
-              <circle cx="${sx.toFixed(2)}" cy="${sy.toFixed(2)}" r="${sunR}" fill="url(#sunBodyGrad)" stroke="#eb6b09" stroke-width="0.6" />
-              <circle cx="${sx.toFixed(2)}" cy="${sy.toFixed(2)}" r="1.1" fill="#fff7d6" opacity="0.9" />
+              <circle cx="${sx.toFixed(2)}" cy="${sy.toFixed(2)}" r="${sunR + 2.6}" fill="url(#sunHaloGrad)" />
+              <circle cx="${sx.toFixed(2)}" cy="${sy.toFixed(2)}" r="${sunR}" fill="url(#sunBodyGrad)" stroke="#e06508" stroke-width="0.6" />
             </g>
           `
           : `
@@ -2749,13 +2754,13 @@
           <svg class="celestial-svg" viewBox="0 0 160 160" role="img" aria-label="24小时制表盘日月出落实时演示">
             <defs>
               <radialGradient id="sunBodyGrad" cx="38%" cy="35%" r="65%">
-                <stop offset="0%" stop-color="#ffe169" />
-                <stop offset="60%" stop-color="#ff9914" />
-                <stop offset="100%" stop-color="#f26b0a" />
+                <stop offset="0%" stop-color="#ffd24c" />
+                <stop offset="55%" stop-color="#ff9518" />
+                <stop offset="100%" stop-color="#ea6a08" />
               </radialGradient>
               <radialGradient id="sunHaloGrad" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="rgba(255, 152, 24, 0.36)" />
-                <stop offset="100%" stop-color="rgba(255, 152, 24, 0)" />
+                <stop offset="0%" stop-color="rgba(255, 160, 32, 0.36)" />
+                <stop offset="100%" stop-color="rgba(255, 160, 32, 0)" />
               </radialGradient>
             </defs>
 
