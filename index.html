@@ -718,9 +718,9 @@
       font-weight: bold;
     }
 
-    /* 今日实况卡片 */
+    /* 今日实况卡片：固定最小高度，加载与刷新不回缩不跳动 */
     .weather-now {
-      min-height: 162px;
+      min-height: 268px;
       padding: 10px 12px;
       background: transparent;
       border: 1px solid rgba(61, 152, 181, 0.3);
@@ -1220,7 +1220,6 @@
         font-size: 12px;
         margin-left: 4px;
       }
-      /* 寻城条左移缩窄 + 城市标签紧邻单行，留白均衡 */
       .city-bar {
         padding: 4px 6px;
         margin-bottom: 6px;
@@ -1354,8 +1353,9 @@
         font-size: 7px;
         line-height: 1.05;
       }
+      /* 手机端保持固定最小高度，加载与刷新不回缩 */
       .weather-now {
-        min-height: 0;
+        min-height: 218px;
         padding: 7px 7px;
       }
       .weather-now-main {
@@ -1391,7 +1391,6 @@
       .astro-times-line {
         gap: 7px;
       }
-      /* 圆环尽量最大化 */
       .celestial-svg {
         max-width: 158px;
       }
@@ -1436,6 +1435,9 @@
       }
       .city-search-wrap {
         width: 126px;
+      }
+      .weather-now {
+        min-height: 206px;
       }
       .weather-left-info {
         flex: 0 0 134px;
@@ -2438,13 +2440,13 @@
         };
       }
 
-      // 构建右侧 24 小时制昼夜表盘圆环（带 6/12/18/0 表盘刻度 + 细指针精确指时 + 小巧精致太阳月亮）
+      // 构建右侧 24 小时制昼夜表盘圆环（外圈虚线，扇形实线，每小时全刻度：6与12间5个刻度）
       function buildCelestialSvg(state) {
         const cx = 82;
         const cy = 82;
         const R = 64;
-        const sunR = 5.2;  // 精致太阳半径（仅覆盖约半小时弧度，不占满一两小时）
-        const moonR = 3.9; // 比太阳小一号的月亮
+        const sunR = 5.2;
+        const moonR = 3.9;
 
         const nowAngle = timeTo24hAngle(state.nowH);
 
@@ -2479,28 +2481,28 @@
                 fill="rgba(255, 178, 66, 0.22)" />
         `;
 
-        // 扇形两条虚线边（按日出日落角度设定）
-        const sectorDashedLinesHtml = `
+        // 扇形两条实线边（按日出日落角度设定）
+        const sectorSolidLinesHtml = `
           <line x1="${cx}" y1="${cy}" x2="${rx1.toFixed(2)}" y2="${ry1.toFixed(2)}"
-                stroke="#d68536" stroke-width="1.1" stroke-dasharray="3.2 2.6" opacity="0.82" />
+                stroke="#d68536" stroke-width="1.15" opacity="0.88" />
           <line x1="${cx}" y1="${cy}" x2="${rx2.toFixed(2)}" y2="${ry2.toFixed(2)}"
-                stroke="#d68536" stroke-width="1.1" stroke-dasharray="3.2 2.6" opacity="0.82" />
+                stroke="#d68536" stroke-width="1.15" opacity="0.88" />
           <circle cx="${rx1.toFixed(2)}" cy="${ry1.toFixed(2)}" r="1.8" fill="#e68228" />
           <circle cx="${rx2.toFixed(2)}" cy="${ry2.toFixed(2)}" r="1.8" fill="#e68228" />
         `;
 
-        // 表盘刻度：6/12/18/0 主刻度 + 每 2 小时细小辅助刻度
+        // 表盘刻度：0~23 每小时1个刻度（6/12/18/0为主刻度，6与12之间7/8/9/10/11共5个小刻度）
         let dialTicksHtml = '';
-        for (let hr = 0; hr < 24; hr += 2) {
+        for (let hr = 0; hr < 24; hr += 1) {
           const ang = timeTo24hAngle(hr);
           const isMajor = hr % 6 === 0;
-          const rIn = isMajor ? R - 5.2 : R - 2.6;
-          const rOut = isMajor ? R + 1.2 : R;
+          const rIn = isMajor ? R - 5.5 : R - 3.2;
+          const rOut = isMajor ? R + 1.5 : R + 0.5;
           const x1 = cx + rIn * Math.cos(ang);
           const y1 = cy - rIn * Math.sin(ang);
           const x2 = cx + rOut * Math.cos(ang);
           const y2 = cy - rOut * Math.sin(ang);
-          dialTicksHtml += `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="${isMajor ? '#566b76' : '#96a7b0'}" stroke-width="${isMajor ? '1.5' : '0.9'}" stroke-linecap="round" />`;
+          dialTicksHtml += `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="${isMajor ? '#536873' : '#8ea0aa'}" stroke-width="${isMajor ? '1.5' : '0.95'}" stroke-linecap="round" />`;
         }
 
         // 月出/月落微点标记
@@ -2514,7 +2516,7 @@
           moonMarkersHtml += `<circle cx="${(cx + R * Math.cos(a)).toFixed(2)}" cy="${(cy - R * Math.sin(a)).toFixed(2)}" r="1.8" fill="#7c8790" opacity="0.85" />`;
         }
 
-        // 细时间指针（从圆心指向精确当前时刻轨道落点，避免图标本身宽于单小时导致看不准分钟）
+        // 细时间指针
         const tipX = cx + R * Math.cos(nowAngle);
         const tipY = cy - R * Math.sin(nowAngle);
         const handColor = state.isDaytime ? 'rgba(225, 118, 22, 0.55)' : 'rgba(92, 116, 130, 0.45)';
@@ -2523,7 +2525,7 @@
                 stroke="${handColor}" stroke-width="0.9" stroke-linecap="round" />
         `;
 
-        // 计算太阳与月亮坐标：太阳居中于轨道 R，若月亮同时可见则置于内侧轨道(R - 11.5)防重叠
+        // 太阳居中于轨道 R，若月亮同时可见则置于内侧轨道(R - 11.5)防重叠
         const sunRadius = R;
         const moonRadius = R - 11.5;
 
@@ -2581,14 +2583,14 @@
             ${moonSectorHtml}
             ${daySectorHtml}
 
-            <!-- 24小时制实线外圈 -->
-            <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#7d909b" stroke-width="1.25" />
+            <!-- 24小时制虚线外圈 -->
+            <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#7d909b" stroke-width="1.25" stroke-dasharray="4 3" />
 
-            <!-- 表盘刻度（6/12/18/0主刻度 + 2小时微刻度） -->
+            <!-- 24小时表盘全刻度（6/12/18/0主刻度 + 每小时细刻度） -->
             ${dialTicksHtml}
 
-            <!-- 日出/日落虚线扇形边界 -->
-            ${sectorDashedLinesHtml}
+            <!-- 日出/日落实线扇形边界 -->
+            ${sectorSolidLinesHtml}
 
             <!-- 24小时制数字刻度 -->
             <text x="${cx}" y="11" text-anchor="middle" font-size="9.5" font-weight="600" fill="#6b7f8a">12</text>
@@ -2698,6 +2700,11 @@
 
         if (refreshBtn) refreshBtn.textContent = '刷新中...';
         if (hasWeatherRendered) {
+          // 锁定刷新过程中的容器高度，防止高度回缩或跳动
+          const th = todayBox.offsetHeight;
+          const fh = forecastBox.offsetHeight;
+          if (th > 0) todayBox.style.minHeight = th + 'px';
+          if (fh > 0) forecastBox.style.minHeight = fh + 'px';
           todayBox.classList.add('is-refreshing');
           forecastBox.classList.add('is-refreshing');
         } else {
@@ -2856,6 +2863,8 @@
             forecastBox.innerHTML = `<div class="status-msg">暂无未来七日数据</div>`;
           }
         } finally {
+          todayBox.style.minHeight = '';
+          forecastBox.style.minHeight = '';
           todayBox.classList.remove('is-refreshing');
           forecastBox.classList.remove('is-refreshing');
           if (refreshBtn) refreshBtn.textContent = '刷新';
