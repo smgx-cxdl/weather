@@ -60,7 +60,7 @@
 
     .scroll-inner {
       position: relative;
-      padding: 8px 18px 16px;
+      padding: 8px 18px 18px;
       background: var(--card-bg);
     }
 
@@ -73,7 +73,7 @@
       padding-top: 2px;
       padding-bottom: 7px;
       border-bottom: 3px double var(--gold-border);
-      margin-bottom: 10px;
+      margin-bottom: 14px;
     }
 
     .brand {
@@ -121,7 +121,7 @@
     .calendar-stack {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 15px;
       min-width: 0;
     }
 
@@ -556,7 +556,7 @@
 
     /* 倒计时独立面板 */
     .panel-countdown {
-      padding: 8px 16px;
+      padding: 13px 16px;
       background: var(--card-inner);
     }
 
@@ -564,29 +564,29 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
-      min-height: 28px;
+      gap: 12px;
+      min-height: 36px;
     }
 
     .countdown-left {
       display: inline-flex;
       align-items: baseline;
-      gap: 5px;
-      font-size: 14px;
+      gap: 6px;
+      font-size: 16.5px;
       color: var(--ink-sub);
       white-space: nowrap;
       flex-shrink: 0;
     }
 
     .countdown-left strong {
-      font-size: 21px;
+      font-size: 26px;
       line-height: 1;
       color: var(--warm-amber);
       font-variant-numeric: tabular-nums;
     }
 
     .countdown-left.is-today strong {
-      font-size: 17px;
+      font-size: 21px;
       color: var(--jade-green);
     }
 
@@ -600,7 +600,7 @@
     }
 
     .countdown-note {
-      font-size: 14.5px;
+      font-size: 16.5px;
       color: var(--ink-main);
       font-weight: 600;
       white-space: nowrap;
@@ -609,17 +609,22 @@
     }
 
     .countdown-date-tag {
-      font-size: 12.5px;
+      font-size: 14px;
       color: var(--ink-light);
       font-weight: normal;
-      margin-left: 5px;
+      margin-left: 6px;
       font-variant-numeric: tabular-nums;
+    }
+
+    .panel-countdown .cal-btn {
+      padding: 4px 12px;
+      font-size: 14px;
     }
 
     .countdown-editor {
       display: none;
-      margin-top: 8px;
-      padding-top: 8px;
+      margin-top: 10px;
+      padding-top: 10px;
       border-top: 1px dashed var(--gold-border);
       flex-direction: column;
       gap: 7px;
@@ -704,8 +709,8 @@
 
     .footer {
       text-align: center;
-      margin-top: 12px;
-      padding-top: 9px;
+      margin-top: 16px;
+      padding-top: 10px;
       border-top: 1px solid var(--gold-border);
       font-size: 12px;
       color: var(--ink-light);
@@ -714,13 +719,13 @@
 
     @media (max-width: 860px) {
       .scroll-inner {
-        padding: 6px 12px 12px;
+        padding: 6px 12px 14px;
       }
       .panel {
         padding: 9px 11px;
       }
       .panel-countdown {
-        padding: 7px 11px;
+        padding: 11px 12px;
       }
       .cal-cell {
         height: 52px;
@@ -730,15 +735,15 @@
     /* 手机端一屏完整适配：在清晰舒展与单屏全览之间取得平衡 */
     @media (max-width: 520px) {
       body {
-        padding: 4px 4px 8px;
+        padding: 4px 4px 10px;
       }
       .scroll-inner {
-        padding: 4px 7px 8px;
+        padding: 4px 7px 10px;
       }
       .header {
         padding-top: 1px;
         padding-bottom: 4px;
-        margin-bottom: 5px;
+        margin-bottom: 8px;
         gap: 6px;
       }
       .brand-title h1 {
@@ -755,13 +760,13 @@
         margin-left: 4px;
       }
       .calendar-stack {
-        gap: 5px;
+        gap: 9px;
       }
       .panel {
         padding: 6px 8px;
       }
       .panel-countdown {
-        padding: 5px 9px;
+        padding: 9px 10px;
       }
       .panel-title {
         font-size: 14.5px;
@@ -821,19 +826,26 @@
         line-height: 1.12;
       }
       .countdown-bar {
-        min-height: 22px;
+        min-height: 28px;
       }
       .countdown-left {
-        font-size: 12.5px;
+        font-size: 14.5px;
       }
       .countdown-left strong {
-        font-size: 17px;
+        font-size: 21px;
+      }
+      .countdown-left.is-today strong {
+        font-size: 18px;
       }
       .countdown-note {
-        font-size: 13px;
+        font-size: 14.5px;
       }
       .countdown-date-tag {
-        font-size: 11px;
+        font-size: 12.5px;
+      }
+      .panel-countdown .cal-btn {
+        padding: 3px 9px;
+        font-size: 12.5px;
       }
       .cal-btn {
         padding: 2px 7px;
@@ -872,8 +884,8 @@
         width: 3.6em;
       }
       .footer {
-        margin-top: 6px;
-        padding-top: 5px;
+        margin-top: 10px;
+        padding-top: 6px;
         font-size: 10.5px;
         letter-spacing: 0.4px;
       }
