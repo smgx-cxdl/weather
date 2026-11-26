@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>时历</title>
+  <title>日历</title>
   <style>
     :root {
       --paper-bg: #eef3f1;
@@ -910,7 +910,7 @@
         <header class="header">
           <div class="brand">
             <div class="brand-title">
-              <h1>时历</h1>
+              <h1>日历</h1>
             </div>
           </div>
           <div class="header-right">
@@ -919,16 +919,6 @@
         </header>
 
         <main class="calendar-stack">
-          <section class="panel panel-year-prog" id="yearProgressPanel">
-            <div class="status-msg">正在推演年份进度...</div>
-          </section>
-
-          <section class="panel panel-month-prog" id="monthProgressPanel">
-            <div class="status-msg">正在推演月份进度...</div>
-          </section>
-
-          <section class="panel panel-countdown" id="countdownBox"></section>
-
           <section class="panel panel-calendar">
             <div class="panel-title">
               <span class="panel-title-deco" id="calMonthTitle">月历</span>
@@ -949,6 +939,16 @@
               <div class="weekend">六</div>
             </div>
             <div class="cal-days" id="calDays"></div>
+          </section>
+
+          <section class="panel panel-countdown" id="countdownBox"></section>
+
+          <section class="panel panel-month-prog" id="monthProgressPanel">
+            <div class="status-msg">正在推演月份进度...</div>
+          </section>
+
+          <section class="panel panel-year-prog" id="yearProgressPanel">
+            <div class="status-msg">正在推演年份进度...</div>
           </section>
         </main>
 
