@@ -232,7 +232,6 @@
       background: transparent;
       border: 1px solid rgba(155, 168, 174, 0.25);
       border-radius: 1.5px;
-      transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
     }
 
     .month-day-cell.is-filled {
@@ -336,7 +335,6 @@
     .year-grid-fill {
       height: 100%;
       background: linear-gradient(90deg, #f6ba6f, #e0822b);
-      transition: width 0.35s ease;
     }
 
     .year-grid-labels {
@@ -425,13 +423,7 @@
       cursor: pointer;
       border-radius: 3px;
       white-space: nowrap;
-      transition: all 0.15s;
-    }
-
-    .cal-btn:hover {
-      border-color: var(--sky-cyan);
-      color: var(--ocean-teal);
-      background: var(--sky-soft);
+      -webkit-tap-highlight-color: transparent;
     }
 
     .cal-weekdays, .cal-days {
@@ -469,12 +461,26 @@
       justify-content: center;
       align-items: center;
       overflow: hidden;
-      transition: all 0.15s;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
 
-    .cal-cell:hover {
-      background: var(--sky-soft);
-      border-color: rgba(61, 152, 181, 0.45);
+    @media (hover: hover) {
+      .cal-btn {
+        transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+      }
+      .cal-btn:hover {
+        border-color: var(--sky-cyan);
+        color: var(--ocean-teal);
+        background: var(--sky-soft);
+      }
+      .cal-cell {
+        transition: background-color 0.15s, border-color 0.15s;
+      }
+      .cal-cell:hover {
+        background: var(--sky-soft);
+        border-color: rgba(61, 152, 181, 0.45);
+      }
     }
 
     .cal-cell.other-month {
@@ -658,8 +664,8 @@
       color: var(--ink-sub);
       border-radius: 3px;
       cursor: pointer;
-      transition: all 0.15s;
       white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .fest-pill:hover {
@@ -1009,12 +1015,14 @@
         '万圣节前夜', '万圣节', '感恩节', '平安夜', '圣诞节'
       ]);
       const STORAGE_COUNTDOWN_KEY = 'suishi_countdown_v1';
+      const STORAGE_LUNAR_CACHE_KEY = 'suishi_lunar_cache_v1';
 
       const now = new Date();
       let viewYear = now.getFullYear();
       let viewMonth = now.getMonth() + 1;
       let selectedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       let countdownState = loadCountdownState();
+      let lunarCache = loadLunarCache();
       let countdownEditorOpen = false;
 
       function escapeHtml(str) {
@@ -1038,6 +1046,32 @@
         countdownState = next;
         try {
           localStorage.setItem(STORAGE_COUNTDOWN_KEY, JSON.stringify(next));
+        } catch (e) {}
+      }
+
+      function loadLunarCache() {
+        try {
+          const raw = localStorage.getItem(STORAGE_LUNAR_CACHE_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && typeof parsed === 'object') {
+              return {
+                months: parsed.months && typeof parsed.months === 'object' ? parsed.months : {},
+                festivals: parsed.festivals || null
+              };
+            }
+          }
+        } catch (e) {}
+        return { months: {}, festivals: null };
+      }
+
+      function saveLunarCache() {
+        try {
+          const keys = Object.keys(lunarCache.months);
+          if (keys.length > 12) {
+            keys.slice(0, keys.length - 12).forEach(k => { delete lunarCache.months[k]; });
+          }
+          localStorage.setItem(STORAGE_LUNAR_CACHE_KEY, JSON.stringify(lunarCache));
         } catch (e) {}
       }
 
@@ -1208,6 +1242,16 @@
       function getUpcomingFestivals() {
         const t = new Date();
         const todayMidnight = new Date(t.getFullYear(), t.getMonth(), t.getDate());
+        const todayYmd = formatYmd(todayMidnight);
+
+        if (typeof Solar === 'undefined') {
+          const cached = lunarCache.festivals;
+          if (cached && cached.todayYmd === todayYmd && Array.isArray(cached.list)) {
+            return cached.list;
+          }
+          return [];
+        }
+
         const list = [];
         const seen = new Set();
 
@@ -1229,30 +1273,31 @@
           if (m === 5 && d === 1) addFest('劳动节');
           if (m === 10 && d === 1) addFest('国庆节');
 
-          if (typeof Solar !== 'undefined') {
-            const solar = Solar.fromYmd(y, m, d);
-            const lunar = solar.getLunar();
-            const jq = lunar.getJieQi();
-            if (jq === '清明') addFest('清明');
-            if (jq === '冬至') addFest('冬至');
+          const solar = Solar.fromYmd(y, m, d);
+          const lunar = solar.getLunar();
+          const jq = lunar.getJieQi();
+          if (jq === '清明') addFest('清明');
+          if (jq === '冬至') addFest('冬至');
 
-            const nextDt = new Date(y, m - 1, d + 1);
-            const nextLunar = Solar.fromYmd(nextDt.getFullYear(), nextDt.getMonth() + 1, nextDt.getDate()).getLunar();
-            if (nextLunar.getMonth() === 1 && nextLunar.getDay() === 1) {
-              addFest('除夕');
-            }
-
-            const lm = lunar.getMonth();
-            const ld = lunar.getDay();
-            if (lm === 1 && ld === 1) addFest('春节');
-            if (lm === 1 && ld === 15) addFest('元宵');
-            if (lm === 5 && ld === 5) addFest('端午');
-            if (lm === 7 && ld === 7) addFest('七夕');
-            if (lm === 8 && ld === 15) addFest('中秋');
-            if (lm === 9 && ld === 9) addFest('重阳');
-            if (lm === 12 && ld === 8) addFest('腊八');
+          const nextDt = new Date(y, m - 1, d + 1);
+          const nextLunar = Solar.fromYmd(nextDt.getFullYear(), nextDt.getMonth() + 1, nextDt.getDate()).getLunar();
+          if (nextLunar.getMonth() === 1 && nextLunar.getDay() === 1) {
+            addFest('除夕');
           }
+
+          const lm = lunar.getMonth();
+          const ld = lunar.getDay();
+          if (lm === 1 && ld === 1) addFest('春节');
+          if (lm === 1 && ld === 15) addFest('元宵');
+          if (lm === 5 && ld === 5) addFest('端午');
+          if (lm === 7 && ld === 7) addFest('七夕');
+          if (lm === 8 && ld === 15) addFest('中秋');
+          if (lm === 9 && ld === 9) addFest('重阳');
+          if (lm === 12 && ld === 8) addFest('腊八');
         }
+
+        lunarCache.festivals = { todayYmd, list };
+        saveLunarCache();
         return list;
       }
 
@@ -1370,18 +1415,84 @@
         });
       }
 
+      function ensureCalendarCells(container) {
+        if (container.children.length === 42) return;
+        const frag = document.createDocumentFragment();
+        for (let i = 0; i < 42; i++) {
+          const cell = document.createElement('div');
+          cell.className = 'cal-cell';
+
+          const solarSpan = document.createElement('span');
+          solarSpan.className = 'cal-solar';
+
+          const lunarSpan = document.createElement('span');
+          lunarSpan.className = 'cal-lunar';
+
+          cell.appendChild(solarSpan);
+          cell.appendChild(lunarSpan);
+
+          cell.addEventListener('click', () => {
+            const y = Number(cell.dataset.y);
+            const m = Number(cell.dataset.m);
+            const d = Number(cell.dataset.d);
+            const isOther = cell.dataset.other === '1';
+            selectedDate = new Date(y, m - 1, d);
+            if (isOther) {
+              viewYear = y;
+              viewMonth = m;
+            }
+            renderDateDetail(selectedDate);
+            renderCalendar(viewYear, viewMonth);
+          });
+
+          frag.appendChild(cell);
+        }
+        container.innerHTML = '';
+        container.appendChild(frag);
+      }
+
+      function getCellLunarInfo(cellY, cellM, cellD) {
+        const solar = Solar.fromYmd(cellY, cellM, cellD);
+        const lunar = solar.getLunar();
+        const jq = lunar.getJieQi();
+        const lunarFests = lunar.getFestivals();
+        const solarFests = solar.getFestivals();
+        const fests = [...lunarFests, ...solarFests];
+        const statutoryHit = fests.find(f => STATUTORY_FESTIVALS.has(f)) || (STATUTORY_FESTIVALS.has(jq) ? jq : '');
+
+        if (statutoryHit) {
+          return [statutoryHit, 'is-statutory'];
+        }
+        if (fests.length > 0) {
+          const text = fests[0];
+          if (WESTERN_FESTIVALS.has(text)) return [text, 'is-western'];
+          if (lunarFests.includes(text)) return [text, 'is-traditional'];
+          return [text, 'is-highlight'];
+        }
+        if (jq) {
+          return [jq, 'is-traditional'];
+        }
+        if (lunar.getDay() === 1) {
+          return [`${lunar.getMonthInChinese()}月`, 'is-highlight'];
+        }
+        return [lunar.getDayInChinese(), ''];
+      }
+
       function renderCalendar(year, month) {
         document.getElementById('calMonthTitle').textContent = `${year}年 ${month}月`;
         const container = document.getElementById('calDays');
-        container.innerHTML = '';
+        ensureCalendarCells(container);
 
         const firstDayOfWeek = new Date(year, month - 1, 1).getDay();
         const daysInMonth = new Date(year, month, 0).getDate();
         const daysInPrevMonth = new Date(year, month - 1, 0).getDate();
 
         const today = new Date();
-        // 固定 6 行 × 7 列 = 42 格，使所有月份保持相同尺寸
         const totalCells = 42;
+        const monthKey = `${year}-${month}`;
+        const hasSolar = typeof Solar !== 'undefined';
+        const cachedMonth = !hasSolar && lunarCache.months ? lunarCache.months[monthKey] : null;
+        const freshCacheEntries = hasSolar ? [] : null;
 
         for (let i = 0; i < totalCells; i++) {
           let cellY = year;
@@ -1417,66 +1528,49 @@
           let lunarText = '';
           let lunarClass = '';
 
-          if (typeof Solar !== 'undefined') {
-            const solar = Solar.fromYmd(cellY, cellM, cellD);
-            const lunar = solar.getLunar();
-            const jq = lunar.getJieQi();
-            const lunarFests = lunar.getFestivals();
-            const solarFests = solar.getFestivals();
-            const fests = [...lunarFests, ...solarFests];
-            const statutoryHit = fests.find(f => STATUTORY_FESTIVALS.has(f)) || (STATUTORY_FESTIVALS.has(jq) ? jq : '');
-
-            if (statutoryHit) {
-              lunarText = statutoryHit;
-              lunarClass = 'is-statutory';
-            } else if (fests.length > 0) {
-              lunarText = fests[0];
-              if (WESTERN_FESTIVALS.has(lunarText)) {
-                lunarClass = 'is-western';
-              } else if (lunarFests.includes(lunarText)) {
-                lunarClass = 'is-traditional';
-              } else {
-                lunarClass = 'is-highlight';
-              }
-            } else if (jq) {
-              lunarText = jq;
-              lunarClass = 'is-traditional';
-            } else if (lunar.getDay() === 1) {
-              lunarText = `${lunar.getMonthInChinese()}月`;
-              lunarClass = 'is-highlight';
-            } else {
-              lunarText = lunar.getDayInChinese();
-            }
+          if (hasSolar) {
+            const pair = getCellLunarInfo(cellY, cellM, cellD);
+            lunarText = pair[0];
+            lunarClass = pair[1];
+            freshCacheEntries.push(pair);
+          } else if (Array.isArray(cachedMonth) && Array.isArray(cachedMonth[i])) {
+            lunarText = cachedMonth[i][0] || '';
+            lunarClass = cachedMonth[i][1] || '';
           }
 
           const lunarLenClass = lunarText.length >= 9
             ? 'is-long is-extra-long'
             : (lunarText.length >= 5 ? 'is-long' : '');
 
-          const cell = document.createElement('div');
-          cell.className = 'cal-cell' +
+          const nextCellClass = 'cal-cell' +
             (isOther ? ' other-month' : '') +
             (isToday ? ' today' : '') +
             (isSelected && !isToday ? ' selected' : '') +
             (isWeekend ? ' is-weekend' : '') +
             (lunarClass === 'is-statutory' ? ' is-statutory-day' : '');
 
-          cell.innerHTML = `
-            <span class="cal-solar">${cellD}</span>
-            <span class="cal-lunar ${lunarClass} ${lunarLenClass}">${escapeHtml(lunarText)}</span>
-          `;
+          const nextLunarClass = ['cal-lunar', lunarClass, lunarLenClass].filter(Boolean).join(' ');
+          const displayLunar = lunarText || '\u00A0';
+          const solarText = String(cellD);
 
-          cell.addEventListener('click', () => {
-            selectedDate = new Date(cellY, cellM - 1, cellD);
-            if (isOther) {
-              viewYear = cellY;
-              viewMonth = cellM;
-            }
-            renderDateDetail(selectedDate);
-            renderCalendar(viewYear, viewMonth);
-          });
+          const cell = container.children[i];
+          const solarSpan = cell.children[0];
+          const lunarSpan = cell.children[1];
 
-          container.appendChild(cell);
+          cell.dataset.y = String(cellY);
+          cell.dataset.m = String(cellM);
+          cell.dataset.d = String(cellD);
+          cell.dataset.other = isOther ? '1' : '0';
+
+          if (cell.className !== nextCellClass) cell.className = nextCellClass;
+          if (solarSpan.textContent !== solarText) solarSpan.textContent = solarText;
+          if (lunarSpan.className !== nextLunarClass) lunarSpan.className = nextLunarClass;
+          if (lunarSpan.textContent !== displayLunar) lunarSpan.textContent = displayLunar;
+        }
+
+        if (hasSolar && freshCacheEntries) {
+          lunarCache.months[monthKey] = freshCacheEntries;
+          saveLunarCache();
         }
       }
 
@@ -1521,8 +1615,16 @@
           s.src = urls[idx++];
           s.async = true;
           s.onload = function () {
+            const t = new Date();
+            const hadFestCache = Boolean(
+              lunarCache.festivals && lunarCache.festivals.todayYmd === formatYmd(t)
+            );
             renderCalendar(viewYear, viewMonth);
-            renderCountdown();
+            if (!hadFestCache) {
+              renderCountdown();
+            } else {
+              getUpcomingFestivals();
+            }
           };
           s.onerror = tryLoad;
           document.body.appendChild(s);
