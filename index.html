@@ -441,7 +441,7 @@
       background: transparent;
       border: 1px solid rgba(61, 152, 181, 0.35);
       border-radius: 3px;
-      height: 300px;
+      height: 312px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -548,8 +548,8 @@
     }
 
     .celestial-svg {
-      width: 276px;
-      height: 276px;
+      width: 292px;
+      height: 292px;
       max-width: 100%;
       max-height: 100%;
       display: block;
@@ -944,7 +944,7 @@
 
       /* 日月演示框：增大高度与圆环尺寸，顺延下移下方板块填补屏底留白 */
       .weather-now {
-        height: 254px;
+        height: 256px;
         padding: 4px 6px;
       }
       .celestial-top-info,
@@ -971,8 +971,8 @@
         margin: 0 1px 0 0.5px;
       }
       .celestial-svg {
-        width: 222px;
-        height: 222px;
+        width: 230px;
+        height: 230px;
       }
 
       /* 深圳16℃板块：加宽加高、字大些 */
@@ -1070,11 +1070,11 @@
         height: 19px;
       }
       .weather-now {
-        height: 226px;
+        height: 232px;
       }
       .celestial-svg {
-        width: 198px;
-        height: 198px;
+        width: 208px;
+        height: 208px;
       }
       .celestial-top-info,
       .celestial-bottom-info {
@@ -1567,12 +1567,14 @@
 
       function buildMoonPhaseSvg(cx, cy, r, phase, fraction, isSouthernHemisphere) {
         const flipAttr = isSouthernHemisphere ? ' transform="scale(-1, 1)"' : '';
+        // 深灰圆形暗面底盘：在浅灰/素纸背景上高反差可辨，且完全遮住背后圆环与刻度
+        const baseDisc = `<circle cx="0" cy="0" r="${r}" fill="#526573" stroke="#3d4f5c" stroke-width="0.6" />`;
         let moonShape = '';
 
         if (fraction <= 0.015) {
-          moonShape = `<circle cx="0" cy="0" r="${r}" fill="none" stroke="#0284c7" stroke-width="0.7" stroke-dasharray="1.8 1.4" opacity="0.55" />`;
+          moonShape = baseDisc;
         } else if (fraction >= 0.985) {
-          moonShape = `<circle cx="0" cy="0" r="${r}" fill="#38bdf8" stroke="#0369a1" stroke-width="0.65" />`;
+          moonShape = `<circle cx="0" cy="0" r="${r}" fill="#38bdf8" stroke="#0284c7" stroke-width="0.6" />`;
         } else {
           const rx = Math.max(0.01, Math.abs(Math.cos(phase * 2 * Math.PI)) * r);
           let d = '';
@@ -1583,7 +1585,10 @@
             const termSweep = phase < 0.75 ? 0 : 1;
             d = `M 0 ${-r} A ${r} ${r} 0 0 0 0 ${r} A ${rx.toFixed(2)} ${r} 0 0 ${termSweep} 0 ${-r} Z`;
           }
-          moonShape = `<path d="${d}" fill="#38bdf8" stroke="#0369a1" stroke-width="0.65" stroke-linejoin="round" />`;
+          moonShape = `
+            ${baseDisc}
+            <path d="${d}" fill="#38bdf8" stroke="#38bdf8" stroke-width="0.25" stroke-linejoin="round" />
+          `;
         }
 
         return `
@@ -1701,9 +1706,9 @@
       function buildCelestialSvg(state) {
         const cx = 88;
         const cy = 88;
-        const R = 64;
+        const R = 71;
         const sunR = 6.0;
-        const moonR = 5.6;
+        const moonR = 5.8;
 
         const nowAngle = timeTo24hAngle(state.nowH);
 
@@ -1744,11 +1749,11 @@
           <circle cx="${rx2.toFixed(2)}" cy="${ry2.toFixed(2)}" r="1.9" fill="#e68228" />
         `;
 
-        const sunRiseExtR = Math.abs(Math.sin(aRise)) < 0.2 ? 87 : 84;
+        const sunRiseExtR = Math.abs(Math.sin(aRise)) < 0.22 ? R + 16 : R + 14;
         const sunRiseExtX = cx + sunRiseExtR * Math.cos(aRise);
         const sunRiseExtY = cy - sunRiseExtR * Math.sin(aRise);
 
-        const sunSetExtR = Math.abs(Math.sin(aSet)) < 0.2 ? 90 : 84;
+        const sunSetExtR = Math.abs(Math.sin(aSet)) < 0.22 ? R + 19 : R + 15;
         const sunSetExtX = cx + sunSetExtR * Math.cos(aSet);
         const sunSetExtY = cy - sunSetExtR * Math.sin(aSet);
 
@@ -1766,18 +1771,18 @@
         for (let hr = 0; hr < 24; hr += 1) {
           const ang = timeTo24hAngle(hr);
           const isMajor = hr % 6 === 0;
-          const rIn = isMajor ? R - 5.5 : R - 3.2;
-          const rOut = isMajor ? R + 2.0 : R + 0.8;
+          const rIn = isMajor ? R - 4.8 : R - 2.8;
+          const rOut = isMajor ? R + 1.6 : R + 0.8;
           const x1 = cx + rIn * Math.cos(ang);
           const y1 = cy - rIn * Math.sin(ang);
           const x2 = cx + rOut * Math.cos(ang);
           const y2 = cy - rOut * Math.sin(ang);
-          dialTicksHtml += `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="${isMajor ? '#536873' : '#8ea0aa'}" stroke-width="${isMajor ? '1.5' : '0.95'}" stroke-linecap="round" />`;
+          dialTicksHtml += `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="${isMajor ? '#cad3d8' : '#d8e0e4'}" stroke-width="${isMajor ? '1.4' : '0.95'}" stroke-linecap="round" />`;
 
-          const rLabel = isMajor ? R + 14.5 : R + 12.0;
+          const rLabel = isMajor ? R + 9.8 : R + 7.8;
           const lx = cx + rLabel * Math.cos(ang);
           const ly = cy - rLabel * Math.sin(ang);
-          dialLabelsHtml += `<text x="${lx.toFixed(2)}" y="${ly.toFixed(2)}" dy="0.35em" text-anchor="middle" font-size="${isMajor ? '12' : '7.5'}" font-weight="${isMajor ? '600' : '500'}" fill="${isMajor ? '#536873' : '#788b96'}">${hr}</text>`;
+          dialLabelsHtml += `<text x="${lx.toFixed(2)}" y="${ly.toFixed(2)}" dy="0.35em" text-anchor="middle" font-size="${isMajor ? '11.2' : '7.2'}" font-weight="${isMajor ? '600' : '500'}" fill="${isMajor ? '#536873' : '#788b96'}">${hr}</text>`;
         }
 
         let moonMarkersHtml = '';
@@ -1791,7 +1796,7 @@
         }
 
         const sunRadius = R;
-        const moonRadius = R - 13.5;
+        const moonRadius = R;
 
         const sx = cx + sunRadius * Math.cos(nowAngle);
         const sy = cy - sunRadius * Math.sin(nowAngle);
@@ -1812,17 +1817,13 @@
               <circle cx="${sx.toFixed(2)}" cy="${sy.toFixed(2)}" r="${sunR}" fill="url(#sunBodyGrad)" stroke="#e06508" stroke-width="0.6" />
             </g>
           `
-          : `
-            <g opacity="0.4">
-              <title>${sunTitle}（夜间在地平线下）</title>
-              <circle cx="${sx.toFixed(2)}" cy="${sy.toFixed(2)}" r="${sunR - 0.5}" fill="#f7a03b" stroke="#d97014" stroke-width="0.7" stroke-dasharray="1.8 1.3" />
-            </g>
-          `;
+          : '';
 
-        const moonElementHtml = state.isMoonVisible
+        const moonElementHtml = (!state.isDaytime && state.isMoonVisible)
           ? `
             <g>
               <title>${moonTitle}</title>
+              <circle cx="${mx.toFixed(2)}" cy="${my.toFixed(2)}" r="${(moonR + 2.5).toFixed(2)}" fill="url(#moonHaloGrad)" />
               ${buildMoonPhaseSvg(mx, my, moonR, state.moonIllum.phase, state.moonIllum.fraction, state.lat < 0)}
             </g>
           `
@@ -1840,12 +1841,16 @@
                 <stop offset="0%" stop-color="rgba(255, 160, 32, 0.36)" />
                 <stop offset="100%" stop-color="rgba(255, 160, 32, 0)" />
               </radialGradient>
+              <radialGradient id="moonHaloGrad" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="rgba(56, 189, 248, 0.28)" />
+                <stop offset="100%" stop-color="rgba(56, 189, 248, 0)" />
+              </radialGradient>
             </defs>
 
             ${moonSectorHtml}
             ${daySectorHtml}
 
-            <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#7d909b" stroke-width="1.25" stroke-dasharray="4 3" />
+            <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#d5dde1" stroke-width="1.2" />
 
             ${dialTicksHtml}
             ${sectorSolidLinesHtml}
