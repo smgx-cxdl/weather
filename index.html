@@ -2173,18 +2173,9 @@
 
       function openDeleteCityDialog(city) {
         if (savedCities.length <= 1) return;
-        const delId = String(city.id);
-        savedCities = savedCities.filter(c => String(c.id) !== delId);
-        if (savedCities.length <= 1) {
-          isManageMode = false;
-        }
-        if (String(activeCityId) === delId) {
-          activeCityId = String(savedCities[0].id);
-          fetchWeatherForActiveCity();
-        }
-        saveCities();
-        renderCityTabs();
-  
+        pendingDeleteCityId = String(city.id);
+        deleteTitle.textContent = `是否删除城市「${city.name}」？`;
+        deleteBackdrop.classList.add('show');
       }
 
       function closeDeleteCityDialog() {
