@@ -1749,19 +1749,19 @@
           <circle cx="${rx2.toFixed(2)}" cy="${ry2.toFixed(2)}" r="1.9" fill="#e68228" />
         `;
 
-        const sunRiseExtR = Math.abs(Math.sin(aRise)) < 0.22 ? R + 17.5 : R + 14.5;
+        const sunRiseExtR = Math.abs(Math.sin(aRise)) < 0.22 ? R + 17.5 : R + 16.0;
         const sunRiseExtX = cx + sunRiseExtR * Math.cos(aRise);
         const sunRiseExtY = cy - sunRiseExtR * Math.sin(aRise);
 
-        const sunSetExtR = Math.abs(Math.sin(aSet)) < 0.22 ? R + 20.5 : R + 15.5;
+        const sunSetExtR = Math.abs(Math.sin(aSet)) < 0.22 ? R + 20.5 : R + 16.5;
         const sunSetExtX = cx + sunSetExtR * Math.cos(aSet);
         const sunSetExtY = cy - sunSetExtR * Math.sin(aSet);
 
         const sunLabelsOnRingHtml = `
-          <text x="${(sunRiseExtX - 2.0).toFixed(2)}" y="${sunRiseExtY.toFixed(2)}" dy="0.35em" text-anchor="end">
+          <text x="${(sunRiseExtX - 3.2).toFixed(2)}" y="${sunRiseExtY.toFixed(2)}" dy="0.35em" text-anchor="end">
             <tspan font-size="7.2" font-weight="500" fill="#536973">日出 </tspan><tspan font-size="9.4" font-weight="700" fill="#24343d">${state.sunriseLabel}</tspan>
           </text>
-          <text x="${(sunSetExtX + 2.0).toFixed(2)}" y="${sunSetExtY.toFixed(2)}" dy="0.35em" text-anchor="start">
+          <text x="${(sunSetExtX + 3.0).toFixed(2)}" y="${sunSetExtY.toFixed(2)}" dy="0.35em" text-anchor="start">
             <tspan font-size="7.2" font-weight="500" fill="#536973">日落 </tspan><tspan font-size="9.4" font-weight="700" fill="#24343d">${state.sunsetLabel}</tspan>
           </text>
         `;
@@ -1858,8 +1858,8 @@
             ${dialLabelsHtml}
             ${sunLabelsOnRingHtml}
 
-            <text x="${cx}" y="${cy - 11}" text-anchor="middle" font-size="13" font-weight="600" fill="#c96c1f" opacity="0.88">昼</text>
-            <text x="${cx}" y="${cy + 19}" text-anchor="middle" font-size="13" font-weight="600" fill="#4f6570" opacity="0.88">夜</text>
+            <text x="${cx}" y="${cy - 24}" dy="0.35em" text-anchor="middle" font-size="10.5" font-weight="600" fill="#c96c1f" opacity="0.88">昼</text>
+            <text x="${cx}" y="${cy + 24}" dy="0.35em" text-anchor="middle" font-size="10.5" font-weight="600" fill="#4f6570" opacity="0.88">夜</text>
 
             <circle cx="${cx}" cy="${cy}" r="2.3" fill="#566b76" />
 
