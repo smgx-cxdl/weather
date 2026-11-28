@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>日历</title>
+  <title>天气</title>
   <style>
     :root {
       --paper-bg: #eef3f1;
@@ -16,9 +16,7 @@
       --sky-cyan: #3d98b5;
       --sky-soft: #e6f3f7;
       --jade-green: #2b8e5e;
-      --jade-soft: #e6f4ec;
       --warm-amber: #d67624;
-      --sun-gold: #d9a441;
       --gold-border: #d2cbb7;
       --dark-border: #8fa3ad;
       --shadow: 0 10px 30px rgba(38, 111, 136, 0.09);
@@ -39,13 +37,13 @@
         radial-gradient(circle at 88% 100%, rgba(240, 178, 92, 0.12), transparent 45%);
       background-size: 28px 28px, 100% 100%, 100% 100%;
       color: var(--ink-main);
-      line-height: 1.5;
+      line-height: 1.45;
       min-height: 100vh;
-      padding: 14px 12px 24px;
+      padding: 10px 8px 14px;
     }
 
     .container {
-      max-width: 960px;
+      max-width: 1120px;
       margin: 0 auto;
     }
 
@@ -60,7 +58,7 @@
 
     .scroll-inner {
       position: relative;
-      padding: 8px 18px 18px;
+      padding: 6px 14px 12px;
       background: var(--card-bg);
     }
 
@@ -70,10 +68,10 @@
       justify-content: space-between;
       align-items: center;
       gap: 10px;
-      padding-top: 8px;
-      padding-bottom: 13px;
+      padding-top: 4px;
+      padding-bottom: 7px;
       border-bottom: 3px double var(--gold-border);
-      margin-bottom: 15px;
+      margin-bottom: 8px;
     }
 
     .brand {
@@ -83,9 +81,9 @@
     }
 
     .brand-title h1 {
-      font-size: 30px;
+      font-size: 24px;
       color: var(--ocean-teal);
-      letter-spacing: 6px;
+      letter-spacing: 3px;
       font-weight: 700;
       line-height: 1.15;
       white-space: nowrap;
@@ -100,10 +98,10 @@
     }
 
     .live-clock {
-      font-size: 15.5px;
+      font-size: 13.5px;
       color: var(--ink-sub);
       letter-spacing: 0.6px;
-      padding: 6px 14px;
+      padding: 3px 10px;
       background: var(--card-inner);
       border: 1px solid var(--gold-border);
       border-radius: 3px;
@@ -112,17 +110,226 @@
 
     .live-clock strong {
       color: var(--ocean-teal);
-      font-size: 17px;
+      font-size: 14.5px;
       margin-left: 6px;
       font-variant-numeric: tabular-nums;
     }
 
-    /* 宽幅单栏纵排：进度条与日历均拥有充裕横向空间 */
-    .calendar-stack {
+    /* 寻城条：同一板块内两行展示，整体加宽加高 */
+    .city-bar {
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      align-items: stretch;
+      gap: 7px;
+      margin-bottom: 9px;
+      background: var(--card-inner);
+      padding: 8px 10px;
+      border: 1px solid var(--gold-border);
+      border-radius: 3px;
+    }
+
+    .city-bar-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .city-search-wrap {
+      position: relative;
+      display: flex;
+      gap: 6px;
+      flex: 1;
       min-width: 0;
+      max-width: 340px;
+    }
+
+    .city-search-wrap input {
+      flex: 1;
+      min-width: 0;
+      padding: 5px 9px;
+      font-size: 13.5px;
+      font-family: inherit;
+      border: 1px solid var(--dark-border);
+      background: var(--card-bg);
+      color: var(--ink-main);
+      border-radius: 3px;
+      outline: none;
+    }
+
+    .city-search-wrap input:focus {
+      border-color: var(--sky-cyan);
+    }
+
+    .btn-classic {
+      padding: 5px 13px;
+      font-size: 13.5px;
+      font-family: inherit;
+      background: var(--ocean-teal);
+      color: #fcfbf7;
+      border: 1px solid var(--ocean-teal);
+      border-radius: 3px;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+    }
+
+    .btn-classic:hover {
+      background: var(--warm-amber);
+      border-color: var(--warm-amber);
+    }
+
+    .cal-btn.city-manage-btn {
+      padding: 5px 12px;
+      font-size: 13.5px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      letter-spacing: 1px;
+    }
+
+    .cal-btn.city-manage-btn.is-managing {
+      background: var(--warm-amber);
+      border-color: var(--warm-amber);
+      color: #fcfbf7;
+    }
+
+    .cal-btn.city-manage-btn.is-managing:hover {
+      background: #be6318;
+      border-color: #be6318;
+      color: #fcfbf7;
+    }
+
+    .cal-btn.city-manage-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .city-tabs {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .city-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .city-tab {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 4px 12px;
+      font-size: 13.5px;
+      border: 1px solid var(--gold-border);
+      background: var(--card-bg);
+      color: var(--ink-main);
+      border-radius: 3px;
+      cursor: pointer;
+      transition: transform 0.12s ease, border-color 0.2s, background 0.2s, color 0.2s;
+      font-family: inherit;
+      white-space: nowrap;
+      flex-shrink: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .city-tab:active {
+      transform: scale(0.96);
+    }
+
+    .city-tab:hover {
+      border-color: var(--sky-cyan);
+      color: var(--ocean-teal);
+      background: var(--sky-soft);
+    }
+
+    .city-tab.active {
+      background: var(--ocean-teal);
+      color: #fcfbf7;
+      border-color: var(--ocean-teal);
+      box-shadow: inset 0 0 0 1px rgba(243, 198, 99, 0.55);
+    }
+
+    .city-tab.is-managing {
+      border-style: dashed;
+      border-color: #c93b2b;
+      color: #b43224;
+      background: #fdf4f3;
+    }
+
+    .city-tab.is-managing:hover {
+      background: #fae6e3;
+      border-color: #b43224;
+      color: #9b2619;
+    }
+
+    .city-tab-del {
+      font-size: 13px;
+      font-weight: bold;
+      line-height: 1;
+      opacity: 0.85;
+    }
+
+    .search-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      width: 100%;
+      min-width: 240px;
+      background: var(--card-bg);
+      border: 1px solid var(--ocean-teal);
+      box-shadow: var(--shadow);
+      z-index: 100;
+      max-height: 240px;
+      overflow-y: auto;
+      display: none;
+      border-radius: 3px;
+    }
+
+    .search-dropdown.show {
+      display: block;
+    }
+
+    .search-item {
+      padding: 7px 10px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--gold-border);
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .search-item:last-child {
+      border-bottom: none;
+    }
+
+    .search-item:hover {
+      background: var(--sky-soft);
+      color: var(--ocean-teal);
+    }
+
+    .search-item small {
+      color: var(--ink-light);
+      font-size: 11.5px;
+    }
+
+    /* 主网格：桌面端左列（日月演示 + 实况四日），右列（未来七日） */
+    .weather-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: 10px;
+      align-items: start;
     }
 
     .panel {
@@ -130,819 +337,784 @@
       min-width: 0;
       border: 1px solid var(--gold-border);
       background: var(--card-bg);
-      padding: 11px 16px;
+      padding: 9px 12px;
       border-radius: 3px;
       box-shadow: 0 2px 10px rgba(38, 111, 136, 0.03);
+    }
+
+    .panel-today-weather {
+      grid-column: 1;
+    }
+
+    .panel-weather-detail {
+      grid-column: 1;
+    }
+
+    .panel-forecast {
+      grid-column: 2;
+      grid-row: 1 / span 2;
     }
 
     .panel-title {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
-      min-height: 44px;
-      font-size: 21px;
+      font-size: 16.5px;
       font-weight: bold;
       color: var(--ocean-teal);
-      padding-top: 4px;
-      padding-bottom: 10px;
-      margin-bottom: 11px;
+      padding: 2px 0 6px;
+      margin-bottom: 7px;
       border-bottom: 2px double var(--gold-border);
-      letter-spacing: 2px;
+      letter-spacing: 1.5px;
     }
 
-    .panel-title-deco {
-      white-space: nowrap;
+    .panel-forecast .panel-title {
+      font-size: 17.5px;
     }
 
     .panel-title-deco::before {
       content: "✦ ";
       color: var(--warm-amber);
-      font-size: 15px;
+      font-size: 13px;
       margin-right: 4px;
     }
 
-    .progress-item {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
+    .weather-panel-title {
+      gap: 6px;
     }
 
-    .progress-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 8px;
-      font-size: 15px;
-    }
-
-    .progress-title {
-      font-weight: bold;
-      color: var(--ocean-teal);
-      letter-spacing: 1px;
-    }
-
-    .progress-meta {
-      color: var(--ink-sub);
-      font-size: 13px;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .month-sunday-row {
-      display: grid;
-      gap: 3px;
-      width: 100%;
-      padding: 0 3px;
-      margin-top: 1px;
-      margin-bottom: 1px;
-      justify-items: center;
+    .header-astro-group {
+      display: inline-flex;
       align-items: center;
-    }
-
-    .month-sunday-cap {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: transparent;
-    }
-
-    .month-sunday-cap.is-sunday {
-      background: radial-gradient(circle at 35% 35%, #f9c663, #e68228);
-      box-shadow: 0 1px 2px rgba(230, 130, 40, 0.32);
-    }
-
-    .month-sunday-cap.is-sunday.is-future {
-      background: radial-gradient(circle at 35% 35%, #fbe0a3, #f0ac6b);
-      opacity: 0.72;
-    }
-
-    .month-days-track {
-      display: grid;
-      gap: 3px;
-      width: 100%;
-      height: 15px;
-      background: transparent;
-      border: 1px solid var(--gold-border);
-      border-radius: 3px;
-      padding: 2px;
-    }
-
-    .month-day-cell {
-      height: 100%;
-      background: transparent;
-      border: 1px solid rgba(155, 168, 174, 0.25);
-      border-radius: 1.5px;
-    }
-
-    .month-day-cell.is-filled {
-      background: linear-gradient(180deg, #8fd4e4, #4ca7c0);
-      border-color: rgba(38, 111, 136, 0.45);
-    }
-
-    .month-day-cell.is-current,
-    .month-day-cell.is-filled.is-current {
-      position: relative;
-      z-index: 2;
-      background: linear-gradient(180deg, #43c47e, #239055);
-      border-color: #1d7a47;
-      transform: scaleY(1.18);
-      box-shadow: 0 0 0 1px #fcfbf7, 0 1px 4px rgba(35, 144, 85, 0.32);
-    }
-
-    .month-day-nums,
-    .month-weekdays {
-      display: grid;
-      gap: 3px;
-      width: 100%;
-      padding: 0 3px;
-    }
-
-    .month-day-nums span,
-    .month-weekdays span {
-      position: relative;
-      text-align: center;
-      font-size: 11px;
-      line-height: 1.25;
+      gap: 10px;
+      margin-left: 8px;
+      margin-right: auto;
+      font-size: 13.5px;
+      font-weight: normal;
+      letter-spacing: 0;
       color: var(--ink-sub);
-      font-variant-numeric: tabular-nums;
-      user-select: none;
-    }
-
-    .month-day-nums span.is-future,
-    .month-weekdays span.is-future {
-      color: var(--ink-light);
-    }
-
-    .month-day-nums span.is-sunday,
-    .month-weekdays span.is-sunday {
-      color: #d66f19;
-      font-weight: 700;
-    }
-
-    .month-day-nums span.is-sunday.is-future,
-    .month-weekdays span.is-sunday.is-future {
-      color: #e29148;
-    }
-
-    .month-day-nums span.is-current:not(.is-sunday),
-    .month-weekdays span.is-current:not(.is-sunday) {
-      color: var(--jade-green);
-      font-weight: 700;
-    }
-
-    .month-day-nums span.is-week-end::after,
-    .month-weekdays span.is-week-end::after {
-      content: "";
-      position: absolute;
-      right: -2px;
-      top: 0;
-      bottom: -3px;
-      border-right: 1px dashed rgba(214, 111, 25, 0.45);
-      pointer-events: none;
-    }
-
-    .month-weekdays span.is-week-end::after {
-      top: -2px;
-      bottom: 0;
-    }
-
-    #yearProgressPanel .progress-title {
-      color: #c96c1f;
-    }
-
-    .year-grid-track {
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 4px;
-      width: 100%;
-      height: 15px;
-      background: transparent;
-      border: 1px solid rgba(210, 203, 183, 0.9);
-      border-radius: 3px;
-      padding: 2px;
-    }
-
-    .year-grid-cell {
-      height: 100%;
-      background: transparent;
-      border: 1px solid rgba(214, 118, 36, 0.22);
-      border-radius: 1.5px;
-      overflow: hidden;
-      display: flex;
-      justify-content: flex-start;
-    }
-
-    .year-grid-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #f6ba6f, #e0822b);
-    }
-
-    .year-grid-labels {
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 4px;
-      padding: 0 2px;
-    }
-
-    .year-grid-labels span {
-      text-align: center;
-      font-size: 12px;
-      color: var(--ink-light);
-      line-height: 1.15;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .year-grid-labels span.is-passed {
-      color: var(--ink-sub);
-    }
-
-    .year-grid-labels span.is-current {
-      color: #c96c1f;
-      font-weight: bold;
-    }
-
-    .year-season-labels {
-      display: grid;
-      grid-template-columns: 2fr 3fr 3fr 3fr 1fr;
-      gap: 4px;
-      padding: 0 2px;
-    }
-
-    .year-season-labels span {
-      text-align: center;
-      font-size: 12px;
-      color: var(--ink-light);
-      line-height: 1.25;
-      border-top: 1px solid rgba(210, 203, 183, 0.75);
-      padding-top: 2px;
       white-space: nowrap;
     }
 
-    .year-season-labels span + span {
-      border-left: 1px dashed rgba(210, 203, 183, 0.85);
-    }
-
-    .year-season-labels span.is-current {
-      font-weight: bold;
-    }
-
-    .year-season-labels span.season-spring.is-current {
-      color: #55886c;
-      border-top-color: #74a489;
-    }
-
-    .year-season-labels span.season-summer.is-current {
-      color: #9c724b;
-      border-top-color: #b88f68;
-    }
-
-    .year-season-labels span.season-autumn.is-current {
-      color: #c96c1f;
-      border-top-color: #e0822b;
-    }
-
-    .year-season-labels span.season-winter.is-current {
-      color: #5c8190;
-      border-top-color: #7c9fad;
-    }
-
-    .cal-controls {
-      display: flex;
+    .header-astro-item {
+      display: inline-flex;
       align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
+      gap: 1px;
+      line-height: 1;
+    }
+
+    .header-astro-label {
+      display: inline-block;
+      margin-right: 1px;
+    }
+
+    .header-astro-svg {
+      width: 24px;
+      height: 24px;
+      margin-left: 0;
+      display: inline-block;
+      vertical-align: middle;
+      overflow: visible;
     }
 
     .cal-btn {
-      padding: 4px 12px;
-      font-size: 14px;
+      padding: 3px 10px;
+      font-size: 12.5px;
       font-family: inherit;
       background: var(--card-inner);
       border: 1px solid var(--gold-border);
       color: var(--ink-main);
       cursor: pointer;
       border-radius: 3px;
-      white-space: nowrap;
-      -webkit-tap-highlight-color: transparent;
+      transition: all 0.15s;
     }
 
-    .cal-weekdays, .cal-days {
-      width: 100%;
-      display: grid;
-      grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 5px;
-    }
-
-    .cal-weekdays div {
-      text-align: center;
-      font-size: 13.5px;
-      font-weight: bold;
-      color: var(--ink-sub);
-      padding: 4px 0;
-      border-bottom: 1px solid var(--gold-border);
-      margin-bottom: 3px;
-    }
-
-    .cal-weekdays div.weekend {
-      color: #e29148;
-    }
-
-    .cal-cell {
-      width: 100%;
-      min-width: 0;
-      height: 60px;
-      padding: 7px 4px 4px;
-      text-align: center;
-      border: 1px solid rgba(210, 203, 183, 0.35);
-      border-radius: 3px;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-    }
-
-    @media (hover: hover) {
-      .cal-btn {
-        transition: background-color 0.15s, border-color 0.15s, color 0.15s;
-      }
-      .cal-btn:hover {
-        border-color: var(--sky-cyan);
-        color: var(--ocean-teal);
-        background: var(--sky-soft);
-      }
-      .cal-cell {
-        transition: background-color 0.15s, border-color 0.15s;
-      }
-      .cal-cell:hover {
-        background: var(--sky-soft);
-        border-color: rgba(61, 152, 181, 0.45);
-      }
-    }
-
-    .cal-cell.other-month {
-      opacity: 0.35;
-    }
-
-    .cal-cell.selected {
-      border: 1.5px solid var(--jade-green);
-      background: var(--jade-soft);
-      box-shadow: inset 0 0 0 1px rgba(43, 142, 94, 0.18);
-    }
-
-    .cal-cell.today {
-      background: var(--ocean-teal);
-      color: #fcfbf7;
-      border-color: var(--sun-gold);
-      box-shadow: inset 0 0 0 1px rgba(252, 251, 247, 0.25);
-    }
-
-    .cal-cell.today .cal-lunar {
-      color: rgba(252, 251, 247, 0.92);
-    }
-
-    .cal-solar {
-      font-size: 17px;
-      font-weight: bold;
-      line-height: 1.15;
-      font-variant-numeric: lining-nums;
-    }
-
-    .cal-cell.is-weekend:not(.today) .cal-solar {
-      color: #e29148;
-    }
-
-    .cal-cell.is-statutory-day:not(.today) .cal-solar {
-      color: #c93b2b;
-    }
-
-    .cal-lunar {
-      font-size: 12px;
-      color: var(--ink-sub);
-      margin-top: 3px;
-      line-height: 1.18;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100%;
-    }
-
-    .cal-lunar.is-long {
-      white-space: normal;
-      font-size: 10.5px;
-      line-height: 1.12;
-      word-break: break-all;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .cal-lunar.is-extra-long {
-      font-size: 9.5px;
-      line-height: 1.08;
-    }
-
-    .cal-cell.is-weekend:not(.today) .cal-lunar:not(.is-statutory):not(.is-western):not(.is-traditional):not(.is-highlight) {
-      color: #e29148;
-    }
-
-    .cal-cell:not(.today) .cal-lunar.is-statutory {
-      background: #c93b2b;
-      color: #fcfbf7;
-      font-weight: bold;
-      border-radius: 2px;
-      padding: 1px 0;
-      width: 4.2em;
-      max-width: 100%;
-      text-align: center;
-      line-height: 1.25;
-    }
-
-    .cal-cell:not(.today) .cal-lunar.is-highlight,
-    .cal-cell:not(.today) .cal-lunar.is-western,
-    .cal-cell:not(.today) .cal-lunar.is-traditional {
-      color: #2166c2;
-      font-weight: bold;
-    }
-
-    /* 倒计时独立面板 */
-    .panel-countdown {
-      padding: 13px 16px;
-      background: var(--card-inner);
-    }
-
-    .countdown-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      min-height: 36px;
-    }
-
-    .countdown-left {
-      display: inline-flex;
-      align-items: baseline;
-      gap: 6px;
-      font-size: 16.5px;
-      color: var(--ink-sub);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .countdown-left strong {
-      font-size: 26px;
-      line-height: 1;
-      color: var(--warm-amber);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .countdown-left.is-today strong {
-      font-size: 21px;
-      color: var(--jade-green);
-    }
-
-    .countdown-right {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 10px;
-      min-width: 0;
-      flex: 1;
-    }
-
-    .countdown-note {
-      font-size: 16.5px;
-      color: var(--ink-main);
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .countdown-date-tag {
-      font-size: 14px;
-      color: var(--ink-light);
-      font-weight: normal;
-      margin-left: 6px;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .panel-countdown .cal-btn {
-      padding: 4px 12px;
-      font-size: 14px;
-    }
-
-    .countdown-editor {
-      display: none;
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px dashed var(--gold-border);
-      flex-direction: column;
-      gap: 7px;
-    }
-
-    .countdown-editor.show {
-      display: flex;
-    }
-
-    .countdown-fest-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-    }
-
-    .fest-pill {
-      padding: 2px 8px;
-      font-size: 12px;
-      font-family: inherit;
-      background: var(--card-bg);
-      border: 1px solid var(--gold-border);
-      color: var(--ink-sub);
-      border-radius: 3px;
-      cursor: pointer;
-      white-space: nowrap;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .fest-pill:hover {
+    .cal-btn:hover {
       border-color: var(--sky-cyan);
       color: var(--ocean-teal);
       background: var(--sky-soft);
     }
 
-    .fest-pill.active {
-      background: var(--ocean-teal);
-      color: #fcfbf7;
-      border-color: var(--ocean-teal);
+    /* 日月演示框：左上昼夜时长、右上倒计时、右下月出月落，日出日落随圆环显示 */
+    .weather-now {
+      position: relative;
+      background: transparent;
+      border: 1px solid rgba(61, 152, 181, 0.35);
+      border-radius: 3px;
+      height: 314px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 10px;
+      overflow: hidden;
     }
 
-    .countdown-custom-row {
+    .celestial-top-info,
+    .celestial-bottom-info {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      z-index: 2;
       display: flex;
-      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 12px;
+      line-height: 1.32;
+      color: var(--ink-sub);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .celestial-top-info {
+      top: 7px;
+      justify-content: space-between;
+      align-items: flex-start;
+      pointer-events: none;
+    }
+
+    .celestial-bottom-info {
+      bottom: 7px;
+      justify-content: flex-end;
+      align-items: flex-end;
+    }
+
+    .celestial-dur-box {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .celestial-dur-box strong,
+    .celestial-corner-right strong {
+      color: var(--ink-main);
+      font-weight: 600;
+      margin-left: 3px;
+    }
+
+    .celestial-cd-box,
+    .celestial-corner-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      text-align: right;
+    }
+
+    .celestial-cd-box {
+      color: var(--ink-main);
+      line-height: 1.2;
+      transition: color 0.25s ease;
+    }
+
+    .celestial-cd-label {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: inherit;
+      letter-spacing: 0.3px;
+    }
+
+    .celestial-cd-val {
+      display: inline-flex;
+      align-items: baseline;
+      justify-content: flex-end;
+      color: inherit;
+      font-variant-numeric: tabular-nums;
+      margin-top: 2px;
+    }
+
+    .celestial-cd-val .cd-num {
+      font-size: 12.5px;
+      font-weight: 600;
+      line-height: 1.05;
+      letter-spacing: 0.2px;
+    }
+
+    .celestial-cd-val .cd-unit {
+      font-size: 9px;
+      font-weight: 500;
+      margin: 0 1.5px 0 0.5px;
+    }
+
+    .celestial-cd-val .cd-unit:last-child {
+      margin-right: 0;
+    }
+
+    .celestial-cd-box.is-after-sunset {
+      color: #8897a0;
+    }
+
+    .weather-celestial-wrap {
+      width: 100%;
+      height: 100%;
+      display: flex;
       align-items: center;
+      justify-content: center;
+    }
+
+    .celestial-svg {
+      width: 294px;
+      height: 294px;
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+      overflow: visible;
+    }
+
+    /* 下方独立板块：城市实况气象（含体感湿度）+ 四日对比 */
+    .weather-detail-card {
+      border: 1px solid rgba(61, 152, 181, 0.35);
+      border-radius: 3px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .weather-detail-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+    }
+
+    .weather-detail-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .weather-city-block {
+      min-width: 0;
+    }
+
+    .weather-city-name {
+      font-size: 20px;
+      font-weight: bold;
+      color: var(--ocean-teal);
+      line-height: 1.15;
+      white-space: nowrap;
+    }
+
+    .weather-city-sub {
+      font-size: 11.5px;
+      color: var(--ink-sub);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 128px;
+    }
+
+    .weather-temp-block {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-shrink: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .weather-temp-main {
+      font-size: 26px;
+      font-weight: bold;
+      color: var(--ocean-teal);
+      line-height: 1.05;
+      font-variant-numeric: lining-nums;
+    }
+
+    .weather-desc {
+      font-size: 13.5px;
+      color: var(--ink-main);
+      white-space: nowrap;
+    }
+
+    .weather-stats-list {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      padding-left: 12px;
+      border-left: 1px solid rgba(61, 152, 181, 0.24);
+      font-size: 12.5px;
+      line-height: 1.3;
+      color: var(--ink-sub);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .weather-stats-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .weather-stats-row strong {
+      color: var(--ink-main);
+      font-weight: 600;
+      margin-left: 3px;
+    }
+
+    .weather-bottom-strip {
+      border-top: 1px solid rgba(61, 152, 181, 0.24);
+      padding: 7px 9px;
+      transition: opacity 0.2s ease;
+    }
+
+    .is-refreshing {
+      opacity: 0.58;
+    }
+
+    /* 四日对比 */
+    .weather-four-days {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 6px;
     }
 
-    .countdown-custom-row input[type="text"] {
-      flex: 1;
-      min-width: 120px;
-      padding: 4px 8px;
-      font-size: 12.5px;
-      font-family: inherit;
-      border: 1px solid var(--dark-border);
-      background: var(--card-bg);
-      color: var(--ink-main);
+    .day-mini-card {
       border-radius: 3px;
-      outline: none;
+      padding: 5px 4px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5px;
+      min-width: 0;
     }
 
-    .countdown-custom-row input[type="date"] {
-      padding: 3px 6px;
+    .day-mini-card.is-muted {
+      opacity: 0.52;
+      background: transparent;
+      border: 1px solid rgba(61, 152, 181, 0.14);
+    }
+
+    .day-mini-card.is-today {
+      background: transparent;
+      border: 1px solid #000;
+    }
+
+    .day-mini-label {
+      font-size: 11.5px;
+      color: var(--ink-sub);
+      line-height: 1.15;
+    }
+
+    .day-mini-card.is-today .day-mini-label {
+      color: var(--ocean-teal);
+      font-weight: bold;
+    }
+
+    .day-mini-cond {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      max-width: 100%;
+      font-size: 11.5px;
+      line-height: 1.2;
+      color: var(--ink-main);
+    }
+
+    .day-mini-card.is-muted .day-mini-cond {
+      color: var(--ink-sub);
+    }
+
+    .day-mini-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .day-mini-temp {
+      font-size: 11.5px;
+      font-weight: bold;
+      line-height: 1.15;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .day-mini-card.is-muted .day-mini-temp {
+      color: var(--ink-sub);
+      font-weight: normal;
+    }
+
+    .temp-low {
+      color: var(--sky-cyan);
+      font-weight: normal;
+    }
+
+    .temp-high {
+      color: var(--warm-amber);
+    }
+
+    /* 未来七日晴雨 */
+    #forecastBox {
+      display: flex;
+      flex-direction: column;
+      transition: opacity 0.2s ease;
+    }
+
+    #forecastBox .status-msg {
+      margin: auto;
+    }
+
+    .forecast-list {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .forecast-row {
+      display: grid;
+      grid-template-columns: 102px 1fr 56px 86px;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 6px;
+      border-bottom: 1px solid rgba(210, 203, 183, 0.65);
+      font-size: 13.5px;
+      line-height: 1.3;
+    }
+
+    .forecast-row:last-child {
+      border-bottom: none;
+    }
+
+    .forecast-date {
+      display: flex;
+      flex-direction: row;
+      align-items: baseline;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .forecast-date strong {
+      display: inline-block;
+      min-width: 44px;
+      font-size: 13.5px;
+      color: var(--ink-main);
+    }
+
+    .forecast-date span {
+      font-size: 11.5px;
+      color: var(--ink-light);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .forecast-cond {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding-left: 4px;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .forecast-rain {
       font-size: 12px;
-      font-family: inherit;
-      border: 1px solid var(--dark-border);
-      background: var(--card-bg);
-      color: var(--ink-main);
-      border-radius: 3px;
-      outline: none;
+      color: var(--jade-green);
+      text-align: right;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
     }
 
-    .countdown-custom-row input:focus {
-      border-color: var(--sky-cyan);
+    .forecast-temp {
+      text-align: right;
+      font-weight: bold;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
     }
 
     .status-msg {
-      padding: 14px;
+      padding: 12px;
       text-align: center;
       color: var(--ink-sub);
-      font-size: 14px;
-    }
-
-    .footer {
-      text-align: center;
-      margin-top: 18px;
-      padding-top: 11px;
-      border-top: 1px solid var(--gold-border);
-      font-size: 12px;
-      color: var(--ink-light);
-      letter-spacing: 1px;
+      font-size: 13px;
     }
 
     @media (max-width: 860px) {
+      .weather-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 7px;
+      }
+      .panel-today-weather,
+      .panel-weather-detail,
+      .panel-forecast {
+        grid-column: 1;
+        grid-row: auto;
+      }
       .scroll-inner {
-        padding: 6px 12px 14px;
-      }
-      .panel {
-        padding: 9px 11px;
-      }
-      .panel-countdown {
-        padding: 11px 12px;
-      }
-      .cal-cell {
-        height: 52px;
+        padding: 4px 7px 8px;
       }
     }
 
-    /* 手机端一屏完整适配：在清晰舒展与单屏全览之间取得平衡 */
     @media (max-width: 520px) {
       body {
-        padding: 4px 4px 10px;
+        padding: 2px 2px 5px;
       }
       .scroll-inner {
-        padding: 4px 7px 12px;
+        padding: 3px 4px 6px;
       }
+
+      /* 顶栏「天气」：加宽栏高、字大些 */
       .header {
-        padding-top: 6px;
-        padding-bottom: 9px;
-        margin-bottom: 12px;
+        padding-top: 4px;
+        padding-bottom: 6px;
+        margin-bottom: 5px;
         gap: 6px;
       }
-      .brand-title h1 {
-        font-size: 22px;
-        letter-spacing: 3px;
-      }
-      .live-clock {
-        font-size: 12px;
-        letter-spacing: 0.2px;
-        padding: 4px 8px;
-      }
-      .live-clock strong {
-        font-size: 13.5px;
-        margin-left: 4px;
-      }
-      .calendar-stack {
-        gap: 21px;
-      }
-      .panel {
-        padding: 6px 8px;
-      }
-      .panel-countdown {
-        padding: 9px 10px;
-      }
-      .panel-title {
-        min-height: 34px;
-        font-size: 17.5px;
-        padding-top: 3px;
-        padding-bottom: 7px;
-        margin-bottom: 6px;
-        letter-spacing: 1px;
-      }
-      .panel-title-deco::before {
-        font-size: 13px;
-        margin-right: 2px;
-      }
-      .cal-controls {
-        gap: 4px;
-      }
-      .progress-item {
-        gap: 2.5px;
-      }
-      .progress-header {
-        font-size: 13.5px;
-      }
-      .progress-meta {
-        font-size: 11.5px;
-      }
-      .month-sunday-row {
-        gap: 1px;
-        padding: 0 2px;
-      }
-      .month-sunday-cap {
-        width: 5px;
-        height: 5px;
-      }
-      .month-days-track {
-        gap: 1px;
-        height: 11px;
-        padding: 1.5px;
-      }
-      .month-day-nums,
-      .month-weekdays {
-        gap: 1px;
-        padding: 0 2px;
-      }
-      .month-day-nums span,
-      .month-weekdays span {
-        font-size: 8px;
-        line-height: 1.15;
-        letter-spacing: -0.4px;
-      }
-      .month-day-nums span.is-week-end::after,
-      .month-weekdays span.is-week-end::after {
-        right: -1px;
-      }
-      .year-grid-track,
-      .year-grid-labels,
-      .year-season-labels {
-        gap: 2px;
-      }
-      .year-grid-track {
-        height: 11px;
-        padding: 1.5px;
-      }
-      .year-grid-labels span,
-      .year-season-labels span {
-        font-size: 9.5px;
-        line-height: 1.12;
-      }
-      .countdown-bar {
-        min-height: 28px;
-      }
-      .countdown-left {
-        font-size: 14.5px;
-      }
-      .countdown-left strong {
-        font-size: 21px;
-      }
-      .countdown-left.is-today strong {
-        font-size: 18px;
-      }
-      .countdown-note {
-        font-size: 14.5px;
-      }
-      .countdown-date-tag {
-        font-size: 12.5px;
-      }
-      .panel-countdown .cal-btn {
-        padding: 3px 9px;
-        font-size: 12.5px;
-      }
-      .cal-btn {
-        padding: 3px 7.5px;
-        font-size: 12.5px;
-      }
-      .cal-weekdays, .cal-days {
-        gap: 2.5px;
-      }
-      .cal-weekdays div {
-        padding: 2px 0;
-        font-size: 11.5px;
-        margin-bottom: 1.5px;
-      }
-      .cal-cell {
-        height: 43px;
-        padding: 2px 1px;
-      }
-      .cal-solar {
-        font-size: 14px;
-        line-height: 1.1;
-      }
-      .cal-lunar {
-        font-size: 9.5px;
-        margin-top: 1.5px;
-        line-height: 1.12;
-      }
-      .cal-lunar.is-long {
-        font-size: 8px;
-        line-height: 1.06;
-      }
-      .cal-lunar.is-extra-long {
-        font-size: 7.2px;
-        line-height: 1.04;
-      }
-      .cal-cell:not(.today) .cal-lunar.is-statutory {
-        width: 3.6em;
-      }
-      .footer {
-        margin-top: 14px;
-        padding-top: 8px;
-        font-size: 10.5px;
-        letter-spacing: 0.4px;
-      }
-    }
-
-    @media (max-width: 375px) {
       .brand-title h1 {
         font-size: 20px;
         letter-spacing: 2px;
       }
       .live-clock {
-        font-size: 11px;
-        padding: 3.5px 6px;
+        font-size: 11.5px;
+        letter-spacing: 0.2px;
+        padding: 2.5px 7px;
       }
       .live-clock strong {
-        font-size: 12px;
+        font-size: 12.5px;
+        margin-left: 4px;
       }
+
+      /* 寻城栏：加宽加大 */
+      .city-bar {
+        padding: 6px 7px;
+        margin-bottom: 5px;
+        gap: 5px;
+      }
+      .city-bar-top {
+        gap: 5px;
+      }
+      .city-search-wrap {
+        max-width: none;
+        gap: 5px;
+      }
+      .city-search-wrap input {
+        padding: 4px 8px;
+        font-size: 13px;
+      }
+      .btn-classic {
+        padding: 4px 11px;
+        font-size: 13px;
+        letter-spacing: 0.8px;
+      }
+      .cal-btn.city-manage-btn {
+        padding: 4px 10px;
+        font-size: 13px;
+        letter-spacing: 0.8px;
+      }
+      .city-tabs {
+        gap: 6px;
+      }
+      .city-tab {
+        padding: 3px 11px;
+        font-size: 12.5px;
+      }
+
+      .weather-grid {
+        gap: 5px;
+      }
+      .panel {
+        padding: 6px 7px;
+      }
+
+      /* 气象实况与未来七日晴雨标题栏：加宽、字大些 */
       .panel-title {
-        font-size: 16.5px;
-        letter-spacing: 0.5px;
+        font-size: 14.5px;
+        padding: 2px 0 4px;
+        margin-bottom: 5px;
+        letter-spacing: 0.8px;
+      }
+      .panel-forecast .panel-title {
+        font-size: 15.5px;
+      }
+      .header-astro-group {
+        gap: 7px;
+        font-size: 12px;
+        margin-left: 6px;
+      }
+      .header-astro-svg {
+        width: 21px;
+        height: 21px;
       }
       .cal-btn {
-        padding: 2.5px 6px;
+        padding: 2.5px 8px;
+        font-size: 12px;
+      }
+
+      /* 日月演示框：增大高度与圆环尺寸，顺延下移下方板块填补屏底留白 */
+      .weather-now {
+        height: 256px;
+        padding: 4px 6px;
+      }
+      .celestial-top-info,
+      .celestial-bottom-info {
+        left: 7px;
+        right: 7px;
+        font-size: 10px;
+        line-height: 1.25;
+      }
+      .celestial-top-info {
+        top: 5px;
+      }
+      .celestial-bottom-info {
+        bottom: 5px;
+      }
+      .celestial-cd-label {
+        font-size: 10.5px;
+      }
+      .celestial-cd-val .cd-num {
+        font-size: 11px;
+      }
+      .celestial-cd-val .cd-unit {
+        font-size: 8.5px;
+        margin: 0 1px 0 0.5px;
+      }
+      .celestial-svg {
+        width: 234px;
+        height: 234px;
+      }
+
+      /* 深圳16℃板块：加宽加高、字大些 */
+      .weather-detail-top {
+        padding: 7px 8px;
+        gap: 8px;
+      }
+      .weather-detail-left {
+        gap: 11px;
+      }
+      .weather-city-name {
+        font-size: 17px;
+      }
+      .weather-city-sub {
+        font-size: 10.5px;
+        max-width: 96px;
+      }
+      .weather-temp-block {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1px;
+      }
+      .weather-temp-main {
+        font-size: 22px;
+      }
+      .weather-desc {
         font-size: 11.5px;
       }
-      .cal-cell {
-        height: 40px;
+      .weather-stats-list {
+        padding-left: 10px;
+        font-size: 11.5px;
+        gap: 3px;
+        line-height: 1.25;
       }
-      .cal-solar {
-        font-size: 13.5px;
+      .weather-stats-row {
+        gap: 6px;
       }
-      .cal-lunar {
-        font-size: 9px;
+      .weather-bottom-strip {
+        padding: 5px 6px;
+      }
+      .weather-four-days {
+        gap: 5px;
+      }
+      .day-mini-card {
+        padding: 3.5px 2px;
+        gap: 1px;
+      }
+      .day-mini-label,
+      .day-mini-cond,
+      .day-mini-temp {
+        font-size: 10.5px;
+        line-height: 1.18;
+      }
+
+      /* 手机端未来七日晴雨：舒展间距与列对齐，保持一屏内完整呈现 */
+      .forecast-row {
+        grid-template-columns: 88px 1fr 48px 74px;
+        gap: 6px;
+        padding: 4.5px 5px;
+        font-size: 12px;
+        line-height: 1.28;
+      }
+      .forecast-date {
+        gap: 4px;
+      }
+      .forecast-date strong {
+        min-width: 38px;
+        font-size: 12px;
+      }
+      .forecast-date span {
+        font-size: 10.5px;
+      }
+      .forecast-cond {
+        gap: 5px;
+        padding-left: 4px;
+      }
+      .forecast-rain {
+        font-size: 11px;
+      }
+    }
+
+    @media (max-width: 375px) {
+      .brand-title h1 {
+        font-size: 18.5px;
+      }
+      .live-clock {
+        font-size: 10.5px;
+        padding: 2px 5px;
+      }
+      .live-clock strong {
+        font-size: 11.5px;
+      }
+      .header-astro-svg {
+        width: 19px;
+        height: 19px;
+      }
+      .weather-now {
+        height: 232px;
+      }
+      .celestial-svg {
+        width: 210px;
+        height: 210px;
+      }
+      .celestial-top-info,
+      .celestial-bottom-info {
+        font-size: 9.5px;
+      }
+      .celestial-cd-label {
+        font-size: 9.8px;
+      }
+      .celestial-cd-val .cd-num {
+        font-size: 10.2px;
+      }
+      .celestial-cd-val .cd-unit {
+        font-size: 8px;
+      }
+      .weather-city-name {
+        font-size: 16px;
+      }
+      .weather-temp-main {
+        font-size: 20px;
+      }
+      .weather-stats-list {
+        font-size: 11px;
+        padding-left: 8px;
+      }
+      .forecast-row {
+        grid-template-columns: 80px 1fr 42px 68px;
+        gap: 5px;
+        font-size: 11.5px;
+        padding: 4px 4px;
+      }
+      .forecast-date strong {
+        min-width: 35px;
+        font-size: 11.5px;
+      }
+      .forecast-date span {
+        font-size: 10px;
+      }
+      .forecast-rain {
+        font-size: 10.5px;
       }
     }
   </style>
@@ -954,7 +1126,7 @@
         <header class="header">
           <div class="brand">
             <div class="brand-title">
-              <h1>日历</h1>
+              <h1>天气</h1>
             </div>
           </div>
           <div class="header-right">
@@ -962,43 +1134,63 @@
           </div>
         </header>
 
-        <main class="calendar-stack">
-          <section class="panel panel-calendar">
+        <section class="city-bar">
+          <div class="city-bar-top">
+            <div class="city-search-wrap">
+              <input type="text" id="cityInput" placeholder="添加城市" autocomplete="off" />
+              <button class="btn-classic" id="searchBtn">寻城</button>
+              <div class="search-dropdown" id="searchDropdown"></div>
+            </div>
+            <button type="button" class="cal-btn city-manage-btn" id="manageCitiesBtn">删城</button>
+          </div>
+          <div class="city-tabs" id="cityTabs"></div>
+        </section>
+
+        <main class="weather-grid">
+          <section class="panel panel-today-weather">
+            <div class="panel-title weather-panel-title">
+              <span class="panel-title-deco">气象 · 今日实况</span>
+              <span class="header-astro-group">
+                <span class="header-astro-item" id="headerSunBadge" title="太阳">
+                  <span class="header-astro-label">日:</span><svg class="header-astro-svg" viewBox="0 0 20 20" aria-hidden="true">
+                    <defs>
+                      <radialGradient id="hdrSunBodyGrad" cx="38%" cy="35%" r="65%">
+                        <stop offset="0%" stop-color="#ffd24c" />
+                        <stop offset="55%" stop-color="#ff9518" />
+                        <stop offset="100%" stop-color="#ea6a08" />
+                      </radialGradient>
+                      <radialGradient id="hdrSunHaloGrad" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="rgba(255, 160, 32, 0.36)" />
+                        <stop offset="100%" stop-color="rgba(255, 160, 32, 0)" />
+                      </radialGradient>
+                    </defs>
+                    <circle cx="10" cy="10" r="9.8" fill="url(#hdrSunHaloGrad)" />
+                    <circle cx="10" cy="10" r="7.4" fill="url(#hdrSunBodyGrad)" stroke="#e06508" stroke-width="0.6" />
+                  </svg>
+                </span>
+                <span class="header-astro-item" id="headerMoonBadge" title="月相">
+                  <span class="header-astro-label">月:</span><svg class="header-astro-svg" id="headerMoonSvg" viewBox="0 0 20 20" aria-hidden="true"></svg>
+                </span>
+              </span>
+              <button class="cal-btn" id="refreshWeatherBtn">刷新</button>
+            </div>
+            <div id="todayWeatherBox"></div>
+          </section>
+
+          <section class="panel panel-weather-detail">
+            <div id="weatherDetailBox"></div>
+          </section>
+
+          <section class="panel panel-forecast">
             <div class="panel-title">
-              <span class="panel-title-deco" id="calMonthTitle">月历</span>
-              <div class="cal-controls">
-                <button class="cal-btn" id="backTodayBtn" style="display: none;">今日</button>
-                <button class="cal-btn" id="prevMonthBtn">上月</button>
-                <button class="cal-btn" id="currMonthBtn">本月</button>
-                <button class="cal-btn" id="nextMonthBtn">下月</button>
-              </div>
+              <span class="panel-title-deco">未来七日晴雨</span>
+              <span style="font-size: 11.5px; font-weight: normal; color: var(--ink-light); letter-spacing: 0;">明日至第七日</span>
             </div>
-            <div class="cal-weekdays">
-              <div class="weekend">日</div>
-              <div>一</div>
-              <div>二</div>
-              <div>三</div>
-              <div>四</div>
-              <div>五</div>
-              <div class="weekend">六</div>
+            <div id="forecastBox">
+              <div class="status-msg">正在获取七日预报...</div>
             </div>
-            <div class="cal-days" id="calDays"></div>
-          </section>
-
-          <section class="panel panel-countdown" id="countdownBox"></section>
-
-          <section class="panel panel-month-prog" id="monthProgressPanel">
-            <div class="status-msg">正在推演月份进度...</div>
-          </section>
-
-          <section class="panel panel-year-prog" id="yearProgressPanel">
-            <div class="status-msg">正在推演年份进度...</div>
           </section>
         </main>
-
-        <footer class="footer">
-          ✦ 中国农历与节气本地推演 · 点击月历任意日期可切换当日进度 ✦
-        </footer>
       </div>
     </div>
   </div>
@@ -1006,24 +1198,203 @@
   <script>
     (function () {
       const WEEKDAYS = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-      const WEEKDAY_CHARS = ['日', '一', '二', '三', '四', '五', '六'];
-      const STATUTORY_FESTIVALS = new Set([
-        '元旦节', '除夕', '春节', '清明', '劳动节', '端午节', '中秋节', '国庆节'
-      ]);
-      const WESTERN_FESTIVALS = new Set([
-        '情人节', '愚人节', '母亲节', '父亲节',
-        '万圣节前夜', '万圣节', '感恩节', '平安夜', '圣诞节'
-      ]);
-      const STORAGE_COUNTDOWN_KEY = 'suishi_countdown_v1';
-      const STORAGE_LUNAR_CACHE_KEY = 'suishi_lunar_cache_v1';
+      const STORAGE_CITIES_KEY = 'suishi_saved_cities_v1';
+      const STORAGE_ACTIVE_KEY = 'suishi_active_city_v1';
+      const STORAGE_WEATHER_CACHE_KEY = 'suishi_weather_cache_v1';
 
-      const now = new Date();
-      let viewYear = now.getFullYear();
-      let viewMonth = now.getMonth() + 1;
-      let selectedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      let countdownState = loadCountdownState();
-      let lunarCache = loadLunarCache();
-      let countdownEditorOpen = false;
+      const DEFAULT_CITIES = [
+        { id: '1816670', name: '北京', admin1: '北京市', country: '中国', latitude: 39.9075, longitude: 116.39723 },
+        { id: '1796236', name: '上海', admin1: '上海市', country: '中国', latitude: 31.22222, longitude: 121.45806 },
+        { id: '1808926', name: '杭州', admin1: '浙江省', country: '中国', latitude: 30.29365, longitude: 120.16142 }
+      ];
+
+      // 内嵌轻量级太阳/月亮位置与月相推演算法
+      const SunCalcLite = (function () {
+        const PI = Math.PI;
+        const sin = Math.sin;
+        const cos = Math.cos;
+        const tan = Math.tan;
+        const asin = Math.asin;
+        const atan = Math.atan2;
+        const acos = Math.acos;
+        const rad = PI / 180;
+
+        const dayMs = 86400000;
+        const J1970 = 2440588;
+        const J2000 = 2451545;
+        const e = rad * 23.4397;
+
+        function toJulian(date) { return date.valueOf() / dayMs - 0.5 + J1970; }
+        function fromJulian(j) { return new Date((j + 0.5 - J1970) * dayMs); }
+        function toDays(date) { return toJulian(date) - J2000; }
+
+        function rightAscension(l, b) { return atan(sin(l) * cos(e) - tan(b) * sin(e), cos(l)); }
+        function declination(l, b) { return asin(sin(b) * cos(e) + cos(b) * sin(e) * sin(l)); }
+        function azimuth(H, phi, dec) { return atan(sin(H), cos(H) * sin(phi) - tan(dec) * cos(phi)); }
+        function altitude(H, phi, dec) { return asin(sin(phi) * sin(dec) + cos(phi) * cos(dec) * cos(H)); }
+        function siderealTime(d, lw) { return rad * (280.16 + 360.9856235 * d) - lw; }
+
+        function solarMeanAnomaly(d) { return rad * (357.5291 + 0.98560028 * d); }
+        function eclipticLongitude(M) {
+          const C = rad * (1.9148 * sin(M) + 0.02 * sin(2 * M) + 0.0003 * sin(3 * M));
+          const P = rad * 102.9372;
+          return M + C + P + PI;
+        }
+        function sunCoords(d) {
+          const M = solarMeanAnomaly(d);
+          const L = eclipticLongitude(M);
+          return { dec: declination(L, 0), ra: rightAscension(L, 0) };
+        }
+
+        function getSunPosition(date, lat, lng) {
+          const lw = rad * -lng;
+          const phi = rad * lat;
+          const d = toDays(date);
+          const c = sunCoords(d);
+          const H = siderealTime(d, lw) - c.ra;
+          return { azimuth: azimuth(H, phi, c.dec), altitude: altitude(H, phi, c.dec) };
+        }
+
+        const J0 = 0.0009;
+        function julianCycle(d, lw) { return Math.round(d - J0 - lw / (2 * PI)); }
+        function approxTransit(Ht, lw, n) { return J0 + (Ht + lw) / (2 * PI) + n; }
+        function solarTransitJ(ds, M, L) { return J2000 + ds + 0.0053 * sin(M) - 0.0069 * sin(2 * L); }
+        function hourAngle(h, phi, d) { return acos((sin(h) - sin(phi) * sin(d)) / (cos(phi) * cos(d))); }
+        function getSetJ(h, lw, phi, dec, n, M, L) {
+          const w = hourAngle(h, phi, dec);
+          const a = approxTransit(w, lw, n);
+          return solarTransitJ(a, M, L);
+        }
+
+        function getSunTimes(date, lat, lng) {
+          const lw = rad * -lng;
+          const phi = rad * lat;
+          const d = toDays(date);
+          const n = julianCycle(d, lw);
+          const ds = approxTransit(0, lw, n);
+          const M = solarMeanAnomaly(ds);
+          const L = eclipticLongitude(M);
+          const dec = declination(L, 0);
+          const Jnoon = solarTransitJ(ds, M, L);
+          const h0 = -0.833 * rad;
+          const cosArg = (sin(h0) - sin(phi) * sin(dec)) / (cos(phi) * cos(dec));
+          if (cosArg < -1 || cosArg > 1) {
+            return { sunrise: null, sunset: null, solarNoon: fromJulian(Jnoon) };
+          }
+          const Jset = getSetJ(h0, lw, phi, dec, n, M, L);
+          const Jrise = Jnoon - (Jset - Jnoon);
+          return {
+            sunrise: fromJulian(Jrise),
+            sunset: fromJulian(Jset),
+            solarNoon: fromJulian(Jnoon)
+          };
+        }
+
+        function moonCoords(d) {
+          const L = rad * (218.316 + 13.176396 * d);
+          const M = rad * (134.963 + 13.064993 * d);
+          const F = rad * (93.272 + 13.229350 * d);
+          const l = L + rad * 6.289 * sin(M);
+          const b = rad * 5.128 * sin(F);
+          const dt = 385001 - 20905 * cos(M);
+          return { ra: rightAscension(l, b), dec: declination(l, b), dist: dt };
+        }
+
+        function astroRefraction(h) {
+          if (h < 0) h = 0;
+          return 0.0002967 / Math.tan(h + 0.00312536 / (h + 0.08901179));
+        }
+
+        function getMoonPosition(date, lat, lng) {
+          const lw = rad * -lng;
+          const phi = rad * lat;
+          const d = toDays(date);
+          const c = moonCoords(d);
+          const H = siderealTime(d, lw) - c.ra;
+          let h = altitude(H, phi, c.dec);
+          h = h + astroRefraction(h);
+          return { azimuth: azimuth(H, phi, c.dec), altitude: h, distance: c.dist };
+        }
+
+        function getMoonIllumination(date) {
+          const d = toDays(date);
+          const s = sunCoords(d);
+          const m = moonCoords(d);
+          const sdist = 149598000;
+          const phi = acos(sin(s.dec) * sin(m.dec) + cos(s.dec) * cos(m.dec) * cos(s.ra - m.ra));
+          const inc = atan(sdist * sin(phi), m.dist - sdist * cos(phi));
+          const angle = atan(
+            cos(s.dec) * sin(s.ra - m.ra),
+            sin(s.dec) * cos(m.dec) - cos(s.dec) * sin(m.dec) * cos(s.ra - m.ra)
+          );
+          return {
+            fraction: (1 + cos(inc)) / 2,
+            phase: 0.5 + 0.5 * inc * (angle < 0 ? -1 : 1) / PI,
+            angle: angle
+          };
+        }
+
+        function hoursLater(tMs, h) {
+          return new Date(tMs + h * 3600000);
+        }
+
+        function getMoonEvents(startMs, durationHours, lat, lng) {
+          const hc = 0.133 * rad;
+          let h0 = getMoonPosition(new Date(startMs), lat, lng).altitude - hc;
+          const events = [];
+          for (let i = 1; i <= durationHours; i += 2) {
+            const h1 = getMoonPosition(hoursLater(startMs, i), lat, lng).altitude - hc;
+            const h2 = getMoonPosition(hoursLater(startMs, i + 1), lat, lng).altitude - hc;
+            const a = (h0 + h2) / 2 - h1;
+            const b = (h2 - h0) / 2;
+            const xe = -b / (2 * a);
+            const ye = (a * xe + b) * xe + h1;
+            const d = b * b - 4 * a * h1;
+            let roots = 0;
+            let x1 = 0, x2 = 0;
+            if (d >= 0) {
+              const dx = Math.sqrt(d) / (Math.abs(a) * 2);
+              x1 = xe - dx;
+              x2 = xe + dx;
+              if (Math.abs(x1) <= 1) roots++;
+              if (Math.abs(x2) <= 1) roots++;
+              if (x1 < -1) x1 = x2;
+            }
+            if (roots === 1) {
+              events.push({
+                type: h0 < 0 ? 'rise' : 'set',
+                time: hoursLater(startMs, i + x1).valueOf()
+              });
+            } else if (roots === 2) {
+              const rTime = hoursLater(startMs, i + (ye < 0 ? x2 : x1)).valueOf();
+              const sTime = hoursLater(startMs, i + (ye < 0 ? x1 : x2)).valueOf();
+              if (rTime < sTime) {
+                events.push({ type: 'rise', time: rTime }, { type: 'set', time: sTime });
+              } else {
+                events.push({ type: 'set', time: sTime }, { type: 'rise', time: rTime });
+              }
+            }
+            h0 = h2;
+          }
+          events.sort((a, b) => a.time - b.time);
+          return events;
+        }
+
+        return {
+          getSunPosition,
+          getSunTimes,
+          getMoonPosition,
+          getMoonIllumination,
+          getMoonEvents
+        };
+      })();
+
+      let savedCities = loadCities();
+      let activeCityId = loadActiveCityId(savedCities);
+      let weatherCacheMap = loadWeatherCacheMap();
+      let lastCelestialCtx = null;
+      let lastSvgMinuteKey = '';
+      let isManageMode = false;
 
       function escapeHtml(str) {
         return String(str || '').replace(/[&<>"']/g, function (m) {
@@ -1031,48 +1402,59 @@
         });
       }
 
-      function loadCountdownState() {
+      function loadCities() {
         try {
-          const raw = localStorage.getItem(STORAGE_COUNTDOWN_KEY);
+          const raw = localStorage.getItem(STORAGE_CITIES_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          }
+        } catch (e) {}
+        return DEFAULT_CITIES.slice();
+      }
+
+      function saveCities() {
+        try {
+          localStorage.setItem(STORAGE_CITIES_KEY, JSON.stringify(savedCities));
+          localStorage.setItem(STORAGE_ACTIVE_KEY, String(activeCityId));
+        } catch (e) {}
+      }
+
+      function loadActiveCityId(cities) {
+        try {
+          const id = localStorage.getItem(STORAGE_ACTIVE_KEY);
+          if (id && cities.some(c => String(c.id) === String(id))) return id;
+        } catch (e) {}
+        return String(cities[0].id);
+      }
+
+      function loadWeatherCacheMap() {
+        try {
+          const raw = localStorage.getItem(STORAGE_WEATHER_CACHE_KEY);
           if (raw) {
             const parsed = JSON.parse(raw);
             if (parsed && typeof parsed === 'object') return parsed;
           }
         } catch (e) {}
-        return { mode: 'auto', name: '', dateStr: '' };
+        return {};
       }
 
-      function saveCountdownState(next) {
-        countdownState = next;
+      function saveWeatherCache(cityId, payload) {
+        weatherCacheMap[String(cityId)] = payload;
         try {
-          localStorage.setItem(STORAGE_COUNTDOWN_KEY, JSON.stringify(next));
+          localStorage.setItem(STORAGE_WEATHER_CACHE_KEY, JSON.stringify(weatherCacheMap));
         } catch (e) {}
       }
 
-      function loadLunarCache() {
-        try {
-          const raw = localStorage.getItem(STORAGE_LUNAR_CACHE_KEY);
-          if (raw) {
-            const parsed = JSON.parse(raw);
-            if (parsed && typeof parsed === 'object') {
-              return {
-                months: parsed.months && typeof parsed.months === 'object' ? parsed.months : {},
-                festivals: parsed.festivals || null
-              };
-            }
-          }
-        } catch (e) {}
-        return { months: {}, festivals: null };
-      }
-
-      function saveLunarCache() {
-        try {
-          const keys = Object.keys(lunarCache.months);
-          if (keys.length > 12) {
-            keys.slice(0, keys.length - 12).forEach(k => { delete lunarCache.months[k]; });
-          }
-          localStorage.setItem(STORAGE_LUNAR_CACHE_KEY, JSON.stringify(lunarCache));
-        } catch (e) {}
+      function inferCityOffsetSec(city, cached) {
+        if (cached && Number.isFinite(cached.utc_offset_seconds)) {
+          return cached.utc_offset_seconds;
+        }
+        if (city && city.country === '中国') return 28800;
+        if (city && Number.isFinite(Number(city.longitude))) {
+          return Math.round(Number(city.longitude) / 15) * 3600;
+        }
+        return -new Date().getTimezoneOffset() * 60;
       }
 
       function updateClock() {
@@ -1086,556 +1468,856 @@
       updateClock();
       setInterval(updateClock, 1000);
 
-      function buildMonthProgressHtml(y, m, d) {
-        const daysInMonth = new Date(y, m, 0).getDate();
-        const remainMonthDays = daysInMonth - d;
-        const monthPct = (d / daysInMonth) * 100;
-
-        let sundayCapsHtml = '';
-        let monthCellsHtml = '';
-        let monthNumsHtml = '';
-        let monthWeekdaysHtml = '';
-
-        for (let dayIdx = 1; dayIdx <= daysInMonth; dayIdx++) {
-          const dayOfWeek = new Date(y, m - 1, dayIdx).getDay();
-          const weekdayChar = WEEKDAY_CHARS[dayOfWeek];
-          const isFilled = dayIdx < d;
-          const isCurrent = dayIdx === d;
-          const isFuture = dayIdx > d;
-          const isSunday = dayOfWeek === 0;
-          const isWeekEnd = isSunday && dayIdx < daysInMonth;
-
-          const capCls = [
-            'month-sunday-cap',
-            isSunday ? 'is-sunday' : '',
-            isFuture ? 'is-future' : ''
-          ].filter(Boolean).join(' ');
-
-          const cellCls = [
-            'month-day-cell',
-            isFilled ? 'is-filled' : '',
-            isCurrent ? 'is-current' : ''
-          ].filter(Boolean).join(' ');
-
-          const labelCls = [
-            isFuture ? 'is-future' : '',
-            isCurrent ? 'is-current' : '',
-            isSunday ? 'is-sunday' : '',
-            isWeekEnd ? 'is-week-end' : ''
-          ].filter(Boolean).join(' ');
-
-          sundayCapsHtml += `<div class="${capCls}" title="${isSunday ? `${m}月${dayIdx}日 周日` : ''}"></div>`;
-          monthCellsHtml += `<div class="${cellCls}" title="${m}月${dayIdx}日 星期${weekdayChar}"></div>`;
-          monthNumsHtml += `<span class="${labelCls}">${dayIdx}</span>`;
-          monthWeekdaysHtml += `<span class="${labelCls}">${weekdayChar}</span>`;
-        }
-
-        return `
-          <div class="progress-item">
-            <div class="progress-header">
-              <span class="progress-title">${m}月</span>
-              <span class="progress-meta">剩 ${remainMonthDays} 天</span>
-            </div>
-            <div class="month-sunday-row" style="grid-template-columns: repeat(${daysInMonth}, 1fr);" aria-hidden="true">
-              ${sundayCapsHtml}
-            </div>
-            <div class="month-days-track" style="grid-template-columns: repeat(${daysInMonth}, 1fr);" role="progressbar" aria-valuenow="${monthPct.toFixed(1)}" aria-valuemin="0" aria-valuemax="100">
-              ${monthCellsHtml}
-            </div>
-            <div class="month-day-nums" style="grid-template-columns: repeat(${daysInMonth}, 1fr);">
-              ${monthNumsHtml}
-            </div>
-            <div class="month-weekdays" style="grid-template-columns: repeat(${daysInMonth}, 1fr);">
-              ${monthWeekdaysHtml}
-            </div>
-          </div>
-        `;
-      }
-
-      function buildYearProgressHtml(y, m, d) {
-        const daysInMonth = new Date(y, m, 0).getDate();
-        const isLeap = (y % 4 === 0 && y % 100 !== 0) || (y % 400 === 0);
-        const daysInYear = isLeap ? 366 : 365;
-        const startOfYear = new Date(y, 0, 1);
-        const dayOfYear = Math.floor((new Date(y, m - 1, d) - startOfYear) / 86400000) + 1;
-        const remainYearDays = daysInYear - dayOfYear;
-        const yearPct = (dayOfYear / daysInYear) * 100;
-
-        let yearCellsHtml = '';
-        let yearLabelsHtml = '';
-        for (let monthIdx = 1; monthIdx <= 12; monthIdx++) {
-          let cellPct = 0;
-          if (monthIdx < m) {
-            cellPct = 100;
-          } else if (monthIdx === m) {
-            cellPct = (d / daysInMonth) * 100;
-          }
-          const labelClass = monthIdx === m ? 'is-current' : (monthIdx < m ? 'is-passed' : '');
-          yearCellsHtml += `<div class="year-grid-cell" title="${monthIdx}月"><div class="year-grid-fill" style="width: ${cellPct.toFixed(2)}%;"></div></div>`;
-          yearLabelsHtml += `<span class="${labelClass}">${monthIdx}</span>`;
-        }
-
-        const seasonCls = {
-          winEarly: m <= 2 ? 'is-current' : '',
-          spring: m >= 3 && m <= 5 ? 'is-current' : '',
-          summer: m >= 6 && m <= 8 ? 'is-current' : '',
-          autumn: m >= 9 && m <= 11 ? 'is-current' : '',
-          winLate: m === 12 ? 'is-current' : ''
+      function parseWeatherCode(code) {
+        const map = {
+          0: { text: '晴朗', icon: '☀️' },
+          1: { text: '晴间少云', icon: '🌤️' },
+          2: { text: '多云', icon: '⛅' },
+          3: { text: '阴天', icon: '☁️' },
+          45: { text: '轻雾', icon: '🌫️' },
+          48: { text: '霜雾', icon: '🌫️' },
+          51: { text: '毛毛微雨', icon: '🌦️' },
+          53: { text: '细雨', icon: '🌦️' },
+          55: { text: '密雨', icon: '🌧️' },
+          56: { text: '微冻雨', icon: '🌨️' },
+          57: { text: '冻雨', icon: '🌨️' },
+          61: { text: '小雨', icon: '🌦️' },
+          63: { text: '中雨', icon: '🌧️' },
+          65: { text: '大雨', icon: '🌧️' },
+          66: { text: '冻雨', icon: '🌨️' },
+          67: { text: '强冻雨', icon: '🌨️' },
+          71: { text: '小雪', icon: '🌨️' },
+          73: { text: '中雪', icon: '❄️' },
+          75: { text: '大雪', icon: '❄️' },
+          77: { text: '霰雪', icon: '❄️' },
+          80: { text: '阵雨', icon: '🌦️' },
+          81: { text: '强阵雨', icon: '🌧️' },
+          82: { text: '暴雨', icon: '⛈️' },
+          85: { text: '阵雪', icon: '🌨️' },
+          86: { text: '强阵雪', icon: '❄️' },
+          95: { text: '雷阵雨', icon: '⛈️' },
+          96: { text: '雷雨夹雹', icon: '⛈️' },
+          99: { text: '强雷暴冰雹', icon: '⛈️' }
         };
+        return map[code] || { text: '气象未知', icon: '🌡️' };
+      }
+
+      function formatCityHm(utcMs, offsetSec) {
+        if (!Number.isFinite(utcMs)) return '--:--';
+        const d = new Date(utcMs + offsetSec * 1000);
+        const hh = String(d.getUTCHours()).padStart(2, '0');
+        const mm = String(d.getUTCMinutes()).padStart(2, '0');
+        return `${hh}:${mm}`;
+      }
+
+      function getCityLocalHours(utcMs, offsetSec) {
+        const d = new Date(utcMs + offsetSec * 1000);
+        return d.getUTCHours() + d.getUTCMinutes() / 60 + d.getUTCSeconds() / 3600;
+      }
+
+      function timeTo24hAngle(hours24) {
+        return Math.PI * (1.5 - hours24 / 12);
+      }
+
+      function isBodyAboveHorizon(nowMs, events, fallbackAbove) {
+        let prev = null;
+        for (let i = 0; i < events.length; i++) {
+          if (events[i].time <= nowMs) {
+            prev = events[i];
+          } else {
+            break;
+          }
+        }
+        if (prev) return prev.type === 'rise';
+        return fallbackAbove;
+      }
+
+      function formatDurationHm(totalMins) {
+        const clamped = Math.max(0, Math.min(1440, Math.round(totalMins)));
+        const h = Math.floor(clamped / 60);
+        const m = String(clamped % 60).padStart(2, '0');
+        return `${h}时${m}分`;
+      }
+
+      function getCountdownParts(diffMs) {
+        if (!Number.isFinite(diffMs) || diffMs < 0) {
+          return { h: '--', m: '--', s: '--' };
+        }
+        const totalSec = Math.floor(diffMs / 1000);
+        return {
+          h: String(Math.floor(totalSec / 3600)).padStart(2, '0'),
+          m: String(Math.floor((totalSec % 3600) / 60)).padStart(2, '0'),
+          s: String(totalSec % 60).padStart(2, '0')
+        };
+      }
+
+      function buildCountdownValHtml(parts) {
+        return `<span class="cd-num" id="cdHour">${parts.h}</span><span class="cd-unit">时</span><span class="cd-num" id="cdMin">${parts.m}</span><span class="cd-unit">分</span><span class="cd-num" id="cdSec">${parts.s}</span><span class="cd-unit">秒</span>`;
+      }
+
+      function getMoonPhaseName(phase) {
+        if (phase < 0.03 || phase >= 0.97) return '新月';
+        if (phase < 0.22) return '蛾眉月';
+        if (phase < 0.28) return '上弦月';
+        if (phase < 0.47) return '盈凸月';
+        if (phase < 0.53) return '满月';
+        if (phase < 0.72) return '亏凸月';
+        if (phase < 0.78) return '下弦月';
+        return '残月';
+      }
+
+      function buildMoonPhaseSvg(cx, cy, r, phase, fraction, isSouthernHemisphere) {
+        const flipAttr = isSouthernHemisphere ? ' transform="scale(-1, 1)"' : '';
+        // 浅灰圆形暗面底盘 + 清晰细边框：轻盈通透不发黑，又能遮住圆环与刻度、保持清楚轮廓
+        const baseDisc = `<circle cx="0" cy="0" r="${r}" fill="#cfd8de" stroke="#8398a6" stroke-width="0.65" />`;
+        let moonShape = '';
+
+        if (fraction <= 0.015) {
+          moonShape = baseDisc;
+        } else if (fraction >= 0.985) {
+          moonShape = `<circle cx="0" cy="0" r="${r}" fill="#38bdf8" stroke="#0284c7" stroke-width="0.6" />`;
+        } else {
+          const rx = Math.max(0.01, Math.abs(Math.cos(phase * 2 * Math.PI)) * r);
+          let d = '';
+          if (phase <= 0.5) {
+            const termSweep = phase < 0.25 ? 0 : 1;
+            d = `M 0 ${-r} A ${r} ${r} 0 0 1 0 ${r} A ${rx.toFixed(2)} ${r} 0 0 ${termSweep} 0 ${-r} Z`;
+          } else {
+            const termSweep = phase < 0.75 ? 0 : 1;
+            d = `M 0 ${-r} A ${r} ${r} 0 0 0 0 ${r} A ${rx.toFixed(2)} ${r} 0 0 ${termSweep} 0 ${-r} Z`;
+          }
+          moonShape = `
+            ${baseDisc}
+            <path d="${d}" fill="#38bdf8" stroke="#0ea5e9" stroke-width="0.35" stroke-linejoin="round" />
+          `;
+        }
 
         return `
-          <div class="progress-item">
-            <div class="progress-header">
-              <span class="progress-title">${y}年</span>
-              <span class="progress-meta">剩 ${remainYearDays} 天</span>
-            </div>
-            <div class="year-grid-track" role="progressbar" aria-valuenow="${yearPct.toFixed(1)}" aria-valuemin="0" aria-valuemax="100">
-              ${yearCellsHtml}
-            </div>
-            <div class="year-grid-labels">
-              ${yearLabelsHtml}
-            </div>
-            <div class="year-season-labels">
-              <span class="season-winter ${seasonCls.winEarly}">冬季</span>
-              <span class="season-spring ${seasonCls.spring}">春季</span>
-              <span class="season-summer ${seasonCls.summer}">夏季</span>
-              <span class="season-autumn ${seasonCls.autumn}">秋季</span>
-              <span class="season-winter ${seasonCls.winLate}">冬</span>
-            </div>
-          </div>
+          <g transform="translate(${cx.toFixed(2)}, ${cy.toFixed(2)})">
+            <g${flipAttr}>
+              ${moonShape}
+            </g>
+          </g>
         `;
       }
 
-      function renderDateDetail(dateObj) {
-        const monthBox = document.getElementById('monthProgressPanel');
-        const yearBox = document.getElementById('yearProgressPanel');
-        const backBtn = document.getElementById('backTodayBtn');
-        const today = new Date();
-        const isToday =
-          dateObj.getFullYear() === today.getFullYear() &&
-          dateObj.getMonth() === today.getMonth() &&
-          dateObj.getDate() === today.getDate();
+      function updateHeaderAstroIcons(cState) {
+        const sunBadge = document.getElementById('headerSunBadge');
+        const moonBadge = document.getElementById('headerMoonBadge');
+        const moonSvg = document.getElementById('headerMoonSvg');
 
-        backBtn.style.display = isToday ? 'none' : 'inline-block';
-
-        const y = dateObj.getFullYear();
-        const m = dateObj.getMonth() + 1;
-        const d = dateObj.getDate();
-
-        monthBox.innerHTML = buildMonthProgressHtml(y, m, d);
-        yearBox.innerHTML = buildYearProgressHtml(y, m, d);
+        if (sunBadge) {
+          sunBadge.title = `日：日出 ${cState.sunriseLabel} / 日落 ${cState.sunsetLabel}`;
+        }
+        if (moonSvg) {
+          moonSvg.innerHTML = buildMoonPhaseSvg(
+            10,
+            10,
+            6.4,
+            cState.moonIllum.phase,
+            cState.moonIllum.fraction,
+            cState.lat < 0
+          );
+        }
+        if (moonBadge) {
+          const moonName = getMoonPhaseName(cState.moonIllum.phase);
+          const moonPct = Math.round(cState.moonIllum.fraction * 100);
+          moonBadge.title = `月：${moonName}（照明 ${moonPct}% · 月出 ${cState.moonriseLabel} / 月落 ${cState.moonsetLabel}）`;
+        }
       }
 
-      function formatYmd(dateObj) {
-        const y = dateObj.getFullYear();
-        const m = String(dateObj.getMonth() + 1).padStart(2, '0');
-        const d = String(dateObj.getDate()).padStart(2, '0');
-        return `${y}-${m}-${d}`;
+      function computeCelestialState(city, offsetSec) {
+        const lat = Number(city.latitude);
+        const lng = Number(city.longitude);
+        const nowMs = Date.now();
+        const nowDate = new Date(nowMs);
+
+        const shifted = new Date(nowMs + offsetSec * 1000);
+        const cY = shifted.getUTCFullYear();
+        const cM = shifted.getUTCMonth();
+        const cD = shifted.getUTCDate();
+        const dayStartMs = Date.UTC(cY, cM, cD, 0, 0, 0) - offsetSec * 1000;
+        const dayEndMs = dayStartMs + 86400000;
+        const dayNoonMs = dayStartMs + 43200000;
+
+        const sunEvents = [];
+        [-86400000, 0, 86400000].forEach(delta => {
+          const st = SunCalcLite.getSunTimes(new Date(dayNoonMs + delta), lat, lng);
+          if (st.sunrise) sunEvents.push({ type: 'rise', time: st.sunrise.valueOf() });
+          if (st.sunset) sunEvents.push({ type: 'set', time: st.sunset.valueOf() });
+        });
+        sunEvents.sort((a, b) => a.time - b.time);
+
+        const todaySunRise = sunEvents.find(e => e.type === 'rise' && e.time >= dayStartMs && e.time < dayEndMs);
+        const todaySunSet = sunEvents.find(e => e.type === 'set' && e.time >= dayStartMs && e.time < dayEndMs);
+        const sunriseLabel = todaySunRise ? formatCityHm(todaySunRise.time, offsetSec) : '--:--';
+        const sunsetLabel = todaySunSet ? formatCityHm(todaySunSet.time, offsetSec) : '--:--';
+
+        const moonEvents = SunCalcLite.getMoonEvents(dayStartMs - 86400000, 72, lat, lng);
+        const todayMoonRise = moonEvents.find(e => e.type === 'rise' && e.time >= dayStartMs && e.time < dayEndMs);
+        const todayMoonSet = moonEvents.find(e => e.type === 'set' && e.time >= dayStartMs && e.time < dayEndMs);
+        const moonriseLabel = todayMoonRise ? formatCityHm(todayMoonRise.time, offsetSec) : '--:--';
+        const moonsetLabel = todayMoonSet ? formatCityHm(todayMoonSet.time, offsetSec) : '--:--';
+
+        const sunPos = SunCalcLite.getSunPosition(nowDate, lat, lng);
+        const moonPos = SunCalcLite.getMoonPosition(nowDate, lat, lng);
+        const moonIllum = SunCalcLite.getMoonIllumination(nowDate);
+
+        const nowH = getCityLocalHours(nowMs, offsetSec);
+        const isDaytime = isBodyAboveHorizon(nowMs, sunEvents, sunPos.altitude >= 0);
+        const isMoonVisible = isBodyAboveHorizon(nowMs, moonEvents, moonPos.altitude >= 0);
+
+        let dayMins = isDaytime ? 1440 : 0;
+        if (todaySunRise && todaySunSet && todaySunSet.time > todaySunRise.time) {
+          dayMins = Math.round((todaySunSet.time - todaySunRise.time) / 60000);
+        }
+        const nightMins = Math.max(0, 1440 - dayMins);
+
+        const nextSunEvent = sunEvents.find(e => e.time > nowMs);
+        let cdLabel = isDaytime ? '距日落' : '距日出';
+        let cdDiffMs = null;
+        if (nextSunEvent) {
+          cdLabel = nextSunEvent.type === 'set' ? '距日落' : '距日出';
+          cdDiffMs = nextSunEvent.time - nowMs;
+        }
+
+        return {
+          lat,
+          nowMs,
+          nowH,
+          offsetSec,
+          sunriseLabel,
+          sunsetLabel,
+          moonriseLabel,
+          moonsetLabel,
+          todaySunRise,
+          todaySunSet,
+          todayMoonRise,
+          todayMoonSet,
+          isDaytime,
+          isMoonVisible,
+          moonIllum,
+          dayDurText: formatDurationHm(dayMins),
+          nightDurText: formatDurationHm(nightMins),
+          cdLabel,
+          cdParts: getCountdownParts(cdDiffMs)
+        };
       }
 
-      function parseYmdLocal(dateStr) {
-        if (!dateStr || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return null;
-        const p = dateStr.split('-');
-        return new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
-      }
+      function buildCelestialSvg(state) {
+        const cx = 88;
+        const cy = 88;
+        const R = 69.5;
+        const sunR = 5.8;
+        const moonR = 4.9;
 
-      function getUpcomingFestivals() {
-        const t = new Date();
-        const todayMidnight = new Date(t.getFullYear(), t.getMonth(), t.getDate());
-        const todayYmd = formatYmd(todayMidnight);
+        const nowAngle = timeTo24hAngle(state.nowH);
 
-        if (typeof Solar === 'undefined') {
-          const cached = lunarCache.festivals;
-          if (cached && cached.todayYmd === todayYmd && Array.isArray(cached.list)) {
-            return cached.list;
-          }
-          return [];
+        let hRise = 6;
+        let hSet = 18;
+        if (state.todaySunRise && state.todaySunSet) {
+          hRise = getCityLocalHours(state.todaySunRise.time, state.offsetSec);
+          hSet = getCityLocalHours(state.todaySunSet.time, state.offsetSec);
         }
+        const aRise = timeTo24hAngle(hRise);
+        const aSet = timeTo24hAngle(hSet);
 
-        const list = [];
-        const seen = new Set();
+        const rx1 = cx + R * Math.cos(aRise);
+        const ry1 = cy - R * Math.sin(aRise);
+        const rx2 = cx + R * Math.cos(aSet);
+        const ry2 = cy - R * Math.sin(aSet);
+        const dayLargeArc = (hSet - hRise) > 12 ? 1 : 0;
+        const nightLargeArc = (24 - (hSet - hRise)) > 12 ? 1 : 0;
 
-        for (let offset = 0; offset <= 375; offset++) {
-          const dt = new Date(todayMidnight.getFullYear(), todayMidnight.getMonth(), todayMidnight.getDate() + offset);
-          const y = dt.getFullYear();
-          const m = dt.getMonth() + 1;
-          const d = dt.getDate();
-          const ymd = formatYmd(dt);
-
-          const addFest = name => {
-            if (!seen.has(name)) {
-              seen.add(name);
-              list.push({ name, dateStr: ymd, monthDay: `${m}月${d}日`, diffDays: offset });
-            }
-          };
-
-          if (m === 1 && d === 1) addFest('元旦');
-          if (m === 5 && d === 1) addFest('劳动节');
-          if (m === 10 && d === 1) addFest('国庆节');
-
-          const solar = Solar.fromYmd(y, m, d);
-          const lunar = solar.getLunar();
-          const jq = lunar.getJieQi();
-          if (jq === '清明') addFest('清明');
-          if (jq === '冬至') addFest('冬至');
-
-          const nextDt = new Date(y, m - 1, d + 1);
-          const nextLunar = Solar.fromYmd(nextDt.getFullYear(), nextDt.getMonth() + 1, nextDt.getDate()).getLunar();
-          if (nextLunar.getMonth() === 1 && nextLunar.getDay() === 1) {
-            addFest('除夕');
-          }
-
-          const lm = lunar.getMonth();
-          const ld = lunar.getDay();
-          if (lm === 1 && ld === 1) addFest('春节');
-          if (lm === 1 && ld === 15) addFest('元宵');
-          if (lm === 5 && ld === 5) addFest('端午');
-          if (lm === 7 && ld === 7) addFest('七夕');
-          if (lm === 8 && ld === 15) addFest('中秋');
-          if (lm === 9 && ld === 9) addFest('重阳');
-          if (lm === 12 && ld === 8) addFest('腊八');
-        }
-
-        lunarCache.festivals = { todayYmd, list };
-        saveLunarCache();
-        return list;
-      }
-
-      function renderCountdown() {
-        const box = document.getElementById('countdownBox');
-        if (!box) return;
-
-        const t = new Date();
-        const todayMidnight = new Date(t.getFullYear(), t.getMonth(), t.getDate());
-        const festivals = getUpcomingFestivals();
-
-        let targetName = '';
-        let targetDateStr = '';
-
-        if (countdownState.mode === 'custom' && countdownState.dateStr) {
-          targetName = countdownState.name || '记事目标日';
-          targetDateStr = countdownState.dateStr;
-        } else if (countdownState.mode === 'festival' && countdownState.name) {
-          const matched = festivals.find(f => f.name === countdownState.name);
-          if (matched) {
-            targetName = matched.name;
-            targetDateStr = matched.dateStr;
-          } else if (countdownState.dateStr) {
-            targetName = countdownState.name;
-            targetDateStr = countdownState.dateStr;
-          }
-        }
-
-        if (!targetDateStr) {
-          if (festivals.length > 0) {
-            targetName = festivals[0].name;
-            targetDateStr = festivals[0].dateStr;
-          } else {
-            const nextYear = new Date(t.getFullYear() + 1, 0, 1);
-            targetName = '元旦';
-            targetDateStr = formatYmd(nextYear);
-          }
-        }
-
-        const targetDate = parseYmdLocal(targetDateStr) || todayMidnight;
-        const diffDays = Math.round((targetDate - todayMidnight) / 86400000);
-        const mdLabel = `${targetDate.getMonth() + 1}月${targetDate.getDate()}日`;
-
-        let leftHtml = '';
-        if (diffDays > 0) {
-          leftHtml = `<div class="countdown-left">还剩 <strong>${diffDays}</strong> 天</div>`;
-        } else if (diffDays === 0) {
-          leftHtml = `<div class="countdown-left is-today">就是 <strong>今日</strong></div>`;
-        } else {
-          leftHtml = `<div class="countdown-left">已过 <strong>${Math.abs(diffDays)}</strong> 天</div>`;
-        }
-
-        const pillsHtml = festivals.map(f => {
-          const isAct = countdownState.mode !== 'custom' && f.name === targetName;
-          return `<button type="button" class="fest-pill${isAct ? ' active' : ''}" data-fest-name="${escapeHtml(f.name)}" data-fest-date="${f.dateStr}">${escapeHtml(f.name)} ${f.monthDay}</button>`;
-        }).join('');
-
-        box.innerHTML = `
-          <div class="countdown-bar">
-            ${leftHtml}
-            <div class="countdown-right">
-              <div class="countdown-note" title="${escapeHtml(targetName)}（${mdLabel}）">
-                ${escapeHtml(targetName)}<span class="countdown-date-tag">${mdLabel}</span>
-              </div>
-              <button type="button" class="cal-btn" id="toggleCountdownBtn">${countdownEditorOpen ? '收起' : '记事'}</button>
-            </div>
-          </div>
-          <div class="countdown-editor${countdownEditorOpen ? ' show' : ''}" id="countdownEditor">
-            <div class="countdown-fest-pills">
-              ${pillsHtml}
-            </div>
-            <div class="countdown-custom-row">
-              <input type="text" id="countdownTextInput" maxlength="20" placeholder="可输入记事文字（仅存本地）" value="${countdownState.mode === 'custom' ? escapeHtml(countdownState.name) : ''}" />
-              <input type="date" id="countdownDateInput" value="${targetDateStr}" />
-              <button type="button" class="cal-btn" id="saveCountdownBtn">确定</button>
-              <button type="button" class="cal-btn" id="autoCountdownBtn">自动最近</button>
-            </div>
-          </div>
+        const moonSectorHtml = `
+          <path d="M ${cx} ${cy} L ${rx2.toFixed(2)} ${ry2.toFixed(2)} A ${R} ${R} 0 ${nightLargeArc} 1 ${rx1.toFixed(2)} ${ry1.toFixed(2)} Z"
+                fill="rgba(116, 138, 154, 0.14)" />
         `;
 
-        document.getElementById('toggleCountdownBtn').addEventListener('click', () => {
-          countdownEditorOpen = !countdownEditorOpen;
-          renderCountdown();
-        });
+        const daySectorHtml = `
+          <path d="M ${cx} ${cy} L ${rx1.toFixed(2)} ${ry1.toFixed(2)} A ${R} ${R} 0 ${dayLargeArc} 1 ${rx2.toFixed(2)} ${ry2.toFixed(2)} Z"
+                fill="#fcfbf7" />
+          <path d="M ${cx} ${cy} L ${rx1.toFixed(2)} ${ry1.toFixed(2)} A ${R} ${R} 0 ${dayLargeArc} 1 ${rx2.toFixed(2)} ${ry2.toFixed(2)} Z"
+                fill="rgba(245, 184, 65, 0.20)" />
+        `;
 
-        box.querySelectorAll('.fest-pill').forEach(btn => {
-          btn.addEventListener('click', () => {
-            saveCountdownState({
-              mode: 'festival',
-              name: btn.getAttribute('data-fest-name'),
-              dateStr: btn.getAttribute('data-fest-date')
-            });
-            countdownEditorOpen = false;
-            renderCountdown();
-          });
-        });
+        const sectorSolidLinesHtml = `
+          <line x1="${cx}" y1="${cy}" x2="${rx1.toFixed(2)}" y2="${ry1.toFixed(2)}"
+                stroke="#d68536" stroke-width="1.15" opacity="0.88" />
+          <line x1="${cx}" y1="${cy}" x2="${rx2.toFixed(2)}" y2="${ry2.toFixed(2)}"
+                stroke="#d68536" stroke-width="1.15" opacity="0.88" />
+          <circle cx="${rx1.toFixed(2)}" cy="${ry1.toFixed(2)}" r="1.9" fill="#e68228" />
+          <circle cx="${rx2.toFixed(2)}" cy="${ry2.toFixed(2)}" r="1.9" fill="#e68228" />
+        `;
 
-        document.getElementById('saveCountdownBtn').addEventListener('click', () => {
-          const txt = document.getElementById('countdownTextInput').value.trim();
-          const dt = document.getElementById('countdownDateInput').value;
-          if (!dt) return;
-          saveCountdownState({
-            mode: 'custom',
-            name: txt || '记事目标日',
-            dateStr: dt
-          });
-          countdownEditorOpen = false;
-          renderCountdown();
-        });
+        const sunRiseExtR = Math.abs(Math.sin(aRise)) < 0.22 ? R + 17.5 : R + 16.0;
+        const sunRiseExtX = cx + sunRiseExtR * Math.cos(aRise);
+        const sunRiseExtY = cy - sunRiseExtR * Math.sin(aRise);
 
-        document.getElementById('autoCountdownBtn').addEventListener('click', () => {
-          saveCountdownState({ mode: 'auto', name: '', dateStr: '' });
-          countdownEditorOpen = false;
-          renderCountdown();
-        });
+        const sunSetExtR = Math.abs(Math.sin(aSet)) < 0.22 ? R + 20.5 : R + 16.5;
+        const sunSetExtX = cx + sunSetExtR * Math.cos(aSet);
+        const sunSetExtY = cy - sunSetExtR * Math.sin(aSet);
+
+        const sunLabelsOnRingHtml = `
+          <text x="${(sunRiseExtX - 3.2).toFixed(2)}" y="${sunRiseExtY.toFixed(2)}" dy="0.35em" text-anchor="end">
+            <tspan font-size="7.2" font-weight="500" fill="#536973">日出 </tspan><tspan font-size="9.4" font-weight="700" fill="#24343d">${state.sunriseLabel}</tspan>
+          </text>
+          <text x="${(sunSetExtX + 3.0).toFixed(2)}" y="${sunSetExtY.toFixed(2)}" dy="0.35em" text-anchor="start">
+            <tspan font-size="7.2" font-weight="500" fill="#536973">日落 </tspan><tspan font-size="9.4" font-weight="700" fill="#24343d">${state.sunsetLabel}</tspan>
+          </text>
+        `;
+
+        let dialTicksHtml = '';
+        let dialLabelsHtml = '';
+        for (let hr = 0; hr < 24; hr += 1) {
+          const ang = timeTo24hAngle(hr);
+          const isMajor = hr % 6 === 0;
+          const rIn = isMajor ? R - 4.8 : R - 2.8;
+          const rOut = isMajor ? R + 1.6 : R + 0.8;
+          const x1 = cx + rIn * Math.cos(ang);
+          const y1 = cy - rIn * Math.sin(ang);
+          const x2 = cx + rOut * Math.cos(ang);
+          const y2 = cy - rOut * Math.sin(ang);
+          dialTicksHtml += `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="${isMajor ? '#cad3d8' : '#d8e0e4'}" stroke-width="${isMajor ? '1.4' : '0.95'}" stroke-linecap="round" />`;
+
+          // 数字稍微往外挪一些，保证太阳升到任何整点都不会遮挡数字
+          const rLabel = isMajor ? R + 11.8 : R + 10.6;
+          const lx = cx + rLabel * Math.cos(ang);
+          const ly = cy - rLabel * Math.sin(ang);
+          dialLabelsHtml += `<text x="${lx.toFixed(2)}" y="${ly.toFixed(2)}" dy="0.35em" text-anchor="middle" font-size="${isMajor ? '11.0' : '7.0'}" font-weight="${isMajor ? '600' : '500'}" fill="${isMajor ? '#536873' : '#788b96'}">${hr}</text>`;
+        }
+
+        let moonMarkersHtml = '';
+        if (state.todayMoonRise) {
+          const a = timeTo24hAngle(getCityLocalHours(state.todayMoonRise.time, state.offsetSec));
+          moonMarkersHtml += `<circle cx="${(cx + R * Math.cos(a)).toFixed(2)}" cy="${(cy - R * Math.sin(a)).toFixed(2)}" r="2.1" fill="#0ea5e9" opacity="0.9" />`;
+        }
+        if (state.todayMoonSet) {
+          const a = timeTo24hAngle(getCityLocalHours(state.todayMoonSet.time, state.offsetSec));
+          moonMarkersHtml += `<circle cx="${(cx + R * Math.cos(a)).toFixed(2)}" cy="${(cy - R * Math.sin(a)).toFixed(2)}" r="2.1" fill="#0ea5e9" opacity="0.9" />`;
+        }
+
+        const sunRadius = R;
+        const moonRadius = R;
+
+        const sx = cx + sunRadius * Math.cos(nowAngle);
+        const sy = cy - sunRadius * Math.sin(nowAngle);
+        const mx = cx + moonRadius * Math.cos(nowAngle);
+        const my = cy - moonRadius * Math.sin(nowAngle);
+
+        const moonName = getMoonPhaseName(state.moonIllum.phase);
+        const moonPct = Math.round(state.moonIllum.fraction * 100);
+        const nowClockStr = formatCityHm(state.nowMs, state.offsetSec);
+        const sunTitle = `太阳（当前 ${nowClockStr} · 日出 ${state.sunriseLabel} / 日落 ${state.sunsetLabel}）`;
+        const moonTitle = `月亮：${moonName}（照明 ${moonPct}% · 月出 ${state.moonriseLabel} / 月落 ${state.moonsetLabel}）`;
+
+        const timePointerHtml = (!state.isDaytime && !state.isMoonVisible)
+          ? (() => {
+              const ux = Math.cos(nowAngle);
+              const uy = -Math.sin(nowAngle);
+              const tx = Math.sin(nowAngle);
+              const ty = Math.cos(nowAngle);
+              const tipR = R - 2.6;
+              const baseR = R - 8.6;
+              const halfW = 3.1;
+              const p1x = cx + tipR * ux;
+              const p1y = cy + tipR * uy;
+              const p2x = cx + baseR * ux - halfW * tx;
+              const p2y = cy + baseR * uy - halfW * ty;
+              const p3x = cx + baseR * ux + halfW * tx;
+              const p3y = cy + baseR * uy + halfW * ty;
+              return `
+                <g>
+                  <title>当前时刻 ${nowClockStr}（日月皆未升起）</title>
+                  <polygon points="${p1x.toFixed(2)},${p1y.toFixed(2)} ${p2x.toFixed(2)},${p2y.toFixed(2)} ${p3x.toFixed(2)},${p3y.toFixed(2)}"
+                           fill="#266f88" stroke="#fcfbf7" stroke-width="0.65" stroke-linejoin="round" />
+                </g>
+              `;
+            })()
+          : '';
+
+        const sunElementHtml = state.isDaytime
+          ? `
+            <g>
+              <title>${sunTitle}</title>
+              <circle cx="${sx.toFixed(2)}" cy="${sy.toFixed(2)}" r="${sunR + 2.4}" fill="url(#sunHaloGrad)" />
+              <circle cx="${sx.toFixed(2)}" cy="${sy.toFixed(2)}" r="${sunR}" fill="url(#sunBodyGrad)" stroke="#e06508" stroke-width="0.6" />
+            </g>
+          `
+          : '';
+
+        const moonElementHtml = (!state.isDaytime && state.isMoonVisible)
+          ? `
+            <g>
+              <title>${moonTitle}</title>
+              <circle cx="${mx.toFixed(2)}" cy="${my.toFixed(2)}" r="${(moonR + 2.2).toFixed(2)}" fill="url(#moonHaloGrad)" />
+              ${buildMoonPhaseSvg(mx, my, moonR, state.moonIllum.phase, state.moonIllum.fraction, state.lat < 0)}
+            </g>
+          `
+          : '';
+
+        return `
+          <svg class="celestial-svg" viewBox="0 0 176 176" role="img" aria-label="24小时制表盘日月出落实时演示">
+            <defs>
+              <radialGradient id="sunBodyGrad" cx="38%" cy="35%" r="65%">
+                <stop offset="0%" stop-color="#ffd24c" />
+                <stop offset="55%" stop-color="#ff9518" />
+                <stop offset="100%" stop-color="#ea6a08" />
+              </radialGradient>
+              <radialGradient id="sunHaloGrad" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="rgba(255, 160, 32, 0.36)" />
+                <stop offset="100%" stop-color="rgba(255, 160, 32, 0)" />
+              </radialGradient>
+              <radialGradient id="moonHaloGrad" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="rgba(56, 189, 248, 0.28)" />
+                <stop offset="100%" stop-color="rgba(56, 189, 248, 0)" />
+              </radialGradient>
+            </defs>
+
+            ${moonSectorHtml}
+            ${daySectorHtml}
+
+            <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#d5dde1" stroke-width="1.2" />
+
+            ${dialTicksHtml}
+            ${sectorSolidLinesHtml}
+            ${dialLabelsHtml}
+            ${sunLabelsOnRingHtml}
+
+            <text x="${cx}" y="${cy - 24}" dy="0.35em" text-anchor="middle" font-size="10.5" font-weight="600" fill="#c96c1f" opacity="0.88">昼</text>
+            <text x="${cx}" y="${cy + 24}" dy="0.35em" text-anchor="middle" font-size="10.5" font-weight="600" fill="#4f6570" opacity="0.88">夜</text>
+
+            <circle cx="${cx}" cy="${cy}" r="2.3" fill="#566b76" />
+
+            ${moonMarkersHtml}
+            ${timePointerHtml}
+            ${moonElementHtml}
+            ${sunElementHtml}
+          </svg>
+        `;
       }
 
-      function ensureCalendarCells(container) {
-        if (container.children.length === 42) return;
-        const frag = document.createDocumentFragment();
-        for (let i = 0; i < 42; i++) {
-          const cell = document.createElement('div');
-          cell.className = 'cal-cell';
-
-          const solarSpan = document.createElement('span');
-          solarSpan.className = 'cal-solar';
-
-          const lunarSpan = document.createElement('span');
-          lunarSpan.className = 'cal-lunar';
-
-          cell.appendChild(solarSpan);
-          cell.appendChild(lunarSpan);
-
-          cell.addEventListener('click', () => {
-            const y = Number(cell.dataset.y);
-            const m = Number(cell.dataset.m);
-            const d = Number(cell.dataset.d);
-            const isOther = cell.dataset.other === '1';
-            selectedDate = new Date(y, m - 1, d);
-            if (isOther) {
-              viewYear = y;
-              viewMonth = m;
-            }
-            renderDateDetail(selectedDate);
-            renderCalendar(viewYear, viewMonth);
-          });
-
-          frag.appendChild(cell);
-        }
-        container.innerHTML = '';
-        container.appendChild(frag);
-      }
-
-      function getCellLunarInfo(cellY, cellM, cellD) {
-        const solar = Solar.fromYmd(cellY, cellM, cellD);
-        const lunar = solar.getLunar();
-        const jq = lunar.getJieQi();
-        const lunarFests = lunar.getFestivals();
-        const solarFests = solar.getFestivals();
-        const fests = [...lunarFests, ...solarFests];
-        const statutoryHit = fests.find(f => STATUTORY_FESTIVALS.has(f)) || (STATUTORY_FESTIVALS.has(jq) ? jq : '');
-
-        if (statutoryHit) {
-          return [statutoryHit, 'is-statutory'];
-        }
-        if (fests.length > 0) {
-          const text = fests[0];
-          if (WESTERN_FESTIVALS.has(text)) return [text, 'is-western'];
-          if (lunarFests.includes(text)) return [text, 'is-traditional'];
-          return [text, 'is-highlight'];
-        }
-        if (jq) {
-          return [jq, 'is-traditional'];
-        }
-        if (lunar.getDay() === 1) {
-          return [`${lunar.getMonthInChinese()}月`, 'is-highlight'];
-        }
-        return [lunar.getDayInChinese(), ''];
-      }
-
-      function renderCalendar(year, month) {
-        document.getElementById('calMonthTitle').textContent = `${year}年 ${month}月`;
-        const container = document.getElementById('calDays');
-        ensureCalendarCells(container);
-
-        const firstDayOfWeek = new Date(year, month - 1, 1).getDay();
-        const daysInMonth = new Date(year, month, 0).getDate();
-        const daysInPrevMonth = new Date(year, month - 1, 0).getDate();
-
-        const today = new Date();
-        const totalCells = 42;
-        const monthKey = `${year}-${month}`;
-        const hasSolar = typeof Solar !== 'undefined';
-        const cachedMonth = !hasSolar && lunarCache.months ? lunarCache.months[monthKey] : null;
-        const freshCacheEntries = hasSolar ? [] : null;
-
-        for (let i = 0; i < totalCells; i++) {
-          let cellY = year;
-          let cellM = month;
-          let cellD;
-          let isOther = false;
-
-          if (i < firstDayOfWeek) {
-            cellD = daysInPrevMonth - firstDayOfWeek + i + 1;
-            cellM = month - 1;
-            if (cellM < 1) { cellM = 12; cellY -= 1; }
-            isOther = true;
-          } else if (i >= firstDayOfWeek + daysInMonth) {
-            cellD = i - (firstDayOfWeek + daysInMonth) + 1;
-            cellM = month + 1;
-            if (cellM > 12) { cellM = 1; cellY += 1; }
-            isOther = true;
-          } else {
-            cellD = i - firstDayOfWeek + 1;
-          }
-
-          const cellDate = new Date(cellY, cellM - 1, cellD);
-          const isToday =
-            cellY === today.getFullYear() &&
-            cellM === today.getMonth() + 1 &&
-            cellD === today.getDate();
-          const isSelected =
-            cellY === selectedDate.getFullYear() &&
-            cellM === selectedDate.getMonth() + 1 &&
-            cellD === selectedDate.getDate();
-          const isWeekend = cellDate.getDay() === 0 || cellDate.getDay() === 6;
-
-          let lunarText = '';
-          let lunarClass = '';
-
-          if (hasSolar) {
-            const pair = getCellLunarInfo(cellY, cellM, cellD);
-            lunarText = pair[0];
-            lunarClass = pair[1];
-            freshCacheEntries.push(pair);
-          } else if (Array.isArray(cachedMonth) && Array.isArray(cachedMonth[i])) {
-            lunarText = cachedMonth[i][0] || '';
-            lunarClass = cachedMonth[i][1] || '';
-          }
-
-          const lunarLenClass = lunarText.length >= 9
-            ? 'is-long is-extra-long'
-            : (lunarText.length >= 5 ? 'is-long' : '');
-
-          const nextCellClass = 'cal-cell' +
-            (isOther ? ' other-month' : '') +
-            (isToday ? ' today' : '') +
-            (isSelected && !isToday ? ' selected' : '') +
-            (isWeekend ? ' is-weekend' : '') +
-            (lunarClass === 'is-statutory' ? ' is-statutory-day' : '');
-
-          const nextLunarClass = ['cal-lunar', lunarClass, lunarLenClass].filter(Boolean).join(' ');
-          const displayLunar = lunarText || '\u00A0';
-          const solarText = String(cellD);
-
-          const cell = container.children[i];
-          const solarSpan = cell.children[0];
-          const lunarSpan = cell.children[1];
-
-          cell.dataset.y = String(cellY);
-          cell.dataset.m = String(cellM);
-          cell.dataset.d = String(cellD);
-          cell.dataset.other = isOther ? '1' : '0';
-
-          if (cell.className !== nextCellClass) cell.className = nextCellClass;
-          if (solarSpan.textContent !== solarText) solarSpan.textContent = solarText;
-          if (lunarSpan.className !== nextLunarClass) lunarSpan.className = nextLunarClass;
-          if (lunarSpan.textContent !== displayLunar) lunarSpan.textContent = displayLunar;
-        }
-
-        if (hasSolar && freshCacheEntries) {
-          lunarCache.months[monthKey] = freshCacheEntries;
-          saveLunarCache();
-        }
-      }
-
-      document.getElementById('prevMonthBtn').addEventListener('click', () => {
-        viewMonth--;
-        if (viewMonth < 1) { viewMonth = 12; viewYear--; }
-        renderCalendar(viewYear, viewMonth);
-      });
-
-      document.getElementById('nextMonthBtn').addEventListener('click', () => {
-        viewMonth++;
-        if (viewMonth > 12) { viewMonth = 1; viewYear++; }
-        renderCalendar(viewYear, viewMonth);
-      });
-
-      document.getElementById('currMonthBtn').addEventListener('click', () => {
-        const t = new Date();
-        viewYear = t.getFullYear();
-        viewMonth = t.getMonth() + 1;
-        renderCalendar(viewYear, viewMonth);
-      });
-
-      document.getElementById('backTodayBtn').addEventListener('click', () => {
-        const t = new Date();
-        viewYear = t.getFullYear();
-        viewMonth = t.getMonth() + 1;
-        selectedDate = new Date(t.getFullYear(), t.getMonth(), t.getDate());
-        renderDateDetail(selectedDate);
-        renderCalendar(viewYear, viewMonth);
-      });
-
-      function loadLunarAsync() {
-        if (typeof Solar !== 'undefined') return;
-        const urls = [
-          'https://cdnjs.cloudflare.com/ajax/libs/lunar-javascript/1.7.8/lunar.min.js',
-          'https://cdn.jsdelivr.net/npm/lunar-javascript@1.7.8/lunar.min.js'
+      function buildFourDaysHtml(weatherData) {
+        const fourDaysSpec = [
+          { offset: -1, label: '昨日', isToday: false },
+          { offset: 0,  label: '今日', isToday: true },
+          { offset: 1,  label: '明日', isToday: false },
+          { offset: 2,  label: '后日', isToday: false }
         ];
-        let idx = 0;
-        function tryLoad() {
-          if (idx >= urls.length) return;
-          const s = document.createElement('script');
-          s.src = urls[idx++];
-          s.async = true;
-          s.onload = function () {
-            const t = new Date();
-            const hadFestCache = Boolean(
-              lunarCache.festivals && lunarCache.festivals.todayYmd === formatYmd(t)
-            );
-            renderCalendar(viewYear, viewMonth);
-            if (!hadFestCache) {
-              renderCountdown();
-            } else {
-              getUpcomingFestivals();
-            }
-          };
-          s.onerror = tryLoad;
-          document.body.appendChild(s);
+
+        if (!weatherData || !weatherData.daily) {
+          return '<div class="weather-four-days">' + fourDaysSpec.map(item => `
+            <div class="${item.isToday ? 'day-mini-card is-today' : 'day-mini-card is-muted'}">
+              <div class="day-mini-label">${item.label}</div>
+              <div class="day-mini-cond"><span class="day-mini-text">--</span></div>
+              <div class="day-mini-temp">--°~--°</div>
+            </div>
+          `).join('') + '</div>';
         }
-        tryLoad();
+
+        const curr = weatherData.current;
+        const daily = weatherData.daily;
+        const todayStr = curr && curr.time ? curr.time.slice(0, 10) : '';
+        let todayIdx = todayStr ? daily.time.indexOf(todayStr) : -1;
+        if (todayIdx === -1) {
+          todayIdx = daily.time.length >= 9 ? 1 : 0;
+        }
+
+        let html = '<div class="weather-four-days">';
+        fourDaysSpec.forEach(item => {
+          const idx = todayIdx + item.offset;
+          const cls = item.isToday ? 'day-mini-card is-today' : 'day-mini-card is-muted';
+          if (idx >= 0 && idx < daily.time.length) {
+            const dInfo = parseWeatherCode(daily.weather_code[idx]);
+            const dMin = Math.round(daily.temperature_2m_min[idx]);
+            const dMax = Math.round(daily.temperature_2m_max[idx]);
+            const tempHtml = item.isToday
+              ? `<span class="temp-low">${dMin}°</span>~<span class="temp-high">${dMax}°</span>`
+              : `${dMin}°~${dMax}°`;
+
+            html += `
+              <div class="${cls}">
+                <div class="day-mini-label">${item.label}</div>
+                <div class="day-mini-cond">
+                  <span>${dInfo.icon}</span>
+                  <span class="day-mini-text">${dInfo.text}</span>
+                </div>
+                <div class="day-mini-temp">${tempHtml}</div>
+              </div>
+            `;
+          } else {
+            html += `
+              <div class="${cls}">
+                <div class="day-mini-label">${item.label}</div>
+                <div class="day-mini-cond"><span class="day-mini-text">暂无</span></div>
+                <div class="day-mini-temp">--</div>
+              </div>
+            `;
+          }
+        });
+        html += '</div>';
+        return html;
       }
 
-      renderDateDetail(selectedDate);
-      renderCalendar(viewYear, viewMonth);
-      renderCountdown();
-      loadLunarAsync();
+      function buildForecastHtml(weatherData) {
+        if (!weatherData || !weatherData.daily) {
+          return '<div class="status-msg">正在获取七日预报...</div>';
+        }
+        const curr = weatherData.current;
+        const daily = weatherData.daily;
+        const todayStr = curr && curr.time ? curr.time.slice(0, 10) : '';
+        let todayIdx = todayStr ? daily.time.indexOf(todayStr) : -1;
+        if (todayIdx === -1) {
+          todayIdx = daily.time.length >= 9 ? 1 : 0;
+        }
+
+        let rowsHtml = '<div class="forecast-list">';
+        for (let offset = 1; offset <= 7; offset++) {
+          const i = todayIdx + offset;
+          if (i >= daily.time.length) break;
+
+          const dateStr = daily.time[i];
+          const parts = dateStr.split('-');
+          const dObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+          const wdLabel = offset === 1 ? '明日' : offset === 2 ? '后日' : WEEKDAYS[dObj.getDay()];
+          const mdLabel = `${Number(parts[1])}/${Number(parts[2])}`;
+          const fInfo = parseWeatherCode(daily.weather_code[i]);
+          const rainProb = daily.precipitation_probability_max ? daily.precipitation_probability_max[i] : null;
+          const tMin = Math.round(daily.temperature_2m_min[i]);
+          const tMax = Math.round(daily.temperature_2m_max[i]);
+
+          rowsHtml += `
+            <div class="forecast-row">
+              <div class="forecast-date">
+                <strong>${wdLabel}</strong>
+                <span>${mdLabel}</span>
+              </div>
+              <div class="forecast-cond">
+                <span>${fInfo.icon}</span>
+                <span>${fInfo.text}</span>
+              </div>
+              <div class="forecast-rain">
+                ${rainProb !== null && rainProb > 0 ? `💧${rainProb}%` : ''}
+              </div>
+              <div class="forecast-temp">
+                <span class="temp-low">${tMin}°</span>~<span class="temp-high">${tMax}°</span>
+              </div>
+            </div>
+          `;
+        }
+        rowsHtml += '</div>';
+        return rowsHtml;
+      }
+
+      function renderWeatherPanelImmediate(city, weatherData) {
+        const todayBox = document.getElementById('todayWeatherBox');
+        const detailBox = document.getElementById('weatherDetailBox');
+        const forecastBox = document.getElementById('forecastBox');
+        const offsetSec = inferCityOffsetSec(city, weatherData);
+
+        lastCelestialCtx = { city, offsetSec };
+        const cState = computeCelestialState(city, offsetSec);
+        lastSvgMinuteKey = formatCityHm(cState.nowMs, offsetSec);
+        updateHeaderAstroIcons(cState);
+
+        const regionSub = [city.admin1, city.country].filter(Boolean).join(' · ');
+        const curr = weatherData && weatherData.current ? weatherData.current : null;
+        const wInfo = curr ? parseWeatherCode(curr.weather_code) : { text: '更新中', icon: '🌡️' };
+        const tempStr = curr ? `${Math.round(curr.temperature_2m)}°C` : '--°C';
+        const feelsStr = curr ? `${Math.round(curr.apparent_temperature)}°C` : '--°C';
+        const humStr = curr ? `${curr.relative_humidity_2m}%` : '--%';
+        const moonPhaseName = getMoonPhaseName(cState.moonIllum.phase);
+
+        todayBox.innerHTML = `
+          <div class="weather-now">
+            <div class="celestial-top-info">
+              <div class="celestial-dur-box" id="celestialDurBox">
+                <div>昼<strong>${cState.dayDurText}</strong></div>
+                <div>夜<strong>${cState.nightDurText}</strong></div>
+              </div>
+              <div class="celestial-cd-box${cState.isDaytime ? '' : ' is-after-sunset'}" id="celestialCdBox">
+                <span class="celestial-cd-label" id="sunCountdownLabel">${cState.cdLabel}</span>
+                <span class="celestial-cd-val" id="sunCountdownVal">${buildCountdownValHtml(cState.cdParts)}</span>
+              </div>
+            </div>
+            <div class="weather-celestial-wrap" id="celestialStage" title="24小时制表盘昼夜与日月出落实时演示">
+              ${buildCelestialSvg(cState)}
+            </div>
+            <div class="celestial-bottom-info">
+              <div class="celestial-corner-right" id="moonTimesLeft" title="当前月相：${moonPhaseName}">
+                <div>月出<strong>${cState.moonriseLabel}</strong></div>
+                <div>月落<strong>${cState.moonsetLabel}</strong></div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        detailBox.innerHTML = `
+          <div class="weather-detail-card">
+            <div class="weather-detail-top">
+              <div class="weather-detail-left">
+                <div class="weather-city-block">
+                  <div class="weather-city-name">${escapeHtml(city.name)}</div>
+                  <div class="weather-city-sub">${escapeHtml(regionSub)}</div>
+                </div>
+                <div class="weather-temp-block" id="weatherTempBlock">
+                  <div class="weather-temp-main" id="weatherTempVal">${tempStr}</div>
+                  <div class="weather-desc" id="weatherDescVal">${wInfo.icon} ${wInfo.text}</div>
+                </div>
+              </div>
+              <div class="weather-stats-list">
+                <div class="weather-stats-row">
+                  <span>体感<strong id="weatherFeelsVal">${feelsStr}</strong></span>
+                </div>
+                <div class="weather-stats-row">
+                  <span>湿度<strong id="weatherHumVal">${humStr}</strong></span>
+                </div>
+              </div>
+            </div>
+            <div class="weather-bottom-strip" id="weatherBottomStrip">
+              ${buildFourDaysHtml(weatherData)}
+            </div>
+          </div>
+        `;
+
+        forecastBox.innerHTML = buildForecastHtml(weatherData);
+      }
+
+      function tickCelestialLive() {
+        if (!lastCelestialCtx) return;
+        const cState = computeCelestialState(lastCelestialCtx.city, lastCelestialCtx.offsetSec);
+
+        const cdBoxEl = document.getElementById('celestialCdBox');
+        const cdLabelEl = document.getElementById('sunCountdownLabel');
+        const cdHourEl = document.getElementById('cdHour');
+        const cdMinEl = document.getElementById('cdMin');
+        const cdSecEl = document.getElementById('cdSec');
+
+        if (cdBoxEl) {
+          cdBoxEl.classList.toggle('is-after-sunset', !cState.isDaytime);
+        }
+        if (cdLabelEl) cdLabelEl.textContent = cState.cdLabel;
+        if (cdHourEl) cdHourEl.textContent = cState.cdParts.h;
+        if (cdMinEl) cdMinEl.textContent = cState.cdParts.m;
+        if (cdSecEl) cdSecEl.textContent = cState.cdParts.s;
+
+        const minKey = formatCityHm(cState.nowMs, lastCelestialCtx.offsetSec);
+        if (minKey !== lastSvgMinuteKey) {
+          lastSvgMinuteKey = minKey;
+          updateHeaderAstroIcons(cState);
+
+          const stage = document.getElementById('celestialStage');
+          const durBox = document.getElementById('celestialDurBox');
+          const moonLeft = document.getElementById('moonTimesLeft');
+
+          if (stage) stage.innerHTML = buildCelestialSvg(cState);
+          if (durBox) {
+            durBox.innerHTML = `
+              <div>昼<strong>${cState.dayDurText}</strong></div>
+              <div>夜<strong>${cState.nightDurText}</strong></div>
+            `;
+          }
+          if (moonLeft) {
+            moonLeft.title = `当前月相：${getMoonPhaseName(cState.moonIllum.phase)}`;
+            moonLeft.innerHTML = `
+              <div>月出<strong>${cState.moonriseLabel}</strong></div>
+              <div>月落<strong>${cState.moonsetLabel}</strong></div>
+            `;
+          }
+        }
+      }
+
+      setInterval(tickCelestialLive, 1000);
+
+      const manageCitiesBtn = document.getElementById('manageCitiesBtn');
+
+      function deleteCityDirectly(city) {
+        if (savedCities.length <= 1) return;
+        const delId = String(city.id);
+        savedCities = savedCities.filter(c => String(c.id) !== delId);
+        if (savedCities.length <= 1) {
+          isManageMode = false;
+        }
+        if (String(activeCityId) === delId) {
+          activeCityId = String(savedCities[0].id);
+          fetchWeatherForActiveCity();
+        }
+        saveCities();
+        renderCityTabs();
+      }
+
+      function updateManageButton() {
+        if (!manageCitiesBtn) return;
+        const canDelete = savedCities.length > 1;
+        if (!canDelete) isManageMode = false;
+        manageCitiesBtn.disabled = !canDelete;
+        manageCitiesBtn.textContent = isManageMode ? '完成' : '删城';
+        manageCitiesBtn.classList.toggle('is-managing', isManageMode);
+        manageCitiesBtn.title = canDelete
+          ? (isManageMode ? '退出删城模式' : '点击后可删除城市')
+          : '至少保留一个城市';
+      }
+
+      manageCitiesBtn.addEventListener('click', () => {
+        if (savedCities.length <= 1) return;
+        isManageMode = !isManageMode;
+        renderCityTabs();
+      });
+
+      function renderCityTabs() {
+        const container = document.getElementById('cityTabs');
+        container.innerHTML = '';
+        updateManageButton();
+
+        savedCities.forEach(city => {
+          const isActive = String(city.id) === String(activeCityId);
+          const showDel = isManageMode && savedCities.length > 1;
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'city-tab' + (isActive && !showDel ? ' active' : '') + (showDel ? ' is-managing' : '');
+          btn.innerHTML = showDel
+            ? `<span>${escapeHtml(city.name)}</span><span class="city-tab-del" aria-hidden="true">×</span>`
+            : `<span>${escapeHtml(city.name)}</span>`;
+
+          btn.addEventListener('click', () => {
+            if (isManageMode) {
+              deleteCityDirectly(city);
+              return;
+            }
+            activeCityId = String(city.id);
+            saveCities();
+            renderCityTabs();
+            fetchWeatherForActiveCity();
+          });
+
+          container.appendChild(btn);
+        });
+      }
+
+      async function fetchWeatherForActiveCity() {
+        const city = savedCities.find(c => String(c.id) === String(activeCityId)) || savedCities[0];
+        if (!city) return;
+
+        const refreshBtn = document.getElementById('refreshWeatherBtn');
+        const cached = weatherCacheMap[String(city.id)] || null;
+
+        renderWeatherPanelImmediate(city, cached);
+
+        const tempBlock = document.getElementById('weatherTempBlock');
+        const bottomStrip = document.getElementById('weatherBottomStrip');
+        const forecastBox = document.getElementById('forecastBox');
+
+        if (refreshBtn) refreshBtn.textContent = '刷新中...';
+        if (cached) {
+          if (tempBlock) tempBlock.classList.add('is-refreshing');
+          if (bottomStrip) bottomStrip.classList.add('is-refreshing');
+          if (forecastBox) forecastBox.classList.add('is-refreshing');
+        }
+
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(city.latitude)}&longitude=${encodeURIComponent(city.longitude)}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset&timezone=auto&past_days=1&forecast_days=8`;
+
+        try {
+          const res = await fetch(url);
+          if (!res.ok) throw new Error('网络请求异常');
+          const data = await res.json();
+
+          saveWeatherCache(city.id, data);
+          if (String(city.id) === String(activeCityId)) {
+            renderWeatherPanelImmediate(city, data);
+          }
+        } catch (err) {
+          if (!cached && String(city.id) === String(activeCityId)) {
+            const descEl = document.getElementById('weatherDescVal');
+            if (descEl) descEl.textContent = '🌡️ 离线';
+            if (forecastBox) forecastBox.innerHTML = `<div class="status-msg">气象接口暂时无法连接，请稍后点击刷新。</div>`;
+          }
+        } finally {
+          const tb = document.getElementById('weatherTempBlock');
+          const bs = document.getElementById('weatherBottomStrip');
+          if (tb) tb.classList.remove('is-refreshing');
+          if (bs) bs.classList.remove('is-refreshing');
+          if (forecastBox) forecastBox.classList.remove('is-refreshing');
+          if (refreshBtn) refreshBtn.textContent = '刷新';
+        }
+      }
+
+      document.getElementById('refreshWeatherBtn').addEventListener('click', fetchWeatherForActiveCity);
+
+      const cityInput = document.getElementById('cityInput');
+      const dropdown = document.getElementById('searchDropdown');
+
+      async function searchCity() {
+        const rawQuery = cityInput.value.trim();
+        if (!rawQuery) return;
+
+        dropdown.innerHTML = '<div class="search-item">寻城中，请稍候...</div>';
+        dropdown.classList.add('show');
+
+        async function queryApi(q) {
+          const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=zh&format=json`;
+          const res = await fetch(url);
+          if (!res.ok) throw new Error('搜索失败');
+          const json = await res.json();
+          return json.results || [];
+        }
+
+        try {
+          let results = await queryApi(rawQuery);
+          if (results.length === 0 && /[市省县区]$/.test(rawQuery) && rawQuery.length > 2) {
+            results = await queryApi(rawQuery.slice(0, -1));
+          }
+
+          if (results.length === 0) {
+            dropdown.innerHTML = '<div class="search-item">未寻得此城，请尝试输入完整城市名（如“苏州”或拼音）</div>';
+            return;
+          }
+
+          dropdown.innerHTML = '';
+          results.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'search-item';
+            const sub = [item.admin1, item.country].filter(Boolean).join(' · ');
+            div.innerHTML = `<span><strong>${escapeHtml(item.name)}</strong></span><small>${escapeHtml(sub)}</small>`;
+            div.addEventListener('click', () => {
+              const newCity = {
+                id: String(item.id),
+                name: item.name,
+                admin1: item.admin1 || '',
+                country: item.country || '',
+                latitude: item.latitude,
+                longitude: item.longitude
+              };
+              if (!savedCities.some(c => String(c.id) === newCity.id)) {
+                savedCities.push(newCity);
+              }
+              activeCityId = newCity.id;
+              isManageMode = false;
+              saveCities();
+              renderCityTabs();
+              fetchWeatherForActiveCity();
+              dropdown.classList.remove('show');
+              cityInput.value = '';
+            });
+            dropdown.appendChild(div);
+          });
+        } catch (e) {
+          dropdown.innerHTML = '<div class="search-item">寻城受阻，请检查网络后重试</div>';
+        }
+      }
+
+      document.getElementById('searchBtn').addEventListener('click', searchCity);
+      cityInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') searchCity();
+      });
+
+      document.addEventListener('click', e => {
+        if (!e.target.closest('.city-search-wrap')) {
+          dropdown.classList.remove('show');
+        }
+      });
+
+      renderCityTabs();
+      fetchWeatherForActiveCity();
     })();
   </script>
 </body>
